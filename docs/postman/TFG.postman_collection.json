@@ -1,0 +1,19 @@
+{
+	"info": {
+		"_postman_id": "5328768e-cc3f-4fa5-9070-aeb86d013ad7",
+		"name": "TFG",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44922644",
+		"_collection_link": "https://ladrillo.postman.co/workspace/Ladrillo's-Workspace~091dcadf-5975-4d46-8e53-07073931570a/collection/44922644-5328768e-cc3f-4fa5-9070-aeb86d013ad7?action=share&source=collection_link&creator=44922644"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
