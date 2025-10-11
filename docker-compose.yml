@@ -1,14 +1,10 @@
 services:
   db:
     image: postgres:15
+    container_name: alzheimer_db
     environment:
-      POSTGRES_DB: appalzheimer
-      POSTGRES_USER: alz_user
-      POSTGRES_PASSWORD: alz_pass
+      POSTGRES_DB: app_alzheimer
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: app_pass
     ports:
       - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-
-volumes:
-  db_data:
