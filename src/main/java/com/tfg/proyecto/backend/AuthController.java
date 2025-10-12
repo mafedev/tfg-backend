@@ -18,9 +18,15 @@ public class AuthController {
 
     // Endpoint para registrar un usuario nuevo
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
+        if (user.getUsername() == null || user.getUsername().isEmpty() ||
+                user.getEmail() == null || user.getEmail().isEmpty() ||
+                user.getPassword() == null || user.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body("Todos los campos son obligatorios");
+        }
+
         User newUser = userService.registerUser(user);
-        return ResponseEntity.ok(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     // Endpoint para login
