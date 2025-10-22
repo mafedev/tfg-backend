@@ -1,5 +1,7 @@
-package com.tfg.proyecto.backend;
+package com.tfg.proyecto.backend.service;
 
+import com.tfg.proyecto.backend.entity.User;
+import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

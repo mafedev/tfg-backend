@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend;
+package com.tfg.proyecto.backend.entity;
 
 import jakarta.persistence.*;
 
@@ -15,7 +15,6 @@ public class User {
 
 
     // Getters y setters
-
     public Long getId() {
         return id;
     }

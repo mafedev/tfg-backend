@@ -1,5 +1,7 @@
-package com.tfg.proyecto.backend;
+package com.tfg.proyecto.backend.controller;
 
+import com.tfg.proyecto.backend.entity.User;
+import com.tfg.proyecto.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
