@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.security;
+package com.tfg.proyecto.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +11,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // desactiva CSRF para pruebas
+                .csrf(csrf -> csrf.disable()) // desactiva CSRF (necesario para llamadas desde Flutter)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // permite login/signup
-                        .anyRequest().authenticated() // el resto requiere autenticación
+                        .requestMatchers("/api/**").permitAll() // permite tus endpoints sin autenticación
+                        .anyRequest().permitAll()
                 );
-
         return http.build();
     }
 }
