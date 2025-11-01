@@ -8,10 +8,45 @@
 	},
 	"item": [
 		{
-			"name": "New Request",
+			"name": "test-login-signup",
 			"request": {
 				"method": "GET",
 				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "guardar-rutina-1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"breakfastTime\": \"08:00\",\r\n  \"lunchTime\": \"13:00\",\r\n  \"dinnerTime\": \"20:00\",\r\n  \"bathTime\": \"18:00\",\r\n  \"enableHydration\": true,\r\n  \"hydrationIntervalHours\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/rutine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rutine"
+					]
+				}
 			},
 			"response": []
 		}
