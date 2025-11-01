@@ -9,10 +9,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
+    @Column(name = "code", unique = true)
+    private String code;
+
+    @Column(nullable = false)
+    private String role; // "PACIENTE" o "CUIDADOR"
+
+    // Constructores
+    public User() {
+    }
+
+    public User(Long id, String username, String email, String password, String code, String role) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.code = code;
+        this.role = role;
+    }
 
     // Getters y setters
     public Long getId() {
@@ -45,6 +68,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 
