@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,6 +41,9 @@ public class AuthController {
         Optional<User> user = userService.login(email, password);
 
         if (user.isPresent()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("role", user.get().getRole());
+
             return ResponseEntity.ok(user.get());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
