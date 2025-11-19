@@ -5,14 +5,14 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // Indica que es la clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Indica que el ID es autoincremental
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false) // No puede estar vacío
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) // No puede estar vacío, no puede repetirse
     private String email;
 
     @Column(nullable = false)
@@ -24,17 +24,21 @@ public class User {
     @Column(nullable = false)
     private String role; // "PACIENTE" o "CUIDADOR"
 
+    @Column(nullable = false)
+    private String phone;
+
     // Constructores
     public User() {
     }
 
-    public User(Long id, String username, String email, String password, String code, String role) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.code = code;
+    public User(String phone, String role, String code, String password, String email, String username, Long id) {
+        this.phone = phone;
         this.role = role;
+        this.code = code;
+        this.password = password;
+        this.email = email;
+        this.username = username;
+        this.id = id;
     }
 
     // Getters y setters
@@ -84,6 +88,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
 

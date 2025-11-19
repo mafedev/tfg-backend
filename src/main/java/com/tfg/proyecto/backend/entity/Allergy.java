@@ -10,24 +10,19 @@ public class Allergy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
-
     @Column(nullable = false)
     private String name; // alimento o sustancia
 
-    private String severity; // leve, moderada, grave
+    private String description;
 
     // Constructores
     public Allergy() {
     }
 
-    public Allergy(Long id, User patient, String name, String severity) {
+    public Allergy(Long id, String name, String description) {
         this.id = id;
-        this.patient = patient;
         this.name = name;
-        this.severity = severity;
+        this.description = description;
     }
 
     // Getters y Setters
@@ -39,14 +34,6 @@ public class Allergy {
         this.id = id;
     }
 
-    public User getPatient() {
-        return patient;
-    }
-
-    public void setPatient(User patient) {
-        this.patient = patient;
-    }
-
     public String getName() {
         return name;
     }
@@ -55,11 +42,11 @@ public class Allergy {
         this.name = name;
     }
 
-    public String getSeverity() {
-        return severity;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSeverity(String severity) {
-        this.severity = severity;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
