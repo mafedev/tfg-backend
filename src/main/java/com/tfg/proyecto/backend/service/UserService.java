@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.service;
 
+import com.tfg.proyecto.backend.dto.UserRequest;
 import com.tfg.proyecto.backend.entity.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(User user) {
+    public User registerUser(UserRequest request) {
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole().toUpperCase());
+        user.setPhone(request.getPhone());
+
         return userRepository.save(user);
     }
 

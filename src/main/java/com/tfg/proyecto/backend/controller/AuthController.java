@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.controller;
 
+import com.tfg.proyecto.backend.dto.UserRequest;
 import com.tfg.proyecto.backend.entity.User;
 import com.tfg.proyecto.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,9 @@ public class AuthController {
 
     // Endpoint para registrar un usuario nuevo
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody User user) {
-        if (user.getUsername() == null || user.getUsername().isEmpty() ||
-                user.getEmail() == null || user.getEmail().isEmpty() ||
-                user.getPassword() == null || user.getPassword().isEmpty()) {
-            return ResponseEntity.badRequest().body("Todos los campos son obligatorios");
-        }
-
-        User newUser = userService.registerUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    public ResponseEntity<?> signup(@RequestBody UserRequest request) {
+        User user = userService.registerUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     // Endpoint para login
