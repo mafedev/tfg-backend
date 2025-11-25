@@ -1,11 +1,26 @@
 package com.tfg.proyecto.backend.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class UserRequest {
+
+    @NotBlank(message = "El username es obligatorio")
     private String username;
+
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "El email no es válido")
     private String email;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+//    @Size(min = 6, message = "La contraseña debe tener mínimo 6 caracteres")
     private String password;
+
+    @NotBlank(message = "El rol es obligatorio")
     private String role;
-    private String code;
+
+    @NotBlank(message = "El teléfono es obligatorio")
+    private String phone;
 
     public UserRequest() {}
 
@@ -22,6 +37,6 @@ public class UserRequest {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+    public String getPhone() {return phone;}
+    public void setPhone(String phone) {this.phone = phone;}
 }

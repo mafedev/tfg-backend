@@ -18,9 +18,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "code", unique = true)
-    private String code;
-
     @Column(nullable = false)
     private String role; // "PACIENTE" o "CUIDADOR"
 
@@ -31,17 +28,17 @@ public class User {
     public User() {
     }
 
-    public User(String phone, String role, String code, String password, String email, String username, Long id) {
-        this.phone = phone;
-        this.role = role;
-        this.code = code;
-        this.password = password;
-        this.email = email;
-        this.username = username;
+    public User(Long id, String username, String email, String password, String role, String phone) {
         this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.phone = phone;
     }
 
     // Getters y setters
+
     public Long getId() {
         return id;
     }
@@ -72,14 +69,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getRole() {

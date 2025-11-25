@@ -40,7 +40,7 @@ public class UserController {
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
         user.setRole(request.getRole());
-        user.setCode(request.getCode());
+        user.setPhone(request.getPhone());
 
         User guardado = userRepository.save(user);
 
