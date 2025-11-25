@@ -2,8 +2,6 @@ package com.tfg.proyecto.backend.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalTime;
-
 @Entity
 @Table(name = "medications_schedules")
 public class MedicationSchedules {

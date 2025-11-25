@@ -16,6 +16,7 @@ public class PatientAllergy {
 
     @ManyToOne
     @JoinColumn(name = "alergy_id", nullable = false)
+    private Allergy alergy;
 
     private String severity;
 
@@ -44,6 +45,14 @@ public class PatientAllergy {
 
     public void setPatient(User patient) {
         this.patient = patient;
+    }
+
+    public Allergy getAlergy() {
+        return alergy;
+    }
+
+    public void setAlergy(Allergy alergy) {
+        this.alergy = alergy;
     }
 
     public String getSeverity() {

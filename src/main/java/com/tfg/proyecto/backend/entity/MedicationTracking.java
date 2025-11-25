@@ -9,7 +9,8 @@ public class MedicationTracking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "medication_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 
     private String schedule_time;
