@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.controller;
 
-import com.tfg.proyecto.backend.dto.UserRequest;
+import com.tfg.proyecto.backend.dto.SignupRequest;
 import com.tfg.proyecto.backend.entity.User;
 import com.tfg.proyecto.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class AuthController {
 
     // Endpoint para registrar un usuario nuevo
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserRequest request) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
         User user = userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }

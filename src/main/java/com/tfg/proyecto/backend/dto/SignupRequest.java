@@ -2,8 +2,10 @@ package com.tfg.proyecto.backend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-public class UserRequest {
+// Datos que envia el front para crear un usuario
+public class SignupRequest {
 
     @NotBlank(message = "El username es obligatorio")
     private String username;
@@ -13,7 +15,7 @@ public class UserRequest {
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
-//    @Size(min = 6, message = "La contraseña debe tener mínimo 6 caracteres")
+    @Size(min = 6, message = "La contraseña debe tener mínimo 6 caracteres")
     private String password;
 
     @NotBlank(message = "El rol es obligatorio")
@@ -22,7 +24,7 @@ public class UserRequest {
     @NotBlank(message = "El teléfono es obligatorio")
     private String phone;
 
-    public UserRequest() {}
+    public SignupRequest() {}
 
     // getters y setters
     public String getUsername() { return username; }

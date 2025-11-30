@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.controller;
 
-import com.tfg.proyecto.backend.dto.UserRequest;
+import com.tfg.proyecto.backend.dto.SignupRequest;
 import com.tfg.proyecto.backend.entity.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class UserController {
     // Crear nuevo usuario
     // Responde a un POST en api/users
     @PostMapping("/users")
-    public ResponseEntity<?> createUSer(@RequestBody UserRequest request){
+    public ResponseEntity<?> createUSer(@RequestBody SignupRequest request){
         // que tenga el email y la contraseña
         if(request.getEmail() == null || request.getPassword() == null){
             return ResponseEntity.badRequest().body("Los campos de email y contraseña son obligtorios");
