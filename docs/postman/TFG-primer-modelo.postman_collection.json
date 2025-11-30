@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "5328768e-cc3f-4fa5-9070-aeb86d013ad7",
+		"name": "TFG-primer-modelo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44922644",
+		"_collection_link": "https://ladrillo.postman.co/workspace/Ladrillo's-Workspace~091dcadf-5975-4d46-8e53-07073931570a/collection/44922644-5328768e-cc3f-4fa5-9070-aeb86d013ad7?action=share&source=collection_link&creator=44922644"
+	},
+	"item": [
+		{
+			"name": "test-login-signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"ejemplo\",\r\n  \"email\": \"nombre@example.com\",\r\n  \"password\": \"1234\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "guardar-rutina",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"breakfastTime\": \"08:00\",\r\n  \"lunchTime\": \"13:00\",\r\n  \"dinnerTime\": \"20:00\",\r\n  \"bathTime\": \"18:00\",\r\n  \"enableHydration\": true,\r\n  \"hydrationIntervalHours\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/rutine",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rutine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "probar-nuevas-tablas",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"carlos\",\r\n  \"email\": \"carlos@example.com\",\r\n  \"password\": \"1234\",\r\n  \"code\": \"COD103\",\r\n  \"role\": \"PACIENTE\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
