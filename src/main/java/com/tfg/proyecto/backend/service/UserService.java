@@ -1,9 +1,10 @@
 package com.tfg.proyecto.backend.service;
 
-import com.tfg.proyecto.backend.dto.SignupRequest;
-import com.tfg.proyecto.backend.entity.User;
+import com.tfg.proyecto.backend.dto.request.SignupRequest;
+import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,11 +15,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     public User registerUser(SignupRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole().toUpperCase());
         user.setPhone(request.getPhone());
 
