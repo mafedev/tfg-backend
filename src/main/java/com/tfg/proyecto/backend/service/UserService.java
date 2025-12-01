@@ -31,6 +31,6 @@ public class UserService {
 
     public Optional<User> login(String email, String password) {
         return userRepository.findByEmail(email)
-                .filter(u -> u.getPassword().equals(password));
+                .filter(u -> passwordEncoder.matches(password, u.getPassword()));
     }
 }
