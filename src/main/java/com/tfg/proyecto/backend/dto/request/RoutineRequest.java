@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto;
+package com.tfg.proyecto.backend.dto.request;
 
 public class RoutineRequest {
     private Long patientId;

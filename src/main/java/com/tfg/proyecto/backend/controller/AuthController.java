@@ -1,9 +1,9 @@
 package com.tfg.proyecto.backend.controller;
 
-import com.tfg.proyecto.backend.dto.LoginRequest;
-import com.tfg.proyecto.backend.dto.LoginResponse;
-import com.tfg.proyecto.backend.dto.SignupRequest;
-import com.tfg.proyecto.backend.entity.User;
+import com.tfg.proyecto.backend.dto.request.LoginRequest;
+import com.tfg.proyecto.backend.dto.response.LoginResponse;
+import com.tfg.proyecto.backend.dto.request.SignupRequest;
+import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

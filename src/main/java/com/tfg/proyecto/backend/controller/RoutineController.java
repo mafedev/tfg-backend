@@ -1,8 +1,8 @@
 package com.tfg.proyecto.backend.controller;
 
-import com.tfg.proyecto.backend.dto.RoutineRequest;
-import com.tfg.proyecto.backend.entity.Routine;
-import com.tfg.proyecto.backend.entity.User;
+import com.tfg.proyecto.backend.dto.request.RoutineRequest;
+import com.tfg.proyecto.backend.entity_model.Routine;
+import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.RoutineRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;

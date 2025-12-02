@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.entity;
+package com.tfg.proyecto.backend.entity_model;
 
 import jakarta.persistence.*;
 
