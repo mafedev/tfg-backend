@@ -1,15 +1,16 @@
 package com.tfg.proyecto.backend.controller;
 
-import com.tfg.proyecto.backend.dto.UserRequest;
+import com.tfg.proyecto.backend.dto.LoginRequest;
+import com.tfg.proyecto.backend.dto.LoginResponse;
+import com.tfg.proyecto.backend.dto.SignupRequest;
 import com.tfg.proyecto.backend.entity.User;
 import com.tfg.proyecto.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,27 +23,21 @@ public class AuthController {
 
     // Endpoint para registrar un usuario nuevo
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserRequest request) {
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
         User user = userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     // Endpoint para login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String email = credentials.get("email");
-        String password = credentials.get("password");
-
-        Optional<User> user = userService.login(email, password);
+    // valid activa las validaciones de LoginRequest
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+        Optional<User> user = userService.login(request.getEmail(), request.getPassword());
 
         if (user.isPresent()) {
-            Map<String, String> response = new HashMap<>();
-            response.put("role", user.get().getRole());
-
-            return ResponseEntity.ok(user.get());
+            return ResponseEntity.ok(new LoginResponse(user.get()));
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
     }
 }
