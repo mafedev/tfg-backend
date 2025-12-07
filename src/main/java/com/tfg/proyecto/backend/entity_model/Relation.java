@@ -12,7 +12,7 @@ public class Relation {
     @Column(name = "id_caregiver", nullable = false)
     private Long caregiverId;
 
-    @Column(name = "id_patient", nullable = false)
+    @Column(name = "id_patient")
     private Long patientId;
 
     @Column(nullable = false, unique = true, length = 10)
