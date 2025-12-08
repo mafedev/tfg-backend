@@ -4,6 +4,7 @@ import com.tfg.proyecto.backend.dto.request.LoginRequest;
 import com.tfg.proyecto.backend.dto.response.LoginResponse;
 import com.tfg.proyecto.backend.dto.request.SignupRequest;
 import com.tfg.proyecto.backend.entity_model.User;
+import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     // Endpoint para registrar un usuario nuevo
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
@@ -35,7 +39,8 @@ public class AuthController {
         Optional<User> user = userService.login(request.getEmail(), request.getPassword());
 
         if (user.isPresent()) {
-            return ResponseEntity.ok(new LoginResponse(user.get()));
+            String token = jwtUtil.generateToken(user.get().getUsername()); // genera el token
+            return ResponseEntity.ok(new LoginResponse(user.get(), token));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
