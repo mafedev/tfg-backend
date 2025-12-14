@@ -3,14 +3,10 @@ package com.tfg.proyecto.backend.controller;
 import com.tfg.proyecto.backend.dto.request.RelationRequest;
 import com.tfg.proyecto.backend.dto.response.RelationResponse;
 import com.tfg.proyecto.backend.entity_model.Relation;
+import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.RelationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/relations")
@@ -22,18 +18,27 @@ public class RelationController {
         this.relationService = relationService;
     }
 
-    @PostMapping("/generate")
-    public RelationResponse generateRelation(@AuthenticationPrincipal UserDetails user){
-        Long caregiverId = Long.valueOf(user.getUsername());
-        Relation relation = relationService.createRelation(caregiverId);
+    @Autowired
+    private JwtUtil jwtUtil;
 
-        return new RelationResponse(relation.getCode());
+    // endpoint para generar la relación desde el cuidador
+    @PostMapping("/generate")
+    public RelationResponse generateRelation(@RequestHeader("Authorization") String header){ // String que contiene el "Bearer + token"
+        String token = header.substring(7); // quita "Bearer "
+        Long caregiverId = Long.parseLong(jwtUtil.extractId(token)); // extrae el id del token
+        Relation relation = relationService.createRelation(caregiverId); // crea la relación
+        return new RelationResponse(relation.getCode()); // Devuelve el código
     }
 
+
+    // endpoint que enlaza al paciente con el cuidador, por medio del código creado
     @PostMapping("/link")
-    public RelationResponse linkPatient(@RequestBody RelationRequest request, @AuthenticationPrincipal UserDetails user){
-        Long patientId = Long.parseLong(user.getUsername());
+    public RelationResponse linkPatient(@RequestBody RelationRequest request,
+                                        @RequestHeader("Authorization") String authHeader){
+        String token = authHeader.substring(7);
+        Long patientId = Long.parseLong(jwtUtil.extractId(token));
         Relation relation = relationService.linkPatient(request.getCode(), patientId);
         return new RelationResponse(relation.getCode());
     }
+
 }
