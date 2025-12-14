@@ -39,7 +39,7 @@ public class AuthController {
         Optional<User> user = userService.login(request.getEmail(), request.getPassword());
 
         if (user.isPresent()) {
-            String token = jwtUtil.generateToken(user.get().getUsername()); // genera el token
+            String token = jwtUtil.generateToken(user.get().getId()); // genera el token
             return ResponseEntity.ok(new LoginResponse(user.get(), token));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
