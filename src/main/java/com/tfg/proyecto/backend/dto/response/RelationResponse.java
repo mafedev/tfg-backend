@@ -4,6 +4,7 @@ public class RelationResponse {
     private String relationCode;
 
     public RelationResponse(String code) {
+        this.relationCode = code;
     }
 
     public String getRelationCode() {
