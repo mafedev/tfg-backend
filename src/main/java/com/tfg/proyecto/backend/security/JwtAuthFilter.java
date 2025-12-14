@@ -35,12 +35,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // valida el token con la clase jwtUtil
         if (jwtUtil.validateToken(token)) {
-            String username = jwtUtil.extractUsername(token); // extrae el username
+            String id = jwtUtil.extractId(token); // extrae el username
 
             // se crea un objeto para autenticar
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
-                            username, // usuario autenticado
+                            id,
                             null, // contraseña, no necesaria
                             Collections.emptyList() // sin roles
                     );
