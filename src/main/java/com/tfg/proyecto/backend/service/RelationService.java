@@ -37,11 +37,12 @@ public class RelationService {
     // se llama cuando el paciente ingresa el código
     public Relation linkPatient(String code, Long patientId) {
         Optional<Relation> repositoryResponse = this.relationRepository.findByCode(code); // obtiene la relación con ese código si existe
-        Relation relation = repositoryResponse.get();
 
         if (repositoryResponse.isEmpty()) {
             return null;
         }
+        // se asegura que no sea null
+        Relation relation = repositoryResponse.get();
 
         if (relation.getPatientId() != null) {
             return null;
