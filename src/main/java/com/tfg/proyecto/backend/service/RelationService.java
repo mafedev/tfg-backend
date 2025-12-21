@@ -15,17 +15,17 @@ public class RelationService {
     private RelationRepository relationRepository;
 
     // Genera el código que introduce el paciente
-    private String generateCode(){
+    private String generateCode() {
         String code;
-        do{
+        do {
             code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
-        }while(relationRepository.existsByCode(code));
+        } while (relationRepository.existsByCode(code));
         return code;
     }
 
     // Crea la "relación", solo con el id del cuidador y el código
     // para que luego cuando el paciente lo ingrese se agrega a la fila/relación
-    public Relation createRelation(Long caregiverId){
+    public Relation createRelation(Long caregiverId) {
         Relation relation = new Relation();
 
         relation.setCaregiverId(caregiverId);
@@ -35,16 +35,23 @@ public class RelationService {
     }
 
     // se llama cuando el paciente ingresa el código
-    public Relation linkPatient(String code, Long patientId){
-        Optional<Relation> relation = relationRepository.findByCode(code); // obtiene la relación con ese código si existe
+    public Relation linkPatient(String code, Long patientId) {
+        Optional<Relation> repositoryResponse = this.relationRepository.findByCode(code); // obtiene la relación con ese código si existe
+        Relation relation = repositoryResponse.get();
 
-        if(relation.isPresent()){ // si existe
-            Relation row = relation.get(); // obtiene la fila
-            row.setPatientId(patientId); // pone el id del paciente
-            return relationRepository.save(row); // lo guarda
-        } else { // si no lanza una excepción
-            throw new RuntimeException("El código no existe");
+        if (repositoryResponse.isEmpty()) {
+            return null;
+        }
+
+        if (relation.getPatientId() != null) {
+            return null;
+        }
+
+        if (relationRepository.existByCaregiverIdAndPatientId(relation.getCaregiverId(), relation.getPatientId())) {
+            relation.setPatientId(patientId);
+            return relationRepository.save(relation);
+        } else {
+            return null;
         }
     }
-
 }
