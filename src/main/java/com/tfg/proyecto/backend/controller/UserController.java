@@ -20,35 +20,6 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    // Crear nuevo usuario
-    // Responde a un POST en api/users
-    @PostMapping("/users")
-    public ResponseEntity<?> createUSer(@RequestBody SignupRequest request){
-        // que tenga el email y la contraseña
-        if(request.getEmail() == null || request.getPassword() == null){
-            return ResponseEntity.badRequest().body("Los campos de email y contraseña son obligtorios");
-        }
-
-        // se comprueba que el email no esté registrado
-        if(userRepository.existsByEmail((request.getEmail()))){
-            return ResponseEntity.badRequest().body("El email ya está registrado");
-        }
-
-        // se crea el usuario que se va a guardar en la bdd
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
-        user.setPhone(request.getPhone());
-
-        User guardado = userRepository.save(user);
-
-        // respuesta
-        return ResponseEntity.created(URI.create("/api/users" + guardado.getId())).body(guardado);
-
-    }
-
     // Este método responde a una petición GET, por ejemplo:
     // GET http://localhost:8080/api/users/1
     @GetMapping("/users/{id}")
