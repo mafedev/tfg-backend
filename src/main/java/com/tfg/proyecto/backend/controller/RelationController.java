@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/relations")
+@CrossOrigin(origins = "*")
 public class RelationController {
 
     private final RelationService relationService;
