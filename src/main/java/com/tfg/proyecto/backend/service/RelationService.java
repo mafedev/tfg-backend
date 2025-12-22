@@ -1,7 +1,9 @@
 package com.tfg.proyecto.backend.service;
 
 import com.tfg.proyecto.backend.entity_model.Relation;
+import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ public class RelationService {
 
     @Autowired
     private RelationRepository relationRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // Genera el código que introduce el paciente
     private String generateCode() {
@@ -36,23 +41,38 @@ public class RelationService {
 
     // se llama cuando el paciente ingresa el código
     public Relation linkPatient(String code, Long patientId) {
-        Optional<Relation> repositoryResponse = this.relationRepository.findByCode(code); // obtiene la relación con ese código si existe
 
-        if (repositoryResponse.isEmpty()) {
-            return null;
-        }
-        // se asegura que no sea null
-        Relation relation = repositoryResponse.get();
-
-        if (relation.getPatientId() != null) {
+        // Obtiene el user si existe
+        Optional<User> userRepositoryResponse = userRepository.findById(patientId);
+        if (userRepositoryResponse.isEmpty()) { // si no existe, devuelve null
             return null;
         }
 
-        if (relationRepository.existsByCaregiverIdAndPatientId(relation.getCaregiverId(), relation.getPatientId())) {
-            relation.setPatientId(patientId);
-            return relationRepository.save(relation);
-        } else {
+        User user = userRepositoryResponse.get(); // obtiene el user
+
+        if (user.getRole().equals("PACIENTE")) { // se asegura que el user sea PACIENTE, para evitar relaciones entre CUIDADORES
+            Optional<Relation> repositoryResponse = this.relationRepository.findByCode(code); // obtiene la relación con ese código si existe
+
+            if (repositoryResponse.isEmpty()) { // si no existe la relación
+                return null;
+            }
+            // se asegura que no sea null
+            Relation relation = repositoryResponse.get();
+
+            if (relation.getPatientId() != null) { // si ya hay alguien registrado
+                return null;
+            }
+
+            // si la relación entre paciente-cuidador no existe, entonces la guarda
+            if (!relationRepository.existsByCaregiverIdAndPatientId(relation.getCaregiverId(), patientId)) {
+                relation.setPatientId(patientId);
+                return relationRepository.save(relation);
+            } else {
+                return null;
+            }
+        } else{
             return null;
         }
+
     }
 }
