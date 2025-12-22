@@ -48,7 +48,7 @@ public class RelationService {
             return null;
         }
 
-        if (relationRepository.existByCaregiverIdAndPatientId(relation.getCaregiverId(), relation.getPatientId())) {
+        if (relationRepository.existsByCaregiverIdAndPatientId(relation.getCaregiverId(), relation.getPatientId())) {
             relation.setPatientId(patientId);
             return relationRepository.save(relation);
         } else {
