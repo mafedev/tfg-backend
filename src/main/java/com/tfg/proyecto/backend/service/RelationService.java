@@ -79,19 +79,22 @@ public class RelationService {
 
     }
 
-    public List<User> getPatientsList(Long caregiverId){
-        List<User> patients = new ArrayList<>(); // usuarios
+    public List<PatientResponse> getPatientsList(Long caregiverId){
+        List<PatientResponse> patients = new ArrayList<>();
         List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
 
         for(Relation id: matchedRelations){
-            // se obtiene el id del paciente
-            Long patientId = id.getPatientId();
-
             // busca el usuario por el id
-            Optional<User> patient = userRepository.findById(patientId);
+            Optional<User> patientRep = userRepository.findById(id.getPatientId());
 
             // si el paciente existe, entonces lo agrega a la lista
-            patient.ifPresent(patients::add);
+            if(patientRep.isPresent()){
+                User patient = patientRep.get();
+
+                PatientResponse dto = new PatientResponse(patient.getId(), patient.getUsername());
+
+                patients.add(dto);
+            }
 
         }
         return patients;
