@@ -3,7 +3,8 @@ package com.tfg.proyecto.backend.entity_model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "relations")
+// Se usa el UniqueConstraint para evitar tener múltiples relaciones entre los mismos usuarios
+@Table(name = "relations", uniqueConstraints = {@UniqueConstraint(columnNames = {"id_caregiver", "id_patient"})})
 public class Relation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
