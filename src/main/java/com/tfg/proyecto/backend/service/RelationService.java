@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.service;
 
+import com.tfg.proyecto.backend.dto.response.PatientResponse;
 import com.tfg.proyecto.backend.entity_model.Relation;
 import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.RelationRepository;
@@ -8,6 +9,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -74,5 +77,23 @@ public class RelationService {
             return null;
         }
 
+    }
+
+    public List<User> getPatientsList(Long caregiverId){
+        List<User> patients = new ArrayList<>(); // usuarios
+        List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
+
+        for(Relation id: matchedRelations){
+            // se obtiene el id del paciente
+            Long patientId = id.getPatientId();
+
+            // busca el usuario por el id
+            Optional<User> patient = userRepository.findById(patientId);
+
+            // si el paciente existe, entonces lo agrega a la lista
+            patient.ifPresent(patients::add);
+
+        }
+        return patients;
     }
 }
