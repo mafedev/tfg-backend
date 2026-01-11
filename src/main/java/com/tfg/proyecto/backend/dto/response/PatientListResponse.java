@@ -1,10 +1,10 @@
 package com.tfg.proyecto.backend.dto.response;
 
-public class PatientResponse {
+public class PatientListResponse {
     private Long id;
     private String username;
 
-    public PatientResponse(Long id, String username) {
+    public PatientListResponse(Long id, String username) {
         this.id = id;
         this.username = username;
     }
