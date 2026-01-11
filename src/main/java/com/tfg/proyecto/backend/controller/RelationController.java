@@ -4,12 +4,16 @@ import com.tfg.proyecto.backend.dto.request.RelationRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListResponse;
 import com.tfg.proyecto.backend.dto.response.RelationResponse;
 import com.tfg.proyecto.backend.entity_model.Relation;
+import com.tfg.proyecto.backend.entity_model.User;
+import com.tfg.proyecto.backend.repository.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.RelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/relations")
@@ -17,9 +21,11 @@ import java.util.List;
 public class RelationController {
 
     private final RelationService relationService;
+    private final UserRepository userRepository;
 
-    public RelationController(RelationService relationService) {
+    public RelationController(RelationService relationService, UserRepository userRepository) {
         this.relationService = relationService;
+        this.userRepository = userRepository;
     }
 
     @Autowired
@@ -50,7 +56,13 @@ public class RelationController {
     public List<PatientListResponse> getPatients(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         Long caregiverId = Long.parseLong(jwtUtil.extractId(token));
-        return relationService.getPatientsList(caregiverId);
-    }
 
+        //solo cuidadores puedan obtener la lista
+        Optional<User> userRepository = this.userRepository.findById(caregiverId);
+        if(userRepository.isPresent() && userRepository.get().getRole().equals("CUIDADOR")) {
+            return relationService.getPatientsList(caregiverId);
+        } else {
+            return new ArrayList<>(); // si no es cuidador, devuelve lista vacía
+        }
+    }
 }
