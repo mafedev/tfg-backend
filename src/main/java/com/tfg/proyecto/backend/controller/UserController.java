@@ -1,8 +1,13 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.SignupRequest;
+import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.entity_model.User;
+import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
+import com.tfg.proyecto.backend.security.JwtUtil;
+import com.tfg.proyecto.backend.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +20,16 @@ import java.util.Optional;
 public class UserController {
     // inyección de dependencias
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final RelationRepository relationRepository;
 
-    public UserController(UserRepository userRepository) {
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    public UserController(UserRepository userRepository, UserService userService, RelationRepository relationRepository) {
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.relationRepository = relationRepository;
     }
 
     // Este método responde a una petición GET, por ejemplo:
@@ -33,5 +45,25 @@ public class UserController {
         // Si no, devolvemos un 404 Not Found
         return u.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Devuelve la info del paciente
+    @GetMapping("/patients/{id}")
+    public PatientListDetailsResponse getPatientDetails(@PathVariable Long id, @RequestHeader("Authorization") String authHeader){
+
+        String token = authHeader.substring(7);
+        Long userId = Long.parseLong(jwtUtil.extractId(token));
+
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+
+            if(user.getRole().equals("CUIDADOR")){
+                boolean linked = relationRepository.existsByCaregiverIdAndPatientId(userId, id);
+
+                if(linked) return null;
+                return userService.getPatientDetails(id);
+            }
+        } return null;
     }
 }

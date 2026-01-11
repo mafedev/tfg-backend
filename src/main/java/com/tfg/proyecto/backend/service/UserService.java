@@ -1,6 +1,7 @@
 package com.tfg.proyecto.backend.service;
 
 import com.tfg.proyecto.backend.dto.request.SignupRequest;
+import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,21 @@ public class UserService {
     public Optional<User> login(String email, String password) {
         return userRepository.findByEmail(email)
                 .filter(u -> passwordEncoder.matches(password, u.getPassword()));
+    }
+
+    // Devuelve los datos de un paciente según su id
+    public PatientListDetailsResponse getPatientDetails(Long patientId) {
+        Optional<User> userRepo = userRepository.findById((patientId));
+
+        if(userRepo.isPresent()){
+            User user = userRepo.get();
+
+            return new PatientListDetailsResponse(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getPhone()
+            );
+        }
+        return null;
     }
 }

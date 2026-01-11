@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.service;
 
-import com.tfg.proyecto.backend.dto.response.PatientResponse;
+import com.tfg.proyecto.backend.dto.response.PatientListResponse;
 import com.tfg.proyecto.backend.entity_model.Relation;
 import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.RelationRepository;
@@ -79,8 +79,8 @@ public class RelationService {
 
     }
 
-    public List<PatientResponse> getPatientsList(Long caregiverId){
-        List<PatientResponse> patients = new ArrayList<>();
+    public List<PatientListResponse> getPatientsList(Long caregiverId){
+        List<PatientListResponse> patients = new ArrayList<>();
         List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
 
         for(Relation id: matchedRelations){
@@ -91,7 +91,7 @@ public class RelationService {
             if(patientRep.isPresent()){
                 User patient = patientRep.get();
 
-                PatientResponse dto = new PatientResponse(patient.getId(), patient.getUsername());
+                PatientListResponse dto = new PatientListResponse(patient.getId(), patient.getUsername());
 
                 patients.add(dto);
             }
