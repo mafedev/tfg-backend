@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.RelationRequest;
-import com.tfg.proyecto.backend.dto.response.PatientResponse;
+import com.tfg.proyecto.backend.dto.response.PatientListResponse;
 import com.tfg.proyecto.backend.dto.response.RelationResponse;
 import com.tfg.proyecto.backend.entity_model.Relation;
 import com.tfg.proyecto.backend.security.JwtUtil;
@@ -47,7 +47,7 @@ public class RelationController {
 
     // endpoint para pedir la lista de los pacientes
     @GetMapping("/pacients")
-    public List<PatientResponse> getPatients(@RequestHeader("Authorization") String authHeader) {
+    public List<PatientListResponse> getPatients(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         Long caregiverId = Long.parseLong(jwtUtil.extractId(token));
         return relationService.getPatientsList(caregiverId);
