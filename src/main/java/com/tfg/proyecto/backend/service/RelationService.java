@@ -6,7 +6,6 @@ import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,11 +15,14 @@ import java.util.Optional;
 @Service
 public class RelationService {
 
-    @Autowired
-    private RelationRepository relationRepository;
+    // inyección de dependencias
+    private final RelationRepository relationRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public RelationService(RelationRepository relationRepository, UserRepository userRepository) {
+        this.relationRepository = relationRepository;
+        this.userRepository = userRepository;
+    }
 
     // Genera el código que introduce el paciente
     private String generateCode() {
