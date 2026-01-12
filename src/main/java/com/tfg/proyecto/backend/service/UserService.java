@@ -4,7 +4,6 @@ import com.tfg.proyecto.backend.dto.request.SignupRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +12,14 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    // inyección de dependencias
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public User registerUser(SignupRequest request) {
         User user = new User();
