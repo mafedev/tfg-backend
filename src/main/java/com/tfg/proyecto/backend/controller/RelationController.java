@@ -8,6 +8,7 @@ import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.RelationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +33,13 @@ public class RelationController {
 
     // Genera una relación desde el cuidador
     @PostMapping("/generate")
-    public RelationResponse generateRelation(@RequestHeader("Authorization") String authHeader) { // String que contiene el "Bearer + token"
+    public ResponseEntity<?> generateRelation(@RequestHeader("Authorization") String authHeader) { // String que contiene el "Bearer + token"
         Long caregiverId = extractId(authHeader); //obtiene el id
         Relation relation = relationService.createRelation(caregiverId); // crea la relación desde el service
-        return new RelationResponse(relation.getCode()); // Devuelve el código en un RelationResponse
+        if (relation != null) {
+            return ResponseEntity.ok(new RelationResponse(relation.getCode()));  // Devuelve el código en un RelationResponse
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     // Enlaza al paciente con el cuidador por medio del código creado
@@ -61,7 +65,7 @@ public class RelationController {
     }
 
     // Extrae el id del token
-    public Long extractId(String authHeader){
+    public Long extractId(String authHeader) {
         String token = authHeader.substring(7); // extrae el id del token
         return Long.parseLong(jwtUtil.extractId(token));
     }

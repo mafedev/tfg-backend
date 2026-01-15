@@ -34,14 +34,22 @@ public class RelationService {
     }
 
     // Crea la "relación", solo con el id del cuidador y el código
-    // para que luego cuando el paciente lo ingrese se agrega a la fila/relación
+    // para que luego cuando el paciente lo ingrese, se agrega a la fila/relación
     public Relation createRelation(Long caregiverId) {
-        Relation relation = new Relation();
 
-        relation.setCaregiverId(caregiverId);
-        relation.setCode(generateCode());
+        Optional<User> caregiverRep = userRepository.findById(caregiverId);
+        if(caregiverRep.isPresent()){
+            User caregiver = caregiverRep.get();
 
-        return relationRepository.save(relation);
+            if(caregiver.getRole().equals("CUIDADOR")){
+
+                Relation relation = new Relation();
+                relation.setCaregiverId(caregiverId);
+                relation.setCode(generateCode());
+
+                return relationRepository.save(relation);
+            } return null;
+        } return null;
     }
 
     // se llama cuando el paciente ingresa el código
