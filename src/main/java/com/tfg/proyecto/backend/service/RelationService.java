@@ -99,14 +99,12 @@ public class RelationService {
 
         // si el paciente existe, entonces lo agrega a la lista
         if (caregiverResp.isPresent() && caregiverResp.get().getRole().equals("CUIDADOR")) {
-            User caregiver = caregiverResp.get();
-
             List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
 
             for (Relation relation : matchedRelations) {
-                Optional<User> patientOpt = userRepository.findById(relation.getPatientId());
-                if (patientOpt.isPresent()) {
-                    User patient = patientOpt.get();
+                Optional<User> patientOptional = userRepository.findById(relation.getPatientId());
+                if (patientOptional.isPresent()) {
+                    User patient = patientOptional.get();
                     patients.add(new PatientListResponse(patient.getId(), patient.getUsername()));
                 }
             }
