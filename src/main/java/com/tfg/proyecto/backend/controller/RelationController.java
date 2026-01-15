@@ -4,7 +4,6 @@ import com.tfg.proyecto.backend.dto.request.RelationRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListResponse;
 import com.tfg.proyecto.backend.dto.response.RelationResponse;
 import com.tfg.proyecto.backend.entity_model.Relation;
-import com.tfg.proyecto.backend.repository.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.RelationService;
 import org.springframework.http.HttpStatus;
@@ -19,12 +18,10 @@ import java.util.List;
 public class RelationController {
 
     private final RelationService relationService;
-    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public RelationController(RelationService relationService, UserRepository userRepository, JwtUtil jwtUtil) {
+    public RelationController(RelationService relationService, JwtUtil jwtUtil) {
         this.relationService = relationService;
-        this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }
 
