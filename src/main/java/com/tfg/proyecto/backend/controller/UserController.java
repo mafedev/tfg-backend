@@ -53,7 +53,7 @@ public class UserController {
             if (user.getRole().equals("CUIDADOR")) {
                 boolean linked = relationRepository.existsByCaregiverIdAndPatientId(userId, id);
 
-                if (linked) return null;
+                if (!linked) return null;
                 return userService.getPatientDetails(id);
             }
         }
