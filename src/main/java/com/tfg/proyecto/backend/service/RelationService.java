@@ -36,76 +36,80 @@ public class RelationService {
     // Crea la "relación", solo con el id del cuidador y el código
     // para que luego cuando el paciente lo ingrese, se agrega a la fila/relación
     public Relation createRelation(Long caregiverId) {
-
         Optional<User> caregiverRep = userRepository.findById(caregiverId);
-        if(caregiverRep.isPresent()){
+        if (caregiverRep.isPresent()) {
             User caregiver = caregiverRep.get();
 
-            if(caregiver.getRole().equals("CUIDADOR")){
+            if (caregiver.getRole().equals("CUIDADOR")) {
 
                 Relation relation = new Relation();
                 relation.setCaregiverId(caregiverId);
                 relation.setCode(generateCode());
 
                 return relationRepository.save(relation);
-            } return null;
-        } return null;
+            }
+            return null;
+        }
+        return null;
     }
 
     // se llama cuando el paciente ingresa el código
-    public Relation linkPatient(String code, Long patientId) {
+    public boolean linkPatient(String code, Long patientId) {
 
         // Obtiene el user si existe
         Optional<User> userRepositoryResponse = userRepository.findById(patientId);
         if (userRepositoryResponse.isEmpty()) { // si no existe, devuelve null
-            return null;
+            return false;
         }
 
         User user = userRepositoryResponse.get(); // obtiene el user
 
         if (user.getRole().equals("PACIENTE")) { // se asegura que el user sea PACIENTE, para evitar relaciones entre CUIDADORES
-            Optional<Relation> repositoryResponse = this.relationRepository.findByCode(code); // obtiene la relación con ese código si existe
+            Optional<Relation> repositoryResponse = relationRepository.findByCode(code); // obtiene la relación con ese código si existe
 
             if (repositoryResponse.isEmpty()) { // si no existe la relación
-                return null;
+                return false;
             }
             // se asegura que no sea null
             Relation relation = repositoryResponse.get();
 
             if (relation.getPatientId() != null) { // si ya hay alguien registrado
-                return null;
+                return false;
             }
 
             // si la relación entre paciente-cuidador no existe, entonces la guarda
             if (!relationRepository.existsByCaregiverIdAndPatientId(relation.getCaregiverId(), patientId)) {
                 relation.setPatientId(patientId);
-                return relationRepository.save(relation);
+                relationRepository.save(relation);
+                return true;
             } else {
-                return null;
+                return false;
             }
-        } else{
-            return null;
+        } else {
+            return false;
         }
 
     }
 
-    public List<PatientListResponse> getPatientsList(Long caregiverId){
+    public List<PatientListResponse> getPatientsList(Long caregiverId) {
         List<PatientListResponse> patients = new ArrayList<>();
-        List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
 
-        for(Relation id: matchedRelations){
-            // busca el usuario por el id
-            Optional<User> patientRep = userRepository.findById(id.getPatientId());
+        // busca el usuario por el id
+        Optional<User> caregiverResp = userRepository.findById(caregiverId);
 
-            // si el paciente existe, entonces lo agrega a la lista
-            if(patientRep.isPresent()){
-                User patient = patientRep.get();
+        // si el paciente existe, entonces lo agrega a la lista
+        if (caregiverResp.isPresent() && caregiverResp.get().getRole().equals("CUIDADOR")) {
+            User caregiver = caregiverResp.get();
 
-                PatientListResponse dto = new PatientListResponse(patient.getId(), patient.getUsername());
+            List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
 
-                patients.add(dto);
+            for (Relation relation : matchedRelations) {
+                Optional<User> patientOpt = userRepository.findById(relation.getPatientId());
+                if (patientOpt.isPresent()) {
+                    User patient = patientOpt.get();
+                    patients.add(new PatientListResponse(patient.getId(), patient.getUsername()));
+                }
             }
-
         }
         return patients;
     }
