@@ -11,4 +11,5 @@ public interface RelationRepository extends JpaRepository<Relation, Long> { // i
     Optional<Relation> findByCode(String code);
     boolean existsByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
     List<Relation> findByCaregiverIdAndPatientIdIsNotNull(Long caregiverId);
+    Relation findByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
 }

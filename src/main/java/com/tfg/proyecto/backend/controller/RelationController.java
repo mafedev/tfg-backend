@@ -65,4 +65,17 @@ public class RelationController {
         String token = authHeader.substring(7); // extrae el id del token
         return Long.parseLong(jwtUtil.extractId(token));
     }
+
+    // Elimina la relación
+    @DeleteMapping("/{patientId}")
+    public ResponseEntity<String> deleteRelation(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader){
+        Long caregiverId = extractId(authHeader);
+        boolean deleted = relationService.deleteRelation(caregiverId, patientId);
+
+        if(deleted){
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

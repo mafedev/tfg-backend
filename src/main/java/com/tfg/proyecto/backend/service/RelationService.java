@@ -111,4 +111,13 @@ public class RelationService {
         }
         return patients;
     }
+
+    public boolean deleteRelation(Long caregiverId, Long patientId) {
+        Relation relation = relationRepository.findByCaregiverIdAndPatientId(caregiverId, patientId); // busca la relación por el id de ambos
+        if (relation != null) { // si existe
+            relationRepository.delete(relation); // la elimina
+            return true;
+        }
+        return false;
+    }
 }
