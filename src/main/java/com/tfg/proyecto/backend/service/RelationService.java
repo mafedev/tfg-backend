@@ -105,7 +105,7 @@ public class RelationService {
                 Optional<User> patientOptional = userRepository.findById(relation.getPatientId());
                 if (patientOptional.isPresent()) {
                     User patient = patientOptional.get();
-                    patients.add(new PatientListResponse(patient.getId(), patient.getUsername()));
+                    patients.add(new PatientListResponse(patient.getId(), patient.getUsername(), patient.getPhone()));
                 }
             }
         }

@@ -3,10 +3,12 @@ package com.tfg.proyecto.backend.dto.response;
 public class PatientListResponse {
     private Long id;
     private String username;
+    private String phone;
 
-    public PatientListResponse(Long id, String username) {
+    public PatientListResponse(Long id, String username, String phone) {
         this.id = id;
         this.username = username;
+        this.phone = phone;
     }
 
     public Long getId() {
@@ -15,5 +17,9 @@ public class PatientListResponse {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

@@ -48,15 +48,12 @@ public class RelationController {
     }
 
     // Endpoint para pedir la lista de los pacientes de un cuidador
-    @GetMapping("/pacients")
-    public ResponseEntity<?> getPatients(@RequestHeader("Authorization") String authHeader) {
+    @GetMapping("/patients")
+    public ResponseEntity<List<PatientListResponse>> getPatients(@RequestHeader("Authorization") String authHeader) {
         Long caregiverId = extractId(authHeader); // extrae el id del cuidador
 
         List<PatientListResponse> patientsList = relationService.getPatientsList(caregiverId);
 
-        if(patientsList.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(patientsList);
     }
 
@@ -68,11 +65,11 @@ public class RelationController {
 
     // Elimina la relación
     @DeleteMapping("/{patientId}")
-    public ResponseEntity<String> deleteRelation(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<String> deleteRelation(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
         Long caregiverId = extractId(authHeader);
         boolean deleted = relationService.deleteRelation(caregiverId, patientId);
 
-        if(deleted){
+        if (deleted) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
