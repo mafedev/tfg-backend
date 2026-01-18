@@ -105,10 +105,19 @@ public class RelationService {
                 Optional<User> patientOptional = userRepository.findById(relation.getPatientId());
                 if (patientOptional.isPresent()) {
                     User patient = patientOptional.get();
-                    patients.add(new PatientListResponse(patient.getId(), patient.getUsername()));
+                    patients.add(new PatientListResponse(patient.getId(), patient.getUsername(), patient.getPhone()));
                 }
             }
         }
         return patients;
+    }
+
+    public boolean deleteRelation(Long caregiverId, Long patientId) {
+        Relation relation = relationRepository.findByCaregiverIdAndPatientId(caregiverId, patientId); // busca la relación por el id de ambos
+        if (relation != null) { // si existe
+            relationRepository.delete(relation); // la elimina
+            return true;
+        }
+        return false;
     }
 }
