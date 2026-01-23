@@ -24,20 +24,20 @@ public class Routine {
     // Baño y agua
     private LocalTime bathTime;
     private Boolean enableHydration;
-    private Integer hydrationIntervalHours;
+    private Integer waterReminder;
 
     // Constructores
     public Routine() {}
 
     public Routine(User patient, LocalTime breakfastTime, LocalTime lunchTime, LocalTime dinnerTime,
-                   LocalTime bathTime, Boolean enableHydration, Integer hydrationIntervalHours) {
+                   LocalTime bathTime, Boolean enableHydration, Integer waterReminder) {
         this.patient = patient;
         this.breakfastTime = breakfastTime;
         this.lunchTime = lunchTime;
         this.dinnerTime = dinnerTime;
         this.bathTime = bathTime;
         this.enableHydration = enableHydration;
-        this.hydrationIntervalHours = hydrationIntervalHours;
+        this.waterReminder = waterReminder;
     }
 
     // Getters y Setters
@@ -62,6 +62,6 @@ public class Routine {
     public Boolean getEnableHydration() { return enableHydration; }
     public void setEnableHydration(Boolean enableHydration) { this.enableHydration = enableHydration; }
 
-    public Integer getHydrationIntervalHours() { return hydrationIntervalHours; }
-    public void setHydrationIntervalHours(Integer hydrationIntervalHours) { this.hydrationIntervalHours = hydrationIntervalHours; }
+    public Integer getWaterReminder() { return waterReminder; }
+    public void setWaterReminder(Integer waterReminder) { this.waterReminder = waterReminder; }
 }
