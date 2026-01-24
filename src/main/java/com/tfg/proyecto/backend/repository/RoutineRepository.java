@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
-    Optional<Object> findByPatientId(Long patientId);
+    Optional<Routine> findByPatientId(Long patientId);
 }

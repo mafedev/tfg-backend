@@ -7,7 +7,7 @@ public class RoutineRequest {
     private String dinnerTime;
     private String bathTime;
     private Boolean enableHydration;
-    private Integer hydrationIntervalHours;
+    private Integer waterReminder;
 
     // Getters y setters
     public Long getPatientId() { return patientId; }
@@ -28,6 +28,6 @@ public class RoutineRequest {
     public Boolean getEnableHydration() { return enableHydration; }
     public void setEnableHydration(Boolean enableHydration) { this.enableHydration = enableHydration; }
 
-    public Integer getHydrationIntervalHours() { return hydrationIntervalHours; }
-    public void setHydrationIntervalHours(Integer hydrationIntervalHours) { this.hydrationIntervalHours = hydrationIntervalHours; }
+    public Integer getWaterReminder() { return waterReminder; }
+    public void setWaterReminder(Integer waterReminder) { this.waterReminder = waterReminder; }
 }

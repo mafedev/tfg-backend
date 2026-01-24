@@ -5,6 +5,7 @@ import com.tfg.proyecto.backend.entity_model.Routine;
 import com.tfg.proyecto.backend.entity_model.User;
 import com.tfg.proyecto.backend.repository.RoutineRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
+import com.tfg.proyecto.backend.security.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,12 @@ public class RoutineController {
 
     private final RoutineRepository routineRepository;
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    public RoutineController(RoutineRepository routineRepository, UserRepository userRepository) {
+    public RoutineController(RoutineRepository routineRepository, UserRepository userRepository, JwtUtil jwtUtil) {
         this.routineRepository = routineRepository;
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     // Crear una rutina
@@ -43,7 +46,7 @@ public class RoutineController {
                 LocalTime.parse(request.getDinnerTime()),
                 LocalTime.parse(request.getBathTime()),
                 request.getEnableHydration(),
-                request.getHydrationIntervalHours()
+                request.getWaterReminder()
         );
 
         // Guardar en la base de datos
@@ -53,10 +56,22 @@ public class RoutineController {
     }
 
     // Obtener rutina por paciente
-    @GetMapping("/routine/{patientId}")
-    public ResponseEntity<?> obtenerRutina(@PathVariable Long patientId) {
-        return routineRepository.findByPatientId(patientId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/routine")
+    public ResponseEntity<?> obtenerRutina(@RequestHeader("Authorization") String authHeader) {
+        Long patientId = extractId(authHeader);
+        Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
+
+        if (routine != null) {
+            return ResponseEntity.ok(routine);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
+    // Método de extracción
+    private Long extractId(String authHeader) {
+        String token = authHeader.substring(7); // quitar "Bearer "
+        return Long.parseLong(jwtUtil.extractId(token));
     }
 }
