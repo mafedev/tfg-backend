@@ -119,6 +119,24 @@ public class RoutineController {
         return ResponseEntity.ok(routineRepository.save(routine));
     }
 
+    @DeleteMapping("/routine/{patientId}")
+    public ResponseEntity<?> eliminarRutina(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        Long caregiverId = extractId(authHeader);
+
+        boolean allowed = relationRepository
+                .existsByCaregiverIdAndPatientId(caregiverId, patientId);
+
+        if (!allowed) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Routine routine = routineRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+
+        routineRepository.delete(routine);
+        return ResponseEntity.ok().build();
+    }
+
 
     // Método de extracción
     private Long extractId(String authHeader) {
