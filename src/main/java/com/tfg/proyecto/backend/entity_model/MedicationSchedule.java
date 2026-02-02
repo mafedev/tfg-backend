@@ -2,15 +2,17 @@ package com.tfg.proyecto.backend.entity_model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalTime;
+
 @Entity
 @Table(name = "medications_schedules")
-public class MedicationSchedules {
+public class MedicationSchedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "patient_id", nullable = false)
     private User patient;
 
@@ -18,24 +20,27 @@ public class MedicationSchedules {
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 
-    private String hour;
+    @Column(nullable = false)
+    private LocalTime hour;
+
+    @Column(nullable = false)
     private int dose;
-    private String frequency; // podría ser enum
+
+    @Column(nullable = false)
+    private int frequency;
 
     // Constructores
-    public MedicationSchedules() {
+    public MedicationSchedule() {
     }
 
-    public MedicationSchedules(String frequency, int dose, String hour, Medication medication, User patient, Long id) {
-        this.frequency = frequency;
-        this.dose = dose;
-        this.hour = hour;
-        this.medication = medication;
+    public MedicationSchedule(User patient, Medication medication, LocalTime hour, int dose, int frequency) {
         this.patient = patient;
-        this.id = id;
+        this.medication = medication;
+        this.hour = hour;
+        this.dose = dose;
+        this.frequency = frequency;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -60,11 +65,11 @@ public class MedicationSchedules {
         this.medication = medication;
     }
 
-    public String getHour() {
+    public LocalTime getHour() {
         return hour;
     }
 
-    public void setHour(String hour) {
+    public void setHour(LocalTime hour) {
         this.hour = hour;
     }
 
@@ -76,11 +81,11 @@ public class MedicationSchedules {
         this.dose = dose;
     }
 
-    public String getFrequency() {
+    public int getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(String frequency) {
+    public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
 }
