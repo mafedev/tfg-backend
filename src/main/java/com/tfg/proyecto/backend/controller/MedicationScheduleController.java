@@ -10,6 +10,7 @@ import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -51,11 +52,14 @@ public class MedicationScheduleController {
 
         // crea la rutina de medicamento
         MedicationSchedule schedule = new MedicationSchedule(
-                patient,
-                medication,
-                LocalTime.parse(request.getHour()), // lo pasa a LocalTime
+                patientOptional.get(),
+                medicationOptional.get(),
                 request.getDose(),
-                request.getFrecuency()
+                request.getStartDate() != null ? LocalDate.parse(request.getStartDate()) : null,
+                request.getEndDate() != null ? LocalDate.parse(request.getEndDate()) : null,
+                request.getFrequencyHours(),
+                request.getFirstDoseTime() != null ? LocalTime.parse(request.getFirstDoseTime()) : null,
+                request.getDaysOfWeek()
         );
 
         // lo guarda
