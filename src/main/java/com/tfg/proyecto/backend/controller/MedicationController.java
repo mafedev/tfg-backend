@@ -17,10 +17,15 @@ public class MedicationController {
         this.medicationRepository = medicationRepository;
     }
 
-    // crear un nuevo medicamento
+    // -------- Crear medicamento --------
     @PostMapping
     public ResponseEntity<?> create(@RequestBody MedicationRequest request) {
         Medication medication = new Medication(request.getName(), request.getDescription());
         return ResponseEntity.ok(medicationRepository.save(medication));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getMedication(){
+        return ResponseEntity.ok(medicationRepository.findAll());
     }
 }

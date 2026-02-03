@@ -2,7 +2,9 @@ package com.tfg.proyecto.backend.entity_model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "medications_schedules")
@@ -16,31 +18,48 @@ public class MedicationSchedule {
     @JoinColumn(name = "patient_id", nullable = false)
     private User patient;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 
-    @Column(nullable = false)
-    private LocalTime hour;
-
+    // Cantidad por dosis
     @Column(nullable = false)
     private int dose;
 
-    @Column(nullable = false)
-    private int frequency;
+    // Fecha de inicio del tratamiento
+    private LocalDate startDate;
 
-    // Constructores
+    // Fecha de fin del tratamiento
+    private LocalDate endDate;
+
+    // Frecuencia en horas
+    private Integer frequencyHours;
+
+    // Hora de la primera dosis
+    private LocalTime firstDoseTime;
+
+    // Días específicos de la semana
+    @ElementCollection
+    @CollectionTable(name = "medication_schedule_days", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "day_of_week")
+    private List<Integer> daysOfWeek;
+
+    // -------- Constructores --------
     public MedicationSchedule() {
     }
 
-    public MedicationSchedule(User patient, Medication medication, LocalTime hour, int dose, int frequency) {
+    public MedicationSchedule(User patient, Medication medication, int dose, LocalDate startDate, LocalDate endDate, Integer frequencyHours, LocalTime firstDoseTime, List<Integer> daysOfWeek) {
         this.patient = patient;
         this.medication = medication;
-        this.hour = hour;
         this.dose = dose;
-        this.frequency = frequency;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.frequencyHours = frequencyHours;
+        this.firstDoseTime = firstDoseTime;
+        this.daysOfWeek = daysOfWeek;
     }
 
+    // -------- Getters y Setters --------
     public Long getId() {
         return id;
     }
@@ -65,14 +84,6 @@ public class MedicationSchedule {
         this.medication = medication;
     }
 
-    public LocalTime getHour() {
-        return hour;
-    }
-
-    public void setHour(LocalTime hour) {
-        this.hour = hour;
-    }
-
     public int getDose() {
         return dose;
     }
@@ -81,11 +92,43 @@ public class MedicationSchedule {
         this.dose = dose;
     }
 
-    public int getFrequency() {
-        return frequency;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public Integer getFrequencyHours() {
+        return frequencyHours;
+    }
+
+    public void setFrequencyHours(Integer frequencyHours) {
+        this.frequencyHours = frequencyHours;
+    }
+
+    public LocalTime getFirstDoseTime() {
+        return firstDoseTime;
+    }
+
+    public void setFirstDoseTime(LocalTime firstDoseTime) {
+        this.firstDoseTime = firstDoseTime;
+    }
+
+    public List<Integer> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(List<Integer> daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
     }
 }
