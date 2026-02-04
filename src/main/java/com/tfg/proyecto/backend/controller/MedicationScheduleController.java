@@ -46,10 +46,6 @@ public class MedicationScheduleController {
             return ResponseEntity.badRequest().body("Medicamento no encontrado con ID: " + request.getMedicationId());
         }
 
-        // obtiene los datos del paciente y del medicamento
-        User patient = patientOptional.get();
-        Medication medication = medicationOptional.get();
-
         // crea la rutina de medicamento
         MedicationSchedule schedule = new MedicationSchedule(
                 patientOptional.get(),
@@ -68,4 +64,22 @@ public class MedicationScheduleController {
         // devuelve un 200
         return ResponseEntity.ok("Rutina de medicamento creada");
     }
+
+    // ------------ Obtener medicación por paciente ------------
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<?> getSchedulesByPatient(@PathVariable Long patientId) {
+
+        // comprobar que el paciente existe
+        Optional<User> patientOptional = userRepository.findById(patientId);
+        if (patientOptional.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body("Paciente no encontrado con ID: " + patientId);
+        }
+
+        // obtener las rutinas
+        var schedules = scheduleRepository.findByPatientId(patientId);
+
+        return ResponseEntity.ok(schedules);
+    }
+
 }
