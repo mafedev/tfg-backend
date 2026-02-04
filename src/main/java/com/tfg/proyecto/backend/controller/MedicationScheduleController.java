@@ -82,4 +82,32 @@ public class MedicationScheduleController {
         return ResponseEntity.ok(schedules);
     }
 
+    // ------------ Borrar medicación ------------
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
+        scheduleRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Actualizar
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateSchedule(@PathVariable Long id, @RequestBody MedicationScheduleRequest request) {
+        Optional<MedicationSchedule> optionalSchedule = scheduleRepository.findById(id);
+
+        if (optionalSchedule.isEmpty()) {
+            return ResponseEntity.badRequest().body("Rutina de medicamento no encontrada con ID: " + id);
+        }
+
+        MedicationSchedule schedule = optionalSchedule.get();
+
+        schedule.setDose(request.getDose());
+        schedule.setFrequencyHours(request.getFrequencyHours());
+        schedule.setStartDate(request.getStartDate() != null ? LocalDate.parse(request.getStartDate()) : null);
+        schedule.setEndDate(request.getEndDate() != null ? LocalDate.parse(request.getEndDate()) : null);
+        schedule.setFirstDoseTime(request.getFirstDoseTime() != null ? LocalTime.parse(request.getFirstDoseTime()) : null);
+        schedule.setDaysOfWeek(request.getDaysOfWeek());
+
+        scheduleRepository.save(schedule);
+        return ResponseEntity.ok(schedule);
+    }
 }
