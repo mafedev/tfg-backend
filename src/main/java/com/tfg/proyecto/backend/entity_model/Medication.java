@@ -9,7 +9,7 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = true)
@@ -19,8 +19,7 @@ public class Medication {
     public Medication() {
     }
 
-    public Medication(Long id, String name, String description) {
-        this.id = id;
+    public Medication(String name, String description) {
         this.name = name;
         this.description = description;
     }
