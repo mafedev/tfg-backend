@@ -2,6 +2,8 @@ package com.tfg.proyecto.backend.model.medication;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class MedicationTracking {
 
@@ -13,45 +15,33 @@ public class MedicationTracking {
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 
-    private String schedule_time;
-    private String taken_time;
-    private Boolean status; // tomada o pendiente
+    @ManyToOne
+    @JoinColumn(name = "prescription_id", nullable = false)
+    private Prescription prescription;
+
+    // -------------------- Fechas --------------------
+    private LocalDateTime scheduledTime;
+    private LocalDateTime takenTime;
+
+    private Boolean taken;// tomada o pendiente
 
     // Constructores
-    public MedicationTracking() {
-    }
-
-    public MedicationTracking(Long id, Medication medication, String schedule_time, String taken_time, Boolean status) {
+    public MedicationTracking(Long id, Medication medication, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken) {
         this.id = id;
         this.medication = medication;
-        this.schedule_time = schedule_time;
-        this.taken_time = taken_time;
-        this.status = status;
+        this.prescription = prescription;
+        this.scheduledTime = scheduledTime;
+        this.takenTime = takenTime;
+        this.taken = taken;
     }
 
     // Getters y Setters
-    public Boolean getStatus() {
-        return status;
+    public Long getId() {
+        return id;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public String getTaken_time() {
-        return taken_time;
-    }
-
-    public void setTaken_time(String taken_time) {
-        this.taken_time = taken_time;
-    }
-
-    public String getSchedule_time() {
-        return schedule_time;
-    }
-
-    public void setSchedule_time(String schedule_time) {
-        this.schedule_time = schedule_time;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Medication getMedication() {
@@ -62,11 +52,35 @@ public class MedicationTracking {
         this.medication = medication;
     }
 
-    public Long getId() {
-        return id;
+    public Prescription getPrescription() {
+        return prescription;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPrescription(Prescription prescription) {
+        this.prescription = prescription;
+    }
+
+    public LocalDateTime getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(LocalDateTime scheduledTime) {
+        this.scheduledTime = scheduledTime;
+    }
+
+    public LocalDateTime getTakenTime() {
+        return takenTime;
+    }
+
+    public void setTakenTime(LocalDateTime takenTime) {
+        this.takenTime = takenTime;
+    }
+
+    public Boolean getTaken() {
+        return taken;
+    }
+
+    public void setTaken(Boolean taken) {
+        this.taken = taken;
     }
 }

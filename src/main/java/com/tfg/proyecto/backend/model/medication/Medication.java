@@ -1,6 +1,7 @@
 package com.tfg.proyecto.backend.model.medication;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "medications")
@@ -9,19 +10,80 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Nombre del medicamento
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String name;
 
+    // Descripción del medicamento
     @Column(nullable = true)
     private String description;
 
-    // Constructores
-    public Medication() {
+    // De qué tipo es
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MedicationType type;
+
+    /*
+    *
+    * ********** Imagen del medicamento **********
+    *
+    */
+
+    public enum MedicationType {
+        TABLET,
+        COATED_TABLET,
+        EFFERVESCENT_TABLET,
+        SUBLINGUAL_TABLET,
+        CHEWABLE_TABLET,
+        HARD_CAPSULE,
+        SOFT_CAPSULE,
+        DRAGEE,
+        TABLET_FORM,
+        PILL,
+        POWDER,
+        GRANULES,
+        SACHET,
+        SYRUP,
+        ORAL_SOLUTION,
+        ORAL_SUSPENSION,
+        ORAL_EMULSION,
+        ORAL_DROPS,
+        OPHTHALMIC_DROPS,
+        OTIC_DROPS,
+        NASAL_DROPS,
+        INTRAMUSCULAR_INJECTION,
+        INTRAVENOUS_INJECTION,
+        SUBCUTANEOUS_INJECTION,
+        INTRAVENOUS_SOLUTION,
+        AMPOULE,
+        VIAL,
+        CREAM,
+        OINTMENT,
+        GEL,
+        LOTION,
+        FOAM,
+        SPRAY,
+        AEROSOL,
+        INHALER,
+        NEBULIZER,
+        TRANSDERMAL_PATCH,
+        SUPPOSITORY,
+        VAGINAL_OVULE,
+        ENEMA,
+        EYE_DROPS,
+        MOUTHWASH,
+        IMPLANT,
+        LYOPHILIZED
     }
 
-    public Medication(String name, String description) {
+    // Constructores
+
+    public Medication(Long id, String name, String description, MedicationType type) {
+        this.id = id;
         this.name = name;
         this.description = description;
+        this.type = type;
     }
 
     // Getters y Setters
@@ -47,5 +109,13 @@ public class Medication {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public MedicationType getType() {
+        return type;
+    }
+
+    public void setType(MedicationType type) {
+        this.type = type;
     }
 }
