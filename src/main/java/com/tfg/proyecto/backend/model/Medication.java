@@ -1,26 +1,25 @@
-package com.tfg.proyecto.backend.entity_model;
+package com.tfg.proyecto.backend.model;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "allergies")
-public class Allergy {
-
+@Table(name = "medications")
+public class Medication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name; // alimento o sustancia
+    @Column(nullable = false, unique = true)
+    private String name;
 
+    @Column(nullable = true)
     private String description;
 
     // Constructores
-    public Allergy() {
+    public Medication() {
     }
 
-    public Allergy(Long id, String name, String description) {
-        this.id = id;
+    public Medication(String name, String description) {
         this.name = name;
         this.description = description;
     }

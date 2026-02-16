@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.repository;
 
-import com.tfg.proyecto.backend.entity_model.Relation;
+import com.tfg.proyecto.backend.model.Relation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

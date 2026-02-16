@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.entity_model;
+package com.tfg.proyecto.backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalTime;

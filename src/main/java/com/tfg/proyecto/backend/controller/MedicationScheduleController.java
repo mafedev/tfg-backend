@@ -1,9 +1,9 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.MedicationScheduleRequest;
-import com.tfg.proyecto.backend.entity_model.Medication;
-import com.tfg.proyecto.backend.entity_model.MedicationSchedule;
-import com.tfg.proyecto.backend.entity_model.User;
+import com.tfg.proyecto.backend.model.Medication;
+import com.tfg.proyecto.backend.model.MedicationSchedule;
+import com.tfg.proyecto.backend.model.User;
 import com.tfg.proyecto.backend.repository.MedicationRepository;
 import com.tfg.proyecto.backend.repository.MedicationScheduleRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
