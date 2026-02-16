@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.model;
+package com.tfg.proyecto.backend.model.allergies;
 
 import jakarta.persistence.*;
 
@@ -10,14 +10,13 @@ public class Allergy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name; // alimento o sustancia
+    @Column(nullable = false, unique = true, length = 100)
+    private String name;
 
+    @Column(length = 500)
     private String description;
 
     // Constructores
-    public Allergy() {
-    }
 
     public Allergy(Long id, String name, String description) {
         this.id = id;
