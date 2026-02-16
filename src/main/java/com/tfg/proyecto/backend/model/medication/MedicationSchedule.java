@@ -1,5 +1,6 @@
-package com.tfg.proyecto.backend.model;
+package com.tfg.proyecto.backend.model.medication;
 
+import com.tfg.proyecto.backend.model.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

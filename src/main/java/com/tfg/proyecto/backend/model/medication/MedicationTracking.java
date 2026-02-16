@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.model;
+package com.tfg.proyecto.backend.model.medication;
 
 import jakarta.persistence.*;
 
