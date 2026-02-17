@@ -78,13 +78,15 @@ public class Medication {
     }
 
     // Constructores
+    public Medication() {
+    }
 
-    public Medication(Long id, String name, String description, MedicationType type) {
-        this.id = id;
+    public Medication(String name, String description, MedicationType type) {
         this.name = name;
         this.description = description;
         this.type = type;
     }
+
 
     // Getters y Setters
     public Long getId() {
