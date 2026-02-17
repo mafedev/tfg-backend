@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.model.routine;
 
-import com.tfg.proyecto.backend.model.User;
+import com.tfg.proyecto.backend.model.Patient;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
@@ -16,7 +16,7 @@ public class Routine {
     // Paciente relacionado
     @OneToOne
     @JoinColumn(name = "patient_id", nullable = false, unique = true)
-    private User patient;
+    private Patient patient;
 
     // Horarios de comida
     private LocalTime breakfastTime;
@@ -29,16 +29,15 @@ public class Routine {
     private Integer hydrationReminderHours;
 
     // Constructores
-
-    public Routine(Long id, User patient, LocalTime breakfastTime, LocalTime lunchTime, LocalTime dinnerTime, LocalTime bathTime, boolean hydrationEnabled, Integer hydrationReminderHours) {
-        this.id = id;
-        this.patient = patient;
-        this.breakfastTime = breakfastTime;
-        this.lunchTime = lunchTime;
-        this.dinnerTime = dinnerTime;
-        this.bathTime = bathTime;
-        this.hydrationEnabled = hydrationEnabled;
+    public Routine(Integer hydrationReminderHours, boolean hydrationEnabled, LocalTime bathTime, LocalTime dinnerTime, LocalTime lunchTime, LocalTime breakfastTime, Patient patient, Long id) {
         this.hydrationReminderHours = hydrationReminderHours;
+        this.hydrationEnabled = hydrationEnabled;
+        this.bathTime = bathTime;
+        this.dinnerTime = dinnerTime;
+        this.lunchTime = lunchTime;
+        this.breakfastTime = breakfastTime;
+        this.patient = patient;
+        this.id = id;
     }
 
     // Getters y Setters
@@ -50,11 +49,11 @@ public class Routine {
         this.id = id;
     }
 
-    public User getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 
-    public void setPatient(User patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 

@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.model.allergies;
 
-import com.tfg.proyecto.backend.model.User;
+import com.tfg.proyecto.backend.model.Patient;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,7 +19,7 @@ public class PatientAllergy {
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
+    private Patient patient;
 
     @ManyToOne
     @JoinColumn(name = "allergy_id", nullable = false)
@@ -37,7 +37,7 @@ public class PatientAllergy {
     }
 
     // Constructores
-    public PatientAllergy(Long id, User patient, Allergy allergy, AllergySeverity severity) {
+    public PatientAllergy(Long id, Patient patient, Allergy allergy, AllergySeverity severity) {
         this.id = id;
         this.patient = patient;
         this.allergy = allergy;
@@ -53,11 +53,11 @@ public class PatientAllergy {
         this.id = id;
     }
 
-    public User getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 
-    public void setPatient(User patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 
