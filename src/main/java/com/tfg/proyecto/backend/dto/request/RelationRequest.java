@@ -1,25 +1,10 @@
 package com.tfg.proyecto.backend.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class RelationRequest {
-    private Long caregiverId;
-    private Long patientId;
+    @NotBlank
     private String code;
-
-    public Long getCaregiverId() {
-        return caregiverId;
-    }
-
-    public void setCaregiverId(Long caregiverId) {
-        this.caregiverId = caregiverId;
-    }
-
-    public Long getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Long patientId) {
-        this.patientId = patientId;
-    }
 
     public String getCode() {
         return code;

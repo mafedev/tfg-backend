@@ -1,11 +1,16 @@
 package com.tfg.proyecto.backend.dto.request;
 
 import com.tfg.proyecto.backend.model.medication.Medication;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class MedicationRequest {
 
+    @NotBlank
     private String name;
     private String description;
+
+    @NotNull
     private Medication.MedicationType type;
 
     public MedicationRequest() {
