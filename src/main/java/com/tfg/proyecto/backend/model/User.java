@@ -18,8 +18,20 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role; // "PACIENTE" o "CUIDADOR"
+    private Role role;
+
+    /*
+     *
+     * ********** Imagen del medicamento **********
+     *
+     */
+
+    public enum Role {
+        PATIENT,
+        CAREGIVER
+    }
 
     @Column(nullable = false)
     private String phone;
@@ -28,7 +40,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String email, String password, String role, String phone) {
+    public User(Long id, String username, String email, String password, Role role, String phone) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -38,7 +50,6 @@ public class User {
     }
 
     // Getters y setters
-
     public Long getId() {
         return id;
     }
@@ -71,11 +82,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
