@@ -4,35 +4,36 @@ import jakarta.persistence.*;
 
 @Entity
 // Se usa el UniqueConstraint para evitar tener múltiples relaciones entre los mismos usuarios
-@Table(name = "relations", uniqueConstraints = {@UniqueConstraint(columnNames = {"id_caregiver", "id_patient"})})
+@Table(name = "relations", uniqueConstraints = {@UniqueConstraint(columnNames = {"caregiver_id", "patient_id"})})
 public class Relation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_caregiver", nullable = false)
-    private Long caregiverId;
+    @ManyToOne(optional = false)
+    @Column(name = "caregiver_id", nullable = false)
+    private User caregiver;
 
-    @Column(name = "id_patient")
-    private Long patientId;
+
+    @ManyToOne(optional = false)
+    @Column(name = "patient_id", nullable = false)
+    private Patient patient;
 
     @Column(nullable = false, unique = true, length = 10)
     private String code;
 
     // Contructores
-
     public Relation() {
     }
 
-    public Relation(Long id, Long caregiverId, Long patientId, String code) {
+    public Relation(Long id, User caregiver, Patient patient, String code) {
         this.id = id;
-        this.caregiverId = caregiverId;
-        this.patientId = patientId;
+        this.caregiver = caregiver;
+        this.patient = patient;
         this.code = code;
     }
 
     // Getters y Setters
-
     public Long getId() {
         return id;
     }
@@ -41,20 +42,20 @@ public class Relation {
         this.id = id;
     }
 
-    public Long getCaregiverId() {
-        return caregiverId;
+    public User getCaregiver() {
+        return caregiver;
     }
 
-    public void setCaregiverId(Long caregiverId) {
-        this.caregiverId = caregiverId;
+    public void setCaregiver(User caregiver) {
+        this.caregiver = caregiver;
     }
 
-    public Long getPatientId() {
-        return patientId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(Long patientId) {
-        this.patientId = patientId;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public String getCode() {
