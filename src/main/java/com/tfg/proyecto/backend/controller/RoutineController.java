@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.RoutineRequest;
-import com.tfg.proyecto.backend.model.Routine;
+import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.model.User;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.RoutineRepository;
