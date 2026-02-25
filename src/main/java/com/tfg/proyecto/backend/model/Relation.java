@@ -11,12 +11,12 @@ public class Relation {
     private Long id;
 
     @ManyToOne(optional = false)
-    @Column(name = "caregiver_id", nullable = false)
+    @JoinColumn(name = "caregiver_id", nullable = false)
     private User caregiver;
 
 
     @ManyToOne(optional = false)
-    @Column(name = "patient_id", nullable = false)
+    @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
     @Column(nullable = false, unique = true, length = 10)
