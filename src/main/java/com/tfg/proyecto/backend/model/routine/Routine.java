@@ -28,7 +28,10 @@ public class Routine {
     private boolean hydrationEnabled;
     private Integer hydrationReminderHours;
 
-    // Constructores
+    // -------------------- Constructores --------------------
+    public Routine() {
+    }
+
     public Routine(Integer hydrationReminderHours, boolean hydrationEnabled, LocalTime bathTime, LocalTime dinnerTime, LocalTime lunchTime, LocalTime breakfastTime, Patient patient, Long id) {
         this.hydrationReminderHours = hydrationReminderHours;
         this.hydrationEnabled = hydrationEnabled;
@@ -40,7 +43,7 @@ public class Routine {
         this.id = id;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

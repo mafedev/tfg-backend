@@ -16,7 +16,9 @@ public class Allergy {
     @Column(length = 500)
     private String description;
 
-    // Constructores
+    // -------------------- Constructores --------------------
+    public Allergy() {
+    }
 
     public Allergy(Long id, String name, String description) {
         this.id = id;
@@ -24,7 +26,7 @@ public class Allergy {
         this.description = description;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

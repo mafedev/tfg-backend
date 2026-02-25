@@ -5,12 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 // para evitar que el paciente tenga registrada la misma alergía registrada varias veces
-@Table(
-        name = "patients_allergies",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"patient_id", "allergy_id"})
-        }
-)
+@Table(name = "patients_allergies", uniqueConstraints = {@UniqueConstraint(columnNames = {"patient_id", "allergy_id"})})
 public class PatientAllergy {
 
     @Id
@@ -30,13 +25,13 @@ public class PatientAllergy {
     private AllergySeverity severity;
 
     public enum AllergySeverity {
-        LOW,
-        MODERATE,
-        HIGH,
-        CRITICAL
+        LOW, MODERATE, HIGH, CRITICAL
     }
 
-    // Constructores
+    // -------------------- Constructores --------------------
+    public PatientAllergy() {
+    }
+
     public PatientAllergy(Long id, Patient patient, Allergy allergy, AllergySeverity severity) {
         this.id = id;
         this.patient = patient;

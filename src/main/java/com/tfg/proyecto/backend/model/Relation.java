@@ -22,7 +22,7 @@ public class Relation {
     @Column(nullable = false, unique = true, length = 10)
     private String code;
 
-    // Contructores
+    // -------------------- Contructores --------------------
     public Relation() {
     }
 
@@ -33,7 +33,7 @@ public class Relation {
         this.code = code;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

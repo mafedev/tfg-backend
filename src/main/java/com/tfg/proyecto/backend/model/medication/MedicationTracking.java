@@ -25,7 +25,10 @@ public class MedicationTracking {
 
     private Boolean taken;// tomada o pendiente
 
-    // Constructores
+    // -------------------- Constructores --------------------
+    public MedicationTracking() {
+    }
+
     public MedicationTracking(Long id, Medication medication, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken) {
         this.id = id;
         this.medication = medication;
@@ -35,7 +38,7 @@ public class MedicationTracking {
         this.taken = taken;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

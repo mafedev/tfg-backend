@@ -82,7 +82,10 @@ public class Prescription {
         PATCH
     }
 
-    // -------- Constructores --------
+    // -------------------- Constructores --------------------
+    public Prescription() {
+    }
+
     public Prescription(Long id, Patient patient, Medication medication, BigDecimal dose, DoseUnit doseUnit, Integer frequencyHours, List<Integer> daysOfWeek, LocalDate startDate, LocalDate endDate, LocalTime firstDoseTime, String notes, PrescriptionStatus status) {
         this.id = id;
         this.patient = patient;
@@ -98,7 +101,7 @@ public class Prescription {
         this.status = status;
     }
 
-    // -------- Getters y Setters --------
+    // -------------------- Getters y Setters --------------------
 
     public PrescriptionStatus getStatus() {
         return status;

@@ -29,7 +29,10 @@ public class Patient {
         ADVANCED
     }
 
-    // constructores
+    // -------------------- Constructores --------------------
+    public Patient() {
+    }
+
     public Patient(Long id, User patient, DiseaseStage diseaseStage, String notes) {
         this.id = id;
         this.patient = patient;
@@ -37,7 +40,7 @@ public class Patient {
         this.notes = notes;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

@@ -36,7 +36,7 @@ public class User {
     @Column(nullable = false)
     private String phone;
 
-    // Constructores
+    // -------------------- Constructores --------------------
     public User() {
     }
 
@@ -49,7 +49,7 @@ public class User {
         this.phone = phone;
     }
 
-    // Getters y setters
+    // -------------------- Getters y setters --------------------
     public Long getId() {
         return id;
     }

@@ -26,7 +26,9 @@ public class RoutineTracking {
     private boolean bathDone;
     private boolean hydrationDone;
 
-    // Constructores
+    // -------------------- Constructores --------------------
+    public RoutineTracking() {
+    }
 
     public RoutineTracking(Long id, Routine routine, LocalDate date, boolean breakfastDone, boolean lunchDone, boolean dinnerDone, boolean bathDone, boolean hydrationDone) {
         this.id = id;
@@ -39,7 +41,7 @@ public class RoutineTracking {
         this.hydrationDone = hydrationDone;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }
