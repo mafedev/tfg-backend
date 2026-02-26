@@ -1,8 +1,11 @@
 package com.tfg.proyecto.backend.dto.request;
 
+import com.tfg.proyecto.backend.model.medication.Prescription;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -16,18 +19,23 @@ public class PrescriptionRequest {
     private Long medicationId;
 
     @Positive
-    private Double dose;
+    private BigDecimal dose;
+
+    @NotNull
+    private Prescription.DoseUnit doseUnit;
 
     private Integer frequencyHours;
-
     private LocalDate startDate;
     private LocalDate endDate;
-
     private LocalTime firstDoseTime;
+    private List<DayOfWeek> daysOfWeek;
+    private String notes;
 
-    private List<Integer> daysOfWeek;
+    // -------------------- Constructor --------------------
+    public PrescriptionRequest() {
+    }
 
-
+    // -------------------- Getters y Setters --------------------
     public Long getPatientId() {
         return patientId;
     }
@@ -44,12 +52,20 @@ public class PrescriptionRequest {
         this.medicationId = medicationId;
     }
 
-    public Double getDose() {
+    public BigDecimal getDose() {
         return dose;
     }
 
-    public void setDose(Double dose) {
+    public void setDose(BigDecimal dose) {
         this.dose = dose;
+    }
+
+    public Prescription.DoseUnit getDoseUnit() {
+        return doseUnit;
+    }
+
+    public void setDoseUnit(Prescription.DoseUnit doseUnit) {
+        this.doseUnit = doseUnit;
     }
 
     public Integer getFrequencyHours() {
@@ -84,11 +100,19 @@ public class PrescriptionRequest {
         this.firstDoseTime = firstDoseTime;
     }
 
-    public List<Integer> getDaysOfWeek() {
+    public List<DayOfWeek> getDaysOfWeek() {
         return daysOfWeek;
     }
 
-    public void setDaysOfWeek(List<Integer> daysOfWeek) {
+    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
         this.daysOfWeek = daysOfWeek;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
