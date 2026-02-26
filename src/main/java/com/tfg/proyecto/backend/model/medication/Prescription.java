@@ -41,9 +41,9 @@ public class Prescription {
     // Cuáles días la toma
     @ElementCollection(targetClass = DayOfWeek.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "medication_schedule_days", joinColumns = @JoinColumn(name = "schedule_id"))
+    @CollectionTable(name = "medication_schedule_days", joinColumns = @JoinColumn(name = "prescription_id"))
     @Column(name = "day_of_week")
-    private List<Integer> daysOfWeek;
+    private List<DayOfWeek> daysOfWeek;
 
     // -------------------- Fechas --------------------
     // Fecha de inicio del tratamiento
@@ -86,7 +86,7 @@ public class Prescription {
     public Prescription() {
     }
 
-    public Prescription(Long id, Patient patient, Medication medication, BigDecimal dose, DoseUnit doseUnit, Integer frequencyHours, List<Integer> daysOfWeek, LocalDate startDate, LocalDate endDate, LocalTime firstDoseTime, String notes, PrescriptionStatus status) {
+    public Prescription(Long id, Patient patient, Medication medication, BigDecimal dose, DoseUnit doseUnit, Integer frequencyHours, List<DayOfWeek> daysOfWeek, LocalDate startDate, LocalDate endDate, LocalTime firstDoseTime, String notes, PrescriptionStatus status) {
         this.id = id;
         this.patient = patient;
         this.medication = medication;
@@ -102,85 +102,12 @@ public class Prescription {
     }
 
     // -------------------- Getters y Setters --------------------
-
-    public PrescriptionStatus getStatus() {
-        return status;
+    public Long getId() {
+        return id;
     }
 
-    public void setStatus(PrescriptionStatus status) {
-        this.status = status;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public LocalTime getFirstDoseTime() {
-        return firstDoseTime;
-    }
-
-    public void setFirstDoseTime(LocalTime firstDoseTime) {
-        this.firstDoseTime = firstDoseTime;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public List<Integer> getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public void setDaysOfWeek(List<Integer> daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
-    }
-
-    public Integer getFrequencyHours() {
-        return frequencyHours;
-    }
-
-    public void setFrequencyHours(Integer frequencyHours) {
-        this.frequencyHours = frequencyHours;
-    }
-
-    public DoseUnit getDoseUnit() {
-        return doseUnit;
-    }
-
-    public void setDoseUnit(DoseUnit doseUnit) {
-        this.doseUnit = doseUnit;
-    }
-
-    public BigDecimal getDose() {
-        return dose;
-    }
-
-    public void setDose(BigDecimal dose) {
-        this.dose = dose;
-    }
-
-    public Medication getMedication() {
-        return medication;
-    }
-
-    public void setMedication(Medication medication) {
-        this.medication = medication;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Patient getPatient() {
@@ -191,11 +118,83 @@ public class Prescription {
         this.patient = patient;
     }
 
-    public Long getId() {
-        return id;
+    public Medication getMedication() {
+        return medication;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMedication(Medication medication) {
+        this.medication = medication;
+    }
+
+    public BigDecimal getDose() {
+        return dose;
+    }
+
+    public void setDose(BigDecimal dose) {
+        this.dose = dose;
+    }
+
+    public DoseUnit getDoseUnit() {
+        return doseUnit;
+    }
+
+    public void setDoseUnit(DoseUnit doseUnit) {
+        this.doseUnit = doseUnit;
+    }
+
+    public Integer getFrequencyHours() {
+        return frequencyHours;
+    }
+
+    public void setFrequencyHours(Integer frequencyHours) {
+        this.frequencyHours = frequencyHours;
+    }
+
+    public List<DayOfWeek> getDaysOfWeek() {
+        return daysOfWeek;
+    }
+
+    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
+        this.daysOfWeek = daysOfWeek;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalTime getFirstDoseTime() {
+        return firstDoseTime;
+    }
+
+    public void setFirstDoseTime(LocalTime firstDoseTime) {
+        this.firstDoseTime = firstDoseTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public PrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PrescriptionStatus status) {
+        this.status = status;
     }
 }

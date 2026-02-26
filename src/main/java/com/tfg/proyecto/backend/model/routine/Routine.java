@@ -32,15 +32,15 @@ public class Routine {
     public Routine() {
     }
 
-    public Routine(Integer hydrationReminderHours, boolean hydrationEnabled, LocalTime bathTime, LocalTime dinnerTime, LocalTime lunchTime, LocalTime breakfastTime, Patient patient, Long id) {
-        this.hydrationReminderHours = hydrationReminderHours;
-        this.hydrationEnabled = hydrationEnabled;
-        this.bathTime = bathTime;
-        this.dinnerTime = dinnerTime;
-        this.lunchTime = lunchTime;
-        this.breakfastTime = breakfastTime;
-        this.patient = patient;
+    public Routine(Long id, Patient patient, LocalTime breakfastTime, LocalTime lunchTime, LocalTime dinnerTime, LocalTime bathTime, boolean hydrationEnabled, Integer hydrationReminderHours) {
         this.id = id;
+        this.patient = patient;
+        this.breakfastTime = breakfastTime;
+        this.lunchTime = lunchTime;
+        this.dinnerTime = dinnerTime;
+        this.bathTime = bathTime;
+        this.hydrationEnabled = hydrationEnabled;
+        this.hydrationReminderHours = hydrationReminderHours;
     }
 
     // -------------------- Getters y Setters --------------------
