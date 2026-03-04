@@ -17,7 +17,11 @@ public class RoutineRequest {
     private boolean hydrationEnabled;
     private Integer hydrationReminderHours;
 
-    // Getters y setters
+    // -------------------- Constructor --------------------
+    public RoutineRequest() {
+    }
+
+    // -------------------- Getters y Setters --------------------
     public Long getPatientId() {
         return patientId;
     }

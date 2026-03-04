@@ -12,6 +12,11 @@ public class LoginRequest {
     @NotBlank
     private String password;
 
+    // -------------------- Constructor --------------------
+    public LoginRequest() {
+    }
+
+    // -------------------- Getters y Setters --------------------
     public String getEmail() {
         return email;
     }

@@ -6,6 +6,11 @@ public class RelationRequest {
     @NotBlank
     private String code;
 
+    // -------------------- Constructor --------------------
+    public RelationRequest() {
+    }
+
+    // -------------------- Getters y Setters --------------------
     public String getCode() {
         return code;
     }

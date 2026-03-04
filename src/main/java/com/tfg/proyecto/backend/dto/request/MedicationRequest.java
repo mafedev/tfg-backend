@@ -13,15 +13,11 @@ public class MedicationRequest {
     @NotNull
     private Medication.MedicationType type;
 
+    // -------------------- Constructor --------------------
     public MedicationRequest() {
     }
 
-    public MedicationRequest(String name, String description, Medication.MedicationType type) {
-        this.name = name;
-        this.description = description;
-        this.type = type;
-    }
-
+    // -------------------- Getters y Setters --------------------
     public String getName() {
         return name;
     }

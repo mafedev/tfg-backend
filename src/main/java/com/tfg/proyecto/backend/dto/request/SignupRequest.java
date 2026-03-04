@@ -28,11 +28,11 @@ public class SignupRequest {
     @NotBlank(message = "El teléfono es obligatorio")
     private String phone;
 
+    // -------------------- Constructor --------------------
     public SignupRequest() {
     }
 
-    // getters y setters
-
+    // -------------------- Getters y Setters --------------------
     public String getUsername() {
         return username;
     }
