@@ -1,8 +1,6 @@
-package com.tfg.proyecto.backend.model;
+package com.tfg.proyecto.backend.model.users;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "patients")

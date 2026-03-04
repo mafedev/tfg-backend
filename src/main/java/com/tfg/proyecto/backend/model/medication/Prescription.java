@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.model.medication;
 
-import com.tfg.proyecto.backend.model.Patient;
+import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

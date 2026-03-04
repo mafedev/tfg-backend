@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import com.tfg.proyecto.backend.model.User.Role;
+import com.tfg.proyecto.backend.model.users.User.Role;
 
 // Datos que envia el front para crear un usuario
 public class SignupRequest {

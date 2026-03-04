@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.dto.request;
 
-import com.tfg.proyecto.backend.model.Patient;
+import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;

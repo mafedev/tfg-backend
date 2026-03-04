@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.model.allergies;
 
-import com.tfg.proyecto.backend.model.Patient;
+import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.persistence.*;
 
 @Entity

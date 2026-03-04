@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.dto.response;
 
-import com.tfg.proyecto.backend.model.User.Role;
-import com.tfg.proyecto.backend.model.User;
+import com.tfg.proyecto.backend.model.users.User.Role;
+import com.tfg.proyecto.backend.model.users.User;
 
 // DTO para devolver solo la información segura del usuario al iniciar sesión
 public class LoginResponse {

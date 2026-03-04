@@ -1,5 +1,7 @@
 package com.tfg.proyecto.backend.model;
 
+import com.tfg.proyecto.backend.model.users.Patient;
+import com.tfg.proyecto.backend.model.users.User;
 import jakarta.persistence.*;
 
 @Entity

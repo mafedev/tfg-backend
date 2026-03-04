@@ -2,7 +2,7 @@ package com.tfg.proyecto.backend.service;
 
 import com.tfg.proyecto.backend.dto.request.SignupRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
-import com.tfg.proyecto.backend.model.User;
+import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

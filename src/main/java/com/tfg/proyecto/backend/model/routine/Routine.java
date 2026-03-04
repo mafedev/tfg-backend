@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.model.routine;
 
-import com.tfg.proyecto.backend.model.Patient;
+import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;

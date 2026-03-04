@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.RoutineRequest;
-import com.tfg.proyecto.backend.model.Patient;
+import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
@@ -10,8 +10,6 @@ import com.tfg.proyecto.backend.security.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/api")
