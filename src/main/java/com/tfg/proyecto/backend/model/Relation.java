@@ -15,8 +15,8 @@ public class Relation {
     private User caregiver;
 
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "patient_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "patient_id", nullable = true)
     private Patient patient;
 
     @Column(nullable = false, unique = true, length = 10)
