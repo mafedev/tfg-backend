@@ -20,8 +20,6 @@ public class SignupRequest {
     @Size(min = 6, message = "La contraseña debe tener mínimo 6 caracteres")
     private String password;
 
-    @NotBlank(message = "El rol es obligatorio")
-
     @NotNull
     private Role role;
 
