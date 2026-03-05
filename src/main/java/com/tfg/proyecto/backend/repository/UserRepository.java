@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.repository;
 
-import com.tfg.proyecto.backend.entity_model.User;
+import com.tfg.proyecto.backend.model.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

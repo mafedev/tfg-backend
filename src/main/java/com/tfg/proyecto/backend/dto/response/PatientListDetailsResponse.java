@@ -5,12 +5,14 @@ public class PatientListDetailsResponse {
     private String username;
     private String phone;
 
+    // -------------------- Constructor --------------------
     public PatientListDetailsResponse(Long id, String username, String phone) {
         this.id = id;
         this.username = username;
         this.phone = phone;
     }
 
+    // -------------------- Getters --------------------
     public Long getId() {
         return id;
     }
