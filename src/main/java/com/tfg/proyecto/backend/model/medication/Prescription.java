@@ -41,7 +41,7 @@ public class Prescription {
     // Cuáles días la toma
     @ElementCollection(targetClass = DayOfWeek.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "medication_schedule_days", joinColumns = @JoinColumn(name = "prescription_id"))
+    @CollectionTable(name = "prescription_days", joinColumns = @JoinColumn(name = "prescription_id"))
     @Column(name = "day_of_week")
     private List<DayOfWeek> daysOfWeek;
 

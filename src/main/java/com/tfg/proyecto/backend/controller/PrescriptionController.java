@@ -21,9 +21,7 @@ public class PrescriptionController {
     private final MedicationRepository medicationRepository;
     private final PrescriptionRepository prescriptionRepository;
 
-    public PrescriptionController(PatientRepository patientRepository,
-                                  MedicationRepository medicationRepository,
-                                  PrescriptionRepository prescriptionRepository) {
+    public PrescriptionController(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository) {
         this.patientRepository = patientRepository;
         this.medicationRepository = medicationRepository;
         this.prescriptionRepository = prescriptionRepository;
@@ -53,7 +51,7 @@ public class PrescriptionController {
         prescription.setFirstDoseTime(request.getFirstDoseTime());
         prescription.setDaysOfWeek(request.getDaysOfWeek());
         prescription.setNotes(request.getNotes());
-        prescription.setStatus(Prescription.PrescriptionStatus.ACTIVE);
+        prescription.setStatus(request.getStatus());
 
         prescriptionRepository.save(prescription);
 
@@ -62,7 +60,6 @@ public class PrescriptionController {
 
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<?> getByPatient(@PathVariable Long patientId) {
-
         if (!patientRepository.existsById(patientId)) {
             return ResponseEntity.badRequest().body("Paciente no encontrado");
         }
@@ -76,5 +73,47 @@ public class PrescriptionController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         prescriptionRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePrescription(@PathVariable Long id, @RequestBody PrescriptionRequest request) {
+
+        Optional<Prescription> optionalPrescription = prescriptionRepository.findById(id);
+        if (optionalPrescription.isEmpty()) {
+            return ResponseEntity.badRequest().body("Prescripción no encontrada");
+        }
+
+        Prescription prescription = optionalPrescription.get();
+
+        Optional<Patient> patientOptional = patientRepository.findById(request.getPatientId());
+        if (patientOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Paciente no encontrado");
+        }
+
+        Optional<Medication> medicationOptional = medicationRepository.findById(request.getMedicationId());
+        if (medicationOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Medicamento no encontrado");
+        }
+
+        // Actualizamos los campos
+        prescription.setPatient(patientOptional.get());
+        prescription.setMedication(medicationOptional.get());
+        prescription.setDose(request.getDose());
+        prescription.setDoseUnit(request.getDoseUnit());
+        prescription.setFrequencyHours(request.getFrequencyHours());
+        prescription.setStartDate(request.getStartDate());
+        prescription.setEndDate(request.getEndDate());
+        prescription.setFirstDoseTime(request.getFirstDoseTime());
+        prescription.setDaysOfWeek(request.getDaysOfWeek()); // List<DayOfWeek>
+        prescription.setNotes(request.getNotes());
+
+        // Solo actualizar status si viene en la request
+        if (request.getStatus() != null) {
+            prescription.setStatus(request.getStatus());
+        }
+
+        prescriptionRepository.save(prescription);
+
+        return ResponseEntity.ok("Prescripción actualizada");
     }
 }
