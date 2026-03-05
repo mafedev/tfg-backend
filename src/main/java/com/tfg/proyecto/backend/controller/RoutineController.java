@@ -1,17 +1,15 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.RoutineRequest;
+import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.routine.Routine;
-import com.tfg.proyecto.backend.model.User;
+import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.RoutineRepository;
-import com.tfg.proyecto.backend.repository.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/api")
@@ -19,14 +17,14 @@ import java.time.LocalTime;
 public class RoutineController {
 
     private final RoutineRepository routineRepository;
-    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
     private final RelationRepository relationRepository;
     private final JwtUtil jwtUtil;
 
     // Inyección de dependencias
-    public RoutineController(RoutineRepository routineRepository, UserRepository userRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
+    public RoutineController(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
         this.routineRepository = routineRepository;
-        this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
         this.relationRepository = relationRepository;
         this.jwtUtil = jwtUtil;
     }
@@ -50,7 +48,7 @@ public class RoutineController {
         }
 
         // busca al paciente
-        User patient = userRepository.findById(patientId)
+        Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
         // verifica si el paciente ya tiene una rutina guardada
@@ -61,13 +59,14 @@ public class RoutineController {
 
         // Crea la rutina
         Routine routine = new Routine(
+                null,
                 patient,
-                LocalTime.parse(request.getBreakfastTime()),
-                LocalTime.parse(request.getLunchTime()),
-                LocalTime.parse(request.getDinnerTime()),
-                LocalTime.parse(request.getBathTime()),
-                request.getEnableHydration(),
-                request.getWaterReminder()
+                request.getBreakfastTime(),
+                request.getLunchTime(),
+                request.getDinnerTime(),
+                request.getBathTime(),
+                request.isHydrationEnabled(),
+                request.getHydrationReminderHours()
         );
 
         // guarda la rutina y la devuelve con código 200
@@ -127,12 +126,12 @@ public class RoutineController {
                 .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
 
         // Actualiza los datos de la rutina con los nuevos
-        routine.setBreakfastTime(LocalTime.parse(request.getBreakfastTime()));
-        routine.setLunchTime(LocalTime.parse(request.getLunchTime()));
-        routine.setDinnerTime(LocalTime.parse(request.getDinnerTime()));
-        routine.setBathTime(LocalTime.parse(request.getBathTime()));
-        routine.setEnableHydration(request.getEnableHydration());
-        routine.setWaterReminder(request.getWaterReminder());
+        routine.setBreakfastTime(request.getBreakfastTime());
+        routine.setLunchTime(request.getLunchTime());
+        routine.setDinnerTime(request.getDinnerTime());
+        routine.setBathTime(request.getBathTime());
+        routine.setHydrationEnabled(request.isHydrationEnabled());
+        routine.setHydrationReminderHours(request.getHydrationReminderHours());
 
         // guarda la rutina y la devuelve con el código 200
         return ResponseEntity.ok(routineRepository.save(routine));

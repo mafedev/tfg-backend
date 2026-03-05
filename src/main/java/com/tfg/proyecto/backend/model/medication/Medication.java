@@ -25,10 +25,10 @@ public class Medication {
     private MedicationType type;
 
     /*
-    *
-    * ********** Imagen del medicamento **********
-    *
-    */
+     *
+     * ********** Imagen del medicamento **********
+     *
+     */
 
     public enum MedicationType {
         TABLET,
@@ -77,16 +77,17 @@ public class Medication {
         LYOPHILIZED
     }
 
-    // Constructores
+    // -------------------- Constructores --------------------
+    public Medication() {
+    }
 
-    public Medication(Long id, String name, String description, MedicationType type) {
-        this.id = id;
+    public Medication(String name, String description, MedicationType type) {
         this.name = name;
         this.description = description;
         this.type = type;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

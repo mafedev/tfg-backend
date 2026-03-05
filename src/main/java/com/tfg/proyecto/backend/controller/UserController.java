@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
-import com.tfg.proyecto.backend.model.User;
+import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
@@ -50,7 +50,7 @@ public class UserController {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            if (user.getRole().equals("CUIDADOR")) {
+            if (user.getRole() == User.Role.CAREGIVER) {
                 boolean linked = relationRepository.existsByCaregiverIdAndPatientId(userId, id);
 
                 if (!linked) return null;

@@ -1,8 +1,6 @@
-package com.tfg.proyecto.backend.model;
+package com.tfg.proyecto.backend.model.users;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "patients")
@@ -14,8 +12,8 @@ public class Patient {
 
     // Es opcional, ya que puede que el paciente tenga una cuenta, o no
     @OneToOne
-    @JoinColumn(name = "patient_id", unique = true)
-    private User patient;
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 
     @Enumerated(EnumType.STRING)
     private DiseaseStage diseaseStage;
@@ -29,15 +27,18 @@ public class Patient {
         ADVANCED
     }
 
-    // constructores
-    public Patient(Long id, User patient, DiseaseStage diseaseStage, String notes) {
+    // -------------------- Constructores --------------------
+    public Patient() {
+    }
+
+    public Patient(Long id, User user, DiseaseStage diseaseStage, String notes) {
         this.id = id;
-        this.patient = patient;
+        this.user = user;
         this.diseaseStage = diseaseStage;
         this.notes = notes;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }
@@ -46,12 +47,12 @@ public class Patient {
         this.id = id;
     }
 
-    public User getPatient() {
-        return patient;
+    public User getUser() {
+        return user;
     }
 
-    public void setPatient(User patient) {
-        this.patient = patient;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public DiseaseStage getDiseaseStage() {

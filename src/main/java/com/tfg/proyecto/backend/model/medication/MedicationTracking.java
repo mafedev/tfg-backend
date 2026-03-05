@@ -3,6 +3,7 @@ package com.tfg.proyecto.backend.model.medication;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 public class MedicationTracking {
@@ -10,10 +11,6 @@ public class MedicationTracking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "medication_id", nullable = false)
-    private Medication medication;
 
     @ManyToOne
     @JoinColumn(name = "prescription_id", nullable = false)
@@ -25,31 +22,39 @@ public class MedicationTracking {
 
     private Boolean taken;// tomada o pendiente
 
-    // Constructores
-    public MedicationTracking(Long id, Medication medication, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken) {
+    // Hora programada o real de la toma
+    private LocalTime time;
+
+    // Estado de la toma
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TrackingStatus status;
+
+    public enum TrackingStatus {
+        PENDING, TAKEN, SKIPPED
+    }
+
+    // -------------------- Constructores --------------------
+    public MedicationTracking() {
+    }
+
+    public MedicationTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken, LocalTime time, TrackingStatus status) {
         this.id = id;
-        this.medication = medication;
         this.prescription = prescription;
         this.scheduledTime = scheduledTime;
         this.takenTime = takenTime;
         this.taken = taken;
+        this.time = time;
+        this.status = status;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Medication getMedication() {
-        return medication;
-    }
-
-    public void setMedication(Medication medication) {
-        this.medication = medication;
     }
 
     public Prescription getPrescription() {
@@ -82,5 +87,21 @@ public class MedicationTracking {
 
     public void setTaken(Boolean taken) {
         this.taken = taken;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public TrackingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TrackingStatus status) {
+        this.status = status;
     }
 }

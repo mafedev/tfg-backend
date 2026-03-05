@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.model.routine;
 
-import com.tfg.proyecto.backend.model.Patient;
+import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
@@ -28,19 +28,22 @@ public class Routine {
     private boolean hydrationEnabled;
     private Integer hydrationReminderHours;
 
-    // Constructores
-    public Routine(Integer hydrationReminderHours, boolean hydrationEnabled, LocalTime bathTime, LocalTime dinnerTime, LocalTime lunchTime, LocalTime breakfastTime, Patient patient, Long id) {
-        this.hydrationReminderHours = hydrationReminderHours;
-        this.hydrationEnabled = hydrationEnabled;
-        this.bathTime = bathTime;
-        this.dinnerTime = dinnerTime;
-        this.lunchTime = lunchTime;
-        this.breakfastTime = breakfastTime;
-        this.patient = patient;
-        this.id = id;
+    // -------------------- Constructores --------------------
+    public Routine() {
     }
 
-    // Getters y Setters
+    public Routine(Long id, Patient patient, LocalTime breakfastTime, LocalTime lunchTime, LocalTime dinnerTime, LocalTime bathTime, boolean hydrationEnabled, Integer hydrationReminderHours) {
+        this.id = id;
+        this.patient = patient;
+        this.breakfastTime = breakfastTime;
+        this.lunchTime = lunchTime;
+        this.dinnerTime = dinnerTime;
+        this.bathTime = bathTime;
+        this.hydrationEnabled = hydrationEnabled;
+        this.hydrationReminderHours = hydrationReminderHours;
+    }
+
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }

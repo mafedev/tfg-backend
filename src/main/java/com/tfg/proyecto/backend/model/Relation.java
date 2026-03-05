@@ -1,5 +1,7 @@
 package com.tfg.proyecto.backend.model;
 
+import com.tfg.proyecto.backend.model.users.Patient;
+import com.tfg.proyecto.backend.model.users.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,18 +13,18 @@ public class Relation {
     private Long id;
 
     @ManyToOne(optional = false)
-    @Column(name = "caregiver_id", nullable = false)
+    @JoinColumn(name = "caregiver_id", nullable = false)
     private User caregiver;
 
 
-    @ManyToOne(optional = false)
-    @Column(name = "patient_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "patient_id", nullable = true)
     private Patient patient;
 
     @Column(nullable = false, unique = true, length = 10)
     private String code;
 
-    // Contructores
+    // -------------------- Contructores --------------------
     public Relation() {
     }
 
@@ -33,7 +35,7 @@ public class Relation {
         this.code = code;
     }
 
-    // Getters y Setters
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }
