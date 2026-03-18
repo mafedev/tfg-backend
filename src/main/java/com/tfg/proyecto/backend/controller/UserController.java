@@ -1,7 +1,10 @@
 package com.tfg.proyecto.backend.controller;
 
+import com.tfg.proyecto.backend.dto.request.PatientUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
+import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
+import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
@@ -19,12 +22,14 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final RelationRepository relationRepository;
+    private final PatientRepository patientRepository;
     private final JwtUtil jwtUtil;
 
-    public UserController(UserRepository userRepository, UserService userService, RelationRepository relationRepository, JwtUtil jwtUtil) {
+    public UserController(UserRepository userRepository, UserService userService, RelationRepository relationRepository, PatientRepository patientRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.relationRepository = relationRepository;
+        this.patientRepository = patientRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -58,5 +63,38 @@ public class UserController {
             }
         }
         return null;
+    }
+
+    // Permite al cuidador editar los datos del paciente
+    @PutMapping("/patients/{id}")
+    public ResponseEntity<?> updatePatient(
+            @PathVariable Long id,
+            @RequestBody PatientUpdateRequest request,
+            @RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.substring(7);
+        Long userId = Long.parseLong(jwtUtil.extractId(token));
+
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) return ResponseEntity.status(403).build(); // no autorizado
+
+        User currentUser = userOptional.get();
+        if (currentUser.getRole() != User.Role.CAREGIVER) return ResponseEntity.status(403).build();
+
+        Optional<Patient> patientOpt = patientRepository.findById(id);
+        if (patientOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        Patient patient = patientOpt.get();
+        User user = patient.getUser();
+
+        // actualiza los campos
+        if (request.getPhone() != null) user.setPhone(request.getPhone());
+        if (request.getNotes() != null) patient.setNotes(request.getNotes());
+        if (request.getDiseaseStage() != null) patient.setDiseaseStage(request.getDiseaseStage());
+
+        userRepository.save(user);
+        patientRepository.save(patient);
+
+        return ResponseEntity.ok().build();
     }
 }
