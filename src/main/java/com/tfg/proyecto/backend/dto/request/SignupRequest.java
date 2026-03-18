@@ -23,6 +23,9 @@ public class SignupRequest {
     @NotNull
     private Role role;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    private String name;
+
     @NotBlank(message = "El teléfono es obligatorio")
     private String phone;
 
@@ -69,5 +72,13 @@ public class SignupRequest {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

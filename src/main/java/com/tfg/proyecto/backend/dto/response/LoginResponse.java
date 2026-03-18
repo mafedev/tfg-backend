@@ -11,14 +11,6 @@ public class LoginResponse {
     private String phone;
     private String token;
 
-    public LoginResponse(User user, String token) {
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.role = user.getRole();
-        this.phone = user.getPhone();
-        this.token = token;
-    }
-
     // -------------------- Constructor --------------------
     public LoginResponse(String username, String email, Role role, String phone, String token) {
         this.username = username;

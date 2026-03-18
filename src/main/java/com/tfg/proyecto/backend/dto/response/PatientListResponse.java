@@ -1,24 +1,24 @@
 package com.tfg.proyecto.backend.dto.response;
 
 public class PatientListResponse {
-    private Long id;
-    private String username;
+    private Long patientId;
+    private String name;
     private String phone;
 
     // -------------------- Constructor --------------------
-    public PatientListResponse(Long id, String username, String phone) {
-        this.id = id;
-        this.username = username;
+    public PatientListResponse(Long patientId, String name, String phone) {
+        this.patientId = patientId;
+        this.name = name;
         this.phone = phone;
     }
 
     // -------------------- Getters --------------------
-    public Long getId() {
-        return id;
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     public String getPhone() {
