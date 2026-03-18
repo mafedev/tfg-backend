@@ -1,8 +1,10 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.LoginRequest;
-import com.tfg.proyecto.backend.dto.response.LoginResponse;
+import com.tfg.proyecto.backend.dto.response.AccountResponse;
 import com.tfg.proyecto.backend.dto.request.SignupRequest;
+import com.tfg.proyecto.backend.model.users.Caregiver;
+import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.UserService;
@@ -30,23 +32,75 @@ public class AuthController {
     // Endpoint para registrar un usuario nuevo
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
-        User user = userService.registerUser(request); // llama al service para registrar al usuario
-        // Devuleve 201 al crearlo y al usuario creado en JSON
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        User user = userService.registerUser(request);
+
+        String phone = null;
+        String name = null;
+
+        if (user.getRole() == User.Role.PATIENT) {
+            phone = userService.getPatientPhoneByUser(user.getId());
+            name = userService.getPatientNameByUser(user.getId());
+        } else if (user.getRole() == User.Role.CAREGIVER) {
+            phone = userService.getCaregiverPhoneByUser(user.getId());
+            name = userService.getCaregiverNameByUser(user.getId());
+        }
+
+        AccountResponse response = new AccountResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                name,
+                phone
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Endpoint para login
     @PostMapping("/login")
-    // valid activa las validaciones de LoginRequest
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        Optional<User> user = userService.login(request.getEmail(), request.getPassword()); // autentica al usuario
+        Optional<User> userOpt = userService.login(request.getEmail(), request.getPassword());
 
-        // si lo que ingreso es correcto
-        if (user.isPresent()) {
-            String token = jwtUtil.generateToken(user.get().getId()); // genera el token
-            return ResponseEntity.ok(new LoginResponse(user.get(), token)); // devuelve el usuario y el token
-        } else { // sí está mal, devuelve un 401 y no genera el token
+        if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
+
+        User user = userOpt.get();
+        String token = jwtUtil.generateToken(user.getId());
+
+        // Variables para almacenar info del paciente o cuidador
+        String name = null;
+        String phone = null;
+
+        if (user.getRole() == User.Role.PATIENT) {
+            // Obtener el paciente asociado (User -> Patient)
+            Optional<Patient> patientOpt = userService.getPatientByUserId(user.getId());
+            if (patientOpt.isPresent()) {
+                Patient patient = patientOpt.get();
+                name = patient.getName();
+                phone = patient.getPhone();
+            }
+        } else if (user.getRole() == User.Role.CAREGIVER) {
+            // Obtener el cuidador asociado (User -> Caregiver)
+            Optional<Caregiver> caregiverOpt = userService.getCaregiverByUserId(user.getId());
+            if (caregiverOpt.isPresent()) {
+                Caregiver caregiver = caregiverOpt.get();
+                name = caregiver.getName();
+                phone = caregiver.getPhone();
+            }
+        }
+
+        AccountResponse response = new AccountResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                name,
+                phone,
+                token
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

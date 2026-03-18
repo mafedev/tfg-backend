@@ -2,8 +2,10 @@ package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.PatientUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
+import com.tfg.proyecto.backend.model.users.Caregiver;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
+import com.tfg.proyecto.backend.repository.CaregiverRepository;
 import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
@@ -23,13 +25,15 @@ public class UserController {
     private final UserService userService;
     private final RelationRepository relationRepository;
     private final PatientRepository patientRepository;
+    private final CaregiverRepository caregiverRepository;
     private final JwtUtil jwtUtil;
 
-    public UserController(UserRepository userRepository, UserService userService, RelationRepository relationRepository, PatientRepository patientRepository, JwtUtil jwtUtil) {
+    public UserController(UserRepository userRepository, UserService userService, RelationRepository relationRepository, PatientRepository patientRepository, CaregiverRepository caregiverRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.relationRepository = relationRepository;
         this.patientRepository = patientRepository;
+        this.caregiverRepository = caregiverRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -56,8 +60,12 @@ public class UserController {
             User user = userOptional.get();
 
             if (user.getRole() == User.Role.CAREGIVER) {
-                boolean linked = relationRepository.existsByCaregiverIdAndPatientId(userId, id);
+                Optional<Caregiver> caregiverOpt = caregiverRepository.findByUserId(userId);
+                if (caregiverOpt.isEmpty()) return null;
 
+                Caregiver caregiver = caregiverOpt.get();
+
+                boolean linked = relationRepository.existsByCaregiverIdAndPatientId(caregiver.getId(), id);
                 if (!linked) return null;
                 return userService.getPatientDetails(id);
             }
@@ -72,27 +80,44 @@ public class UserController {
             @RequestBody PatientUpdateRequest request,
             @RequestHeader("Authorization") String authHeader) {
 
+        // Extraer userId del token
         String token = authHeader.substring(7);
         Long userId = Long.parseLong(jwtUtil.extractId(token));
 
+        // Obtener usuario autenticado
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) return ResponseEntity.status(403).build(); // no autorizado
+        if (userOptional.isEmpty()) return ResponseEntity.status(403).build();
 
         User currentUser = userOptional.get();
-        if (currentUser.getRole() != User.Role.CAREGIVER) return ResponseEntity.status(403).build();
 
+        // Solo caregivers pueden editar
+        if (currentUser.getRole() != User.Role.CAREGIVER) {
+            return ResponseEntity.status(403).build();
+        }
+
+        // Obtiene el caregiver asociado al user
+        Optional<Caregiver> caregiverOpt = caregiverRepository.findByUserId(userId);
+        if (caregiverOpt.isEmpty()) return ResponseEntity.status(403).build();
+
+        Caregiver caregiver = caregiverOpt.get();
+
+        // Verifica que el caregiver está vinculado al paciente
+        boolean linked = relationRepository.existsByCaregiverIdAndPatientId(caregiver.getId(), id);
+        if (!linked) return ResponseEntity.status(403).build();
+
+        // Obtener paciente
         Optional<Patient> patientOpt = patientRepository.findById(id);
         if (patientOpt.isEmpty()) return ResponseEntity.notFound().build();
 
         Patient patient = patientOpt.get();
-        User user = patient.getUser();
 
-        // actualiza los campos
-        if (request.getPhone() != null) user.setPhone(request.getPhone());
+        // Actualizar campos (solo Patient, ya no User)
+        if (request.getName() != null) patient.setName(request.getName());
+        if (request.getPhone() != null) patient.setPhone(request.getPhone());
         if (request.getNotes() != null) patient.setNotes(request.getNotes());
         if (request.getDiseaseStage() != null) patient.setDiseaseStage(request.getDiseaseStage());
 
-        userRepository.save(user);
+        // lo guarda
         patientRepository.save(patient);
 
         return ResponseEntity.ok().build();
