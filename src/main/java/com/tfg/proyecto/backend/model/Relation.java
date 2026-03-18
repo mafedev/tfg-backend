@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.model;
 
+import com.tfg.proyecto.backend.model.users.Caregiver;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.model.users.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,8 +14,7 @@ public class Relation {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "caregiver_id", nullable = false)
-    private User caregiver;
-
+    private Caregiver caregiver;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "patient_id", nullable = true)
@@ -28,7 +27,7 @@ public class Relation {
     public Relation() {
     }
 
-    public Relation(Long id, User caregiver, Patient patient, String code) {
+    public Relation(Long id, Caregiver caregiver, Patient patient, String code) {
         this.id = id;
         this.caregiver = caregiver;
         this.patient = patient;
@@ -44,11 +43,11 @@ public class Relation {
         this.id = id;
     }
 
-    public User getCaregiver() {
+    public Caregiver getCaregiver() {
         return caregiver;
     }
 
-    public void setCaregiver(User caregiver) {
+    public void setCaregiver(Caregiver caregiver) {
         this.caregiver = caregiver;
     }
 

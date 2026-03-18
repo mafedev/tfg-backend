@@ -10,16 +10,19 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Es opcional, ya que puede que el paciente tenga una cuenta, o no
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
+    private String name;
+    private String phone;
 
     @Enumerated(EnumType.STRING)
     private DiseaseStage diseaseStage;
 
     @Column(length = 1000)
     private String notes;
+
+    // Es opcional, ya que puede que el paciente tenga una cuenta, o no
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
+    private User user;
 
     public enum DiseaseStage {
         EARLY,
@@ -47,12 +50,20 @@ public class Patient {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getName() {
+        return name;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public DiseaseStage getDiseaseStage() {
@@ -69,5 +80,13 @@ public class Patient {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

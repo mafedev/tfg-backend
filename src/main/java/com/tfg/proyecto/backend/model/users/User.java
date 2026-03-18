@@ -22,31 +22,20 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    /*
-     *
-     * ********** Imagen del medicamento **********
-     *
-     */
-
     public enum Role {
         PATIENT,
         CAREGIVER
     }
-
-    @Column(nullable = false)
-    private String phone;
-
     // -------------------- Constructores --------------------
     public User() {
     }
 
-    public User(Long id, String username, String email, String password, Role role, String phone) {
+    public User(Long id, String username, String email, String password, Role role) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.phone = phone;
     }
 
     // -------------------- Getters y setters --------------------
@@ -88,14 +77,6 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }
 
