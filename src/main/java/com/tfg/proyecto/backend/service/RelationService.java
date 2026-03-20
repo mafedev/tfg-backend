@@ -111,24 +111,29 @@ public class RelationService {
         }
     }
 
-    public List<PatientListResponse> getPatientsList(Long caregiverId) {
+    public List<PatientListResponse> getPatientsList(Long userId) {
         List<PatientListResponse> patients = new ArrayList<>();
 
-        Optional<User> caregiverResp = userRepository.findById(caregiverId);
-        if (caregiverResp.isPresent() && caregiverResp.get().getRole() == User.Role.CAREGIVER) {
-            List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
+        Optional<Caregiver> caregiverOpt = caregiverRepository.findByUserId(userId);
 
-            for (Relation relation : matchedRelations) {
-                Patient patient = relation.getPatient();
-                if (patient != null) {
-                    patients.add(new PatientListResponse(
-                            patient.getId(),
-                            patient.getName(),
-                            patient.getPhone()
-                    ));
-                }
+        if (caregiverOpt.isEmpty()) return patients;
+
+        Caregiver caregiver = caregiverOpt.get();
+
+        List<Relation> relations = relationRepository
+                .findByCaregiverIdAndPatientIdIsNotNull(caregiver.getId());
+
+        for (Relation relation : relations) {
+            Patient patient = relation.getPatient();
+            if (patient != null) {
+                patients.add(new PatientListResponse(
+                        patient.getId(),
+                        patient.getName(),
+                        patient.getPhone()
+                ));
             }
         }
+
         return patients;
     }
 
