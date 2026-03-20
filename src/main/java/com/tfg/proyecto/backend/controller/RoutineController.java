@@ -1,8 +1,10 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.RoutineRequest;
+import com.tfg.proyecto.backend.model.users.Caregiver;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.routine.Routine;
+import com.tfg.proyecto.backend.repository.CaregiverRepository;
 import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.RoutineRepository;
@@ -19,57 +21,56 @@ public class RoutineController {
     private final RoutineRepository routineRepository;
     private final PatientRepository patientRepository;
     private final RelationRepository relationRepository;
+    private final CaregiverRepository caregiverRepository;
     private final JwtUtil jwtUtil;
 
     // Inyección de dependencias
-    public RoutineController(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
+    public RoutineController(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, CaregiverRepository caregiverRepository, JwtUtil jwtUtil) {
         this.routineRepository = routineRepository;
         this.patientRepository = patientRepository;
         this.relationRepository = relationRepository;
+        this.caregiverRepository = caregiverRepository;
         this.jwtUtil = jwtUtil;
     }
 
     // ------------- Crear una rutina -------------
     @PostMapping("/routine/{patientId}")
     public ResponseEntity<?> crearRutina(
-            @PathVariable Long patientId, // id del paciente al que se le asigna la rutina
-            @RequestBody RoutineRequest request, // datos de la rutina
-            @RequestHeader("Authorization") String authHeader // token
+            @PathVariable Long patientId,
+            @RequestBody RoutineRequest request,
+            @RequestHeader("Authorization") String authHeader
     ) {
-        // Extrae el id del cuidador desde el token
-        Long caregiverId = extractId(authHeader);
+        Long userId = extractId(authHeader);
 
-        // Verifica que el cuidador tenga relación con el paciente
-        boolean allowed = relationRepository
-                .existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        Caregiver caregiver = caregiverRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Caregiver no encontrado"));
 
-        if (!allowed) { // si no tiene permiso, devuelve 403
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        Long caregiverId = caregiver.getId();
 
-        // busca al paciente
+        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        if (!allowed) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
-        // verifica si el paciente ya tiene una rutina guardada
-        if (routineRepository.findByPatientId(patientId).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("El paciente ya tiene una rutina");
+        if (patient.getUser() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("El paciente no tiene usuario asignado");
         }
 
-        // Crea la rutina
-        Routine routine = new Routine(
-                null,
-                patient,
-                request.getBreakfastTime(),
-                request.getLunchTime(),
-                request.getDinnerTime(),
-                request.getBathTime(),
-                request.isHydrationEnabled(),
-                request.getHydrationReminderHours()
-        );
+        if (routineRepository.findByPatientId(patientId).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El paciente ya tiene una rutina");
+        }
 
-        // guarda la rutina y la devuelve con código 200
+        Routine routine = new Routine();
+        routine.setPatient(patient);
+        routine.setBreakfastTime(request.getBreakfastTime());
+        routine.setLunchTime(request.getLunchTime());
+        routine.setDinnerTime(request.getDinnerTime());
+        routine.setBathTime(request.getBathTime());
+        routine.setHydrationEnabled(request.isHydrationEnabled());
+        routine.setHydrationReminderHours(request.getHydrationReminderHours());
+
         return ResponseEntity.ok(routineRepository.save(routine));
     }
 
@@ -92,7 +93,12 @@ public class RoutineController {
     // ------------- Obtener rutina de un paciente (cuidador) -------------
     @GetMapping("/routine/{patientId}")
     public ResponseEntity<?> obtenerRutinaCuidador(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = extractId(authHeader);
+        Long userId = extractId(authHeader);
+
+        Caregiver caregiver = caregiverRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Caregiver no encontrado"));
+
+        Long caregiverId = caregiver.getId();
 
         // Verifica que el cuidador tenga relación con el paciente
         boolean allowed = relationRepository
@@ -111,7 +117,12 @@ public class RoutineController {
     // ------------- Editar una rutina -------------
     @PutMapping("/routine/{patientId}")
     public ResponseEntity<?> editarRutina(@PathVariable Long patientId, @RequestBody RoutineRequest request, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = extractId(authHeader);
+        Long userId = extractId(authHeader);
+
+        Caregiver caregiver = caregiverRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Caregiver no encontrado"));
+
+        Long caregiverId = caregiver.getId();
 
         // Verifica que el cuidador tenga relación con el paciente
         boolean allowed = relationRepository
@@ -140,7 +151,12 @@ public class RoutineController {
     // ------------- Eliminar una rutina -------------
     @DeleteMapping("/routine/{patientId}")
     public ResponseEntity<?> eliminarRutina(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = extractId(authHeader);
+        Long userId = extractId(authHeader);
+
+        Caregiver caregiver = caregiverRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Caregiver no encontrado"));
+
+        Long caregiverId = caregiver.getId();
 
         // Verifica que el cuidador tenga relación con el paciente
         boolean allowed = relationRepository
