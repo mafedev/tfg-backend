@@ -43,72 +43,65 @@ public class RelationService {
 
     // Crea la "relación", solo con el id del cuidador y el código
     // para que luego cuando el paciente lo ingrese, se agrega a la fila/relación
-    public Relation createRelation(Long caregiverId) {
-        Optional<Caregiver> caregiverOpt = caregiverRepository.findByUserId(caregiverId);
+    public Relation createRelation(Long caregiverUserId) {
+        Optional<Caregiver> caregiverOpt = caregiverRepository.findByUserId(caregiverUserId);
 
+        Caregiver caregiver;
         if (caregiverOpt.isEmpty()) {
-            return null;
+            System.out.println("[DEBUG] Caregiver no encontrado para user_id: " + caregiverUserId + ", creando uno automáticamente...");
+            caregiver = new Caregiver();
+            caregiver.setUser(userRepository.findById(caregiverUserId)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado para crear caregiver")));
+            caregiver.setName("Cuidador " + caregiverUserId);
+            caregiver.setPhone("000000000");
+            caregiver = caregiverRepository.save(caregiver);
+        } else {
+            caregiver = caregiverOpt.get();
+            System.out.println("[DEBUG] Caregiver encontrado: " + caregiver.getName() + ", id=" + caregiver.getId());
         }
-
-        Caregiver caregiver = caregiverOpt.get();
 
         Relation relation = new Relation();
         relation.setCaregiver(caregiver);
         relation.setPatient(null);
         relation.setCode(generateCode());
 
+        System.out.println("[DEBUG] Relation creada con código: " + relation.getCode());
+
         return relationRepository.save(relation);
     }
 
     // se llama cuando el paciente ingresa el código
     public boolean linkPatient(String code, Long patientUserId) {
+        Optional<Patient> patientOpt = patientRepository.findByUserId(patientUserId);
 
-        // Obtiene el user si existe
-        Optional<User> userRepositoryResponse = userRepository.findById(patientUserId);
-        if (userRepositoryResponse.isEmpty()) { // si no existe, devuelve false
-            return false;
-        }
-
-        User user = userRepositoryResponse.get(); // obtiene el user
-
-        // se asegura que el user sea PACIENTE
-        if (user.getRole() == User.Role.PATIENT) {
-
-            // obtiene la relación con ese código si existe
-            Optional<Relation> relationRepositoryResponse = relationRepository.findByCode(code);
-
-            if (relationRepositoryResponse.isEmpty()) { // si no existe la relación
-                return false;
-            }
-
-            Relation relation = relationRepositoryResponse.get(); // obtiene la relación
-
-            // si ya hay un paciente asignado
-            if (relation.getPatient() != null) {
-                return false;
-            }
-
-            // obtiene el paciente asociado al user
-            Optional<Patient> patientRepositoryResponse = patientRepository.findByUserId(user.getId());
-
-            if (patientRepositoryResponse.isEmpty()) { // si no existe el paciente
-                return false;
-            }
-
-            // se asegura que haya un cuidador y no haya paciente aún
-            if (relation.getCaregiver() != null && relation.getPatient() == null) {
-
-                Patient patient = patientRepositoryResponse.get();
-
-                relation.setPatient(patient);
-                relationRepository.save(relation);
-                return true;
-            } else {
-                return false;
-            }
+        Patient patient;
+        if (patientOpt.isEmpty()) {
+            System.out.println("[DEBUG] linkPatient - No se encontró paciente con userId=" + patientUserId);
+            return false; // o aquí podrías crear automáticamente al paciente si quieres
         } else {
+            patient = patientOpt.get();
+            System.out.println("[DEBUG] linkPatient - Paciente encontrado: " + patient.getName() + ", id=" + patient.getId());
+        }
+
+        Optional<Relation> relationOpt = relationRepository.findByCode(code);
+
+        if (relationOpt.isEmpty()) {
+            System.out.println("[ERROR] linkPatient - Código de relación inválido: " + code);
             return false;
         }
+
+        Relation relation = relationOpt.get();
+
+        if (relation.getPatient() != null) {
+            System.out.println("[ERROR] linkPatient - Código ya vinculado a paciente: " + relation.getPatient().getName());
+            return false;
+        }
+
+        relation.setPatient(patient);
+        relationRepository.save(relation);
+        System.out.println("[DEBUG] linkPatient - Paciente " + patient.getName() + " vinculado con éxito al código: " + code);
+
+        return true;
     }
 
     public List<PatientListResponse> getPatientsList(Long userId) {
