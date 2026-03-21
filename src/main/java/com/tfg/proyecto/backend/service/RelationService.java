@@ -4,6 +4,7 @@ import com.tfg.proyecto.backend.dto.response.PatientListResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.model.users.User;
+import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -19,10 +20,12 @@ public class RelationService {
     // inyección de dependencias
     private final RelationRepository relationRepository;
     private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
 
-    public RelationService(RelationRepository relationRepository, UserRepository userRepository) {
+    public RelationService(RelationRepository relationRepository, UserRepository userRepository, PatientRepository patientRepository) {
         this.relationRepository = relationRepository;
         this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
     }
 
     // Genera el código que introduce el paciente
@@ -52,46 +55,38 @@ public class RelationService {
     }
 
     // se llama cuando el paciente ingresa el código
-    public boolean linkPatient(String code, Long patientId) {
-
-        // Obtiene el user si existe
-        Optional<User> userRepositoryResponse = userRepository.findById(patientId);
-        if (userRepositoryResponse.isEmpty()) { // si no existe, devuelve null
+    public boolean linkPatient(String code, Long patientUserId) {
+        // 1. Buscar el paciente en la tabla "patients" usando el userId
+        Optional<Patient> patientOpt = patientRepository.findByUserId(patientUserId);
+        if (patientOpt.isEmpty()) {
+            System.out.println("[ERROR] linkPatient - No se encontró paciente con userId=" + patientUserId);
             return false;
         }
 
-        User user = userRepositoryResponse.get(); // obtiene el user
+        Patient patient = patientOpt.get();
+        System.out.println("[DEBUG] linkPatient - Paciente encontrado: " + patient.getId());
 
-        if (user.getRole() == User.Role.PATIENT) { // se asegura que el user sea PACIENTE, para evitar relaciones entre CUIDADORES
-            Optional<Relation> repositoryResponse = relationRepository.findByCode(code); // obtiene la relación con ese código si existe
-
-            if (repositoryResponse.isEmpty()) { // si no existe la relación
-                return false;
-            }
-            // se asegura que no sea null
-            Relation relation = repositoryResponse.get();
-
-            if (relation.getPatient() != null) { // si ya hay alguien registrado
-                return false;
-            }
-
-            // si la relación entre paciente-cuidador no existe, entonces la guarda
-            if (relation.getCaregiver() != null && (relation.getPatient() == null)) {
-
-                Patient patient = new Patient();
-                patient.setId(user.getId());
-                patient.setUser(user);
-
-                relation.setPatient(patient);
-                relationRepository.save(relation);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+        // 2. Buscar la relación por código
+        Optional<Relation> relationOpt = relationRepository.findByCode(code);
+        if (relationOpt.isEmpty()) {
+            System.out.println("[ERROR] linkPatient - Código inválido: " + code);
             return false;
         }
 
+        Relation relation = relationOpt.get();
+
+        // 3. Verificar si ya está vinculado
+        if (relation.getPatient() != null) {
+            System.out.println("[ERROR] linkPatient - Código ya vinculado a paciente: " + relation.getPatient().getId());
+            return false;
+        }
+
+        // 4. Vincular paciente existente y guardar
+        relation.setPatient(patient);
+        relationRepository.save(relation);
+        System.out.println("[DEBUG] linkPatient - Paciente vinculado con éxito al código: " + code);
+
+        return true;
     }
 
     public List<PatientListResponse> getPatientsList(Long caregiverId) {
