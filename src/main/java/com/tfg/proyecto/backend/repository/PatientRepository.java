@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
 
-    // Busca un paciente por el id del user asociado
     Optional<Patient> findByUserId(Long userId);
 }

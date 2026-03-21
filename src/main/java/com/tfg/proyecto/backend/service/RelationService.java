@@ -55,36 +55,53 @@ public class RelationService {
     }
 
     // se llama cuando el paciente ingresa el código
-    public boolean linkPatient(String code, Long patientUserId) {
-        // 1. Buscar el paciente en la tabla "patients" usando el userId
-        Optional<Patient> patientOpt = patientRepository.findByUserId(patientUserId);
+    public boolean linkPatient(String code, Long userId) {
+
+        // 1. Validar que el usuario existe
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            System.out.println("[ERROR] Usuario no encontrado: " + userId);
+            return false;
+        }
+
+        User user = userOpt.get();
+
+        // 2. Validar que es paciente
+        if (user.getRole() != User.Role.PATIENT) {
+            System.out.println("[ERROR] El usuario no es PATIENT: " + userId);
+            return false;
+        }
+
+        // 3. Buscar el Patient asociado a ese User
+        Optional<Patient> patientOpt = patientRepository.findByUserId(userId);
         if (patientOpt.isEmpty()) {
-            System.out.println("[ERROR] linkPatient - No se encontró paciente con userId=" + patientUserId);
+            System.out.println("[ERROR] No existe Patient para userId=" + userId);
             return false;
         }
 
         Patient patient = patientOpt.get();
-        System.out.println("[DEBUG] linkPatient - Paciente encontrado: " + patient.getId());
+        System.out.println("[DEBUG] Paciente encontrado: " + patient.getId());
 
-        // 2. Buscar la relación por código
+        // 4. Buscar relación por código
         Optional<Relation> relationOpt = relationRepository.findByCode(code);
         if (relationOpt.isEmpty()) {
-            System.out.println("[ERROR] linkPatient - Código inválido: " + code);
+            System.out.println("[ERROR] Código inválido: " + code);
             return false;
         }
 
         Relation relation = relationOpt.get();
 
-        // 3. Verificar si ya está vinculado
+        // 5. Verificar si ya está vinculado
         if (relation.getPatient() != null) {
-            System.out.println("[ERROR] linkPatient - Código ya vinculado a paciente: " + relation.getPatient().getId());
+            System.out.println("[ERROR] Código ya usado por patientId=" + relation.getPatient().getId());
             return false;
         }
 
-        // 4. Vincular paciente existente y guardar
+        // 6. Vincular
         relation.setPatient(patient);
         relationRepository.save(relation);
-        System.out.println("[DEBUG] linkPatient - Paciente vinculado con éxito al código: " + code);
+
+        System.out.println("[DEBUG] Paciente vinculado correctamente");
 
         return true;
     }
