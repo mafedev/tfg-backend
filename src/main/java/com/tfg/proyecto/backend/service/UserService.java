@@ -59,7 +59,7 @@ public class UserService {
             User user = patient.getUser();
 
             return new PatientListDetailsResponse(
-                    user.getId(),
+                    patient.getId(),
                     user.getUsername(),
                     user.getPhone(),
                     patient.getDiseaseStage(),
