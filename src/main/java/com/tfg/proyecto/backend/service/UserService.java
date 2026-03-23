@@ -52,15 +52,18 @@ public class UserService {
 
     // Devuelve los datos de un paciente según su id
     public PatientListDetailsResponse getPatientDetails(Long patientId) {
-        Optional<User> userRepo = userRepository.findById((patientId));
+        Optional<Patient> patientRepo = patientRepository.findById(patientId);
 
-        if(userRepo.isPresent()){
-            User user = userRepo.get();
+        if(patientRepo.isPresent()){
+            Patient patient = patientRepo.get();
+            User user = patient.getUser();
 
             return new PatientListDetailsResponse(
-                    user.getId(),
+                    patient.getId(),
                     user.getUsername(),
-                    user.getPhone()
+                    user.getPhone(),
+                    patient.getDiseaseStage(),
+                    patient.getNotes()
             );
         }
         return null;
