@@ -6,14 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class PatientRequest {
-    private Long userId;
+    private Long userId; // opcional
+
+    private String name;
+    private String phone;
+    private String notes;
 
     @NotNull
     private Patient.DiseaseStage diseaseStage;
-
-    private String clinicalNotes;
-
-    private LocalDate diagnosisDate;
 
     // -------------------- Constructor --------------------
     public PatientRequest() {
@@ -28,6 +28,22 @@ public class PatientRequest {
         this.userId = userId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public Patient.DiseaseStage getDiseaseStage() {
         return diseaseStage;
     }
@@ -36,19 +52,11 @@ public class PatientRequest {
         this.diseaseStage = diseaseStage;
     }
 
-    public String getClinicalNotes() {
-        return clinicalNotes;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setClinicalNotes(String clinicalNotes) {
-        this.clinicalNotes = clinicalNotes;
-    }
-
-    public LocalDate getDiagnosisDate() {
-        return diagnosisDate;
-    }
-
-    public void setDiagnosisDate(LocalDate diagnosisDate) {
-        this.diagnosisDate = diagnosisDate;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

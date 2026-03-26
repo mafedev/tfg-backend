@@ -52,20 +52,26 @@ public class UserService {
 
     // Devuelve los datos de un paciente según su id
     public PatientListDetailsResponse getPatientDetails(Long patientId) {
-        Optional<Patient> patientRepo = patientRepository.findById(patientId);
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
-        if(patientRepo.isPresent()){
-            Patient patient = patientRepo.get();
-            User user = patient.getUser();
+        String username = null;
+        String phone = null;
 
-            return new PatientListDetailsResponse(
-                    patient.getId(),
-                    user.getUsername(),
-                    user.getPhone(),
-                    patient.getDiseaseStage(),
-                    patient.getNotes()
-            );
+        if (patient.getUser() != null) {
+            username = patient.getUser().getUsername();
+            phone = patient.getUser().getPhone();
+        } else {
+            username = patient.getName();
+            phone = patient.getPhone();
         }
-        return null;
+
+        return new PatientListDetailsResponse(
+                patient.getId(),
+                username,
+                phone,
+                patient.getDiseaseStage(),
+                patient.getNotes()
+        );
     }
 }

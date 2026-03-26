@@ -47,22 +47,32 @@ public class UserController {
 
     // Devuelve la info del paciente
     @GetMapping("/patients/{id}")
-    public PatientListDetailsResponse getPatientDetails(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> getPatientDetails(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authHeader) {
+
         String token = authHeader.substring(7);
         Long userId = Long.parseLong(jwtUtil.extractId(token));
 
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            if (user.getRole() == User.Role.CAREGIVER) {
-                boolean linked = relationRepository.existsByCaregiverIdAndPatientId(userId, id);
-
-                if (!linked) return null;
-                return userService.getPatientDetails(id);
-            }
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(403).build();
         }
-        return null;
+
+        User user = userOptional.get();
+
+        if (user.getRole() != User.Role.CAREGIVER) {
+            return ResponseEntity.status(403).build();
+        }
+
+        boolean linked = relationRepository.existsByCaregiverIdAndPatientId(userId, id);
+        if (!linked) {
+            return ResponseEntity.status(403).build();
+        }
+
+        PatientListDetailsResponse response = userService.getPatientDetails(id);
+
+        return ResponseEntity.ok(response);
     }
 
     // Permite al cuidador editar los datos del paciente
@@ -87,12 +97,19 @@ public class UserController {
         Patient patient = patientOpt.get();
         User user = patient.getUser();
 
-        // actualiza los campos
-        if (request.getPhone() != null) user.setPhone(request.getPhone());
-        if (request.getNotes() != null) patient.setNotes(request.getNotes());
+        // ---------- Paciente con cuenta ----------
+        if (user != null) {
+            if (request.getPhone() != null) user.setPhone(request.getPhone());
+            if (request.getNotes() != null) patient.setNotes(request.getNotes());
+        } else { // ---------- Paciente sin cuenta ----------
+            if (request.getPhone() != null) patient.setPhone(request.getPhone());
+            if (request.getNotes() != null) patient.setNotes(request.getNotes());
+            if (request.getName() != null) patient.setName(request.getName());
+        }
+
         if (request.getDiseaseStage() != null) patient.setDiseaseStage(request.getDiseaseStage());
 
-        userRepository.save(user);
+        if (user != null) userRepository.save(user);
         patientRepository.save(patient);
 
         return ResponseEntity.ok().build();

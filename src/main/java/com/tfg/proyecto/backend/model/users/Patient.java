@@ -21,6 +21,12 @@ public class Patient {
     @Column(length = 1000)
     private String notes;
 
+    @Column(length = 100)
+    private String name;
+
+    @Column(length = 20)
+    private String phone;
+
     public enum DiseaseStage {
         EARLY,
         MODERATE,
@@ -69,5 +75,21 @@ public class Patient {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
