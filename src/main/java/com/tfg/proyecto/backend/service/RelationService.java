@@ -119,10 +119,24 @@ public class RelationService {
             for (Relation relation : matchedRelations) {
                 Patient patient = relation.getPatient();
                 if (patient != null) {
+
+                    String name;
+                    String phone;
+
+                    // Si tiene usuario asociado
+                    if (patient.getUser() != null) {
+                        name = patient.getUser().getUsername();
+                        phone = patient.getUser().getPhone();
+                    } else {
+                        // Si NO tiene usuario (paciente sin cuenta)
+                        name = patient.getName();
+                        phone = patient.getPhone();
+                    }
+
                     patients.add(new PatientListResponse(
                             patient.getId(),
-                            patient.getUser().getUsername(),
-                            patient.getUser().getPhone()
+                            name,
+                            phone
                     ));
                 }
             }

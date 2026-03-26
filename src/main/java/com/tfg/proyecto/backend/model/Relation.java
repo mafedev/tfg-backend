@@ -21,7 +21,7 @@ public class Relation {
     @JoinColumn(name = "patient_id", nullable = true)
     private Patient patient;
 
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = true, unique = true, length = 10)
     private String code;
 
     // -------------------- Contructores --------------------
