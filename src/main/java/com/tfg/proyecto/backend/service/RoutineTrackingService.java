@@ -61,4 +61,36 @@ public class RoutineTrackingService {
         tracking.setBreakfastDone(true);
         return trackingRepository.save(tracking);
     }
+
+    // Marca almuerzo
+    @Transactional
+    public RoutineTracking markLunch(Long patientId) {
+        RoutineTracking tracking = getTracking(patientId);
+        tracking.setLunchDone(true);
+        return trackingRepository.save(tracking);
+    }
+
+    // Marca cena
+    @Transactional
+    public RoutineTracking markDinner(Long patientId) {
+        RoutineTracking tracking = getTracking(patientId);
+        tracking.setDinnerDone(true);
+        return trackingRepository.save(tracking);
+    }
+
+    // Marca baño
+    @Transactional
+    public RoutineTracking markBath(Long patientId) {
+        RoutineTracking tracking = getTracking(patientId);
+        tracking.setBathDone(true);
+        return trackingRepository.save(tracking);
+    }
+
+    // Marca hidratación
+    @Transactional
+    public RoutineTracking markHydration(Long patientId) {
+        RoutineTracking tracking = getTracking(patientId);
+        tracking.setHydrationDone(true);
+        return trackingRepository.save(tracking);
+    }
 }

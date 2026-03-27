@@ -53,4 +53,57 @@ public class RoutineTrackingController {
         // si tienen relación marca la casilla como TRUE
         return ResponseEntity.ok(trackingService.markBreakfast(patientId));
     }
+
+    // ------------------- ALMUERZO -------------------
+    @PutMapping("/{patientId}/lunch")
+    public ResponseEntity<?> markLunch(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+
+        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
+
+        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+
+        if (!allowed) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return ResponseEntity.ok(trackingService.markLunch(patientId));
+    }
+
+    // ------------------- CENA -------------------
+    @PutMapping("/{patientId}/dinner")
+    public ResponseEntity<?> markDinner(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
+
+        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+
+        if (!allowed) {
+            return ResponseEntity.status(403).build();
+        }
+        return ResponseEntity.ok(trackingService.markDinner(patientId));
+    }
+
+    // ------------------- BAÑO -------------------
+    @PutMapping("/{patientId}/bath")
+    public ResponseEntity<?> markBath(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
+
+        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        if (!allowed) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return ResponseEntity.ok(trackingService.markBath(patientId));
+    }
+
+    // ------------------- HIDRATACIÓN -------------------
+    @PutMapping("/{patientId}/hydration")
+    public ResponseEntity<?> markHydration(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
+        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        if (!allowed) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return ResponseEntity.ok(trackingService.markHydration(patientId));
+    }
 }
