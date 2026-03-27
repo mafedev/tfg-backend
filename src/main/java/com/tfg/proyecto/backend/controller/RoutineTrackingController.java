@@ -23,14 +23,13 @@ public class RoutineTrackingController {
     // Obtiene o crea la fila del seguimiento del día
     @GetMapping("/today/{patientId}")
     public ResponseEntity<?> getToday(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-
-        Long userId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7))); // extrae el id
-
+        // obtiene el id
+        Long userId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
         // comprueba que tengan una relación
         boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(userId, patientId);
 
         // si no está autorizado, devuelve 403
-        if (!allowed){
+        if (!allowed) {
             return ResponseEntity.status(403).build();
         }
 
@@ -38,9 +37,9 @@ public class RoutineTrackingController {
         return ResponseEntity.ok(trackingService.getTracking(patientId));
     }
 
-    // Marca el desayuno como hecho (TRUE)
-    @PutMapping("/{patientId}/breakfast")
-    public ResponseEntity<?> markBreakfast(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+    // Marca cualquier actividad como hecha (TRUE)
+    @PutMapping("/{patientId}/{item}")
+    public ResponseEntity<?> updateItem(@PathVariable Long patientId, @PathVariable String item, @RequestParam boolean done, @RequestHeader("Authorization") String authHeader) {
         // obtiene el id
         Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
 
@@ -48,62 +47,9 @@ public class RoutineTrackingController {
         boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
 
         if (!allowed) {
-            return ResponseEntity.status(403).build(); // si no tienen una relación, devuelve 403
+            return ResponseEntity.status(403).build();
         }
         // si tienen relación marca la casilla como TRUE
-        return ResponseEntity.ok(trackingService.markBreakfast(patientId));
-    }
-
-    // ------------------- ALMUERZO -------------------
-    @PutMapping("/{patientId}/lunch")
-    public ResponseEntity<?> markLunch(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-
-        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
-
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
-
-        if (!allowed) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return ResponseEntity.ok(trackingService.markLunch(patientId));
-    }
-
-    // ------------------- CENA -------------------
-    @PutMapping("/{patientId}/dinner")
-    public ResponseEntity<?> markDinner(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
-
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
-
-        if (!allowed) {
-            return ResponseEntity.status(403).build();
-        }
-        return ResponseEntity.ok(trackingService.markDinner(patientId));
-    }
-
-    // ------------------- BAÑO -------------------
-    @PutMapping("/{patientId}/bath")
-    public ResponseEntity<?> markBath(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
-
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
-        if (!allowed) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return ResponseEntity.ok(trackingService.markBath(patientId));
-    }
-
-    // ------------------- HIDRATACIÓN -------------------
-    @PutMapping("/{patientId}/hydration")
-    public ResponseEntity<?> markHydration(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = Long.parseLong(jwtUtil.extractId(authHeader.substring(7)));
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
-        if (!allowed) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return ResponseEntity.ok(trackingService.markHydration(patientId));
+        return ResponseEntity.ok(trackingService.updateItem(patientId, item, done));
     }
 }

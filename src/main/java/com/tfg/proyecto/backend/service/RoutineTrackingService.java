@@ -20,12 +20,13 @@ public class RoutineTrackingService {
         this.routineRepository = routineRepository;
     }
 
-    // Obtiene el seguimiento
+    // Obtiene o crea el seguimiento del día
     @Transactional
     public RoutineTracking getTracking(Long patientId) {
-        // busca la rutina
-        Routine routine = routineRepository.findByPatientId(patientId)
-                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+        Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
+        if (routine == null) {
+            return null; // si no hay rutina, devuelve null
+        }
 
         // obtiene fecha actual
         LocalDate today = LocalDate.now();
@@ -54,43 +55,33 @@ public class RoutineTrackingService {
         }
     }
 
-    // Marca el desayuno como hecho con true
+    // Actualiza cualquier actividad de la rutina
     @Transactional
-    public RoutineTracking markBreakfast(Long patientId) {
+    public RoutineTracking updateItem(Long patientId, String item, boolean done) {
         RoutineTracking tracking = getTracking(patientId);
-        tracking.setBreakfastDone(!tracking.isBreakfastDone());
-        return trackingRepository.save(tracking);
-    }
+        if (tracking == null) {
+            return null; // no hace nada si no hay rutina
+        }
 
-    // Marca almuerzo
-    @Transactional
-    public RoutineTracking markLunch(Long patientId) {
-        RoutineTracking tracking = getTracking(patientId);
-        tracking.setLunchDone(!tracking.isLunchDone());
-        return trackingRepository.save(tracking);
-    }
-
-    // Marca cena
-    @Transactional
-    public RoutineTracking markDinner(Long patientId) {
-        RoutineTracking tracking = getTracking(patientId);
-        tracking.setDinnerDone(!tracking.isDinnerDone());
-        return trackingRepository.save(tracking);
-    }
-
-    // Marca baño
-    @Transactional
-    public RoutineTracking markBath(Long patientId) {
-        RoutineTracking tracking = getTracking(patientId);
-        tracking.setBathDone(!tracking.isBathDone());
-        return trackingRepository.save(tracking);
-    }
-
-    // Marca hidratación
-    @Transactional
-    public RoutineTracking markHydration(Long patientId) {
-        RoutineTracking tracking = getTracking(patientId);
-        tracking.setHydrationDone(!tracking.isHydrationDone());
+        switch (item) {
+            case "breakfast":
+                tracking.setBreakfastDone(done);
+                break;
+            case "lunch":
+                tracking.setLunchDone(done);
+                break;
+            case "dinner":
+                tracking.setDinnerDone(done);
+                break;
+            case "bath":
+                tracking.setBathDone(done);
+                break;
+            case "hydration":
+                tracking.setHydrationDone(done);
+                break;
+            default: // si no existe no hace nada
+                break;
+        }
         return trackingRepository.save(tracking);
     }
 }
