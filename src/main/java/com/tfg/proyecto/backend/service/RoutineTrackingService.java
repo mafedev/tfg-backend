@@ -58,7 +58,7 @@ public class RoutineTrackingService {
     @Transactional
     public RoutineTracking markBreakfast(Long patientId) {
         RoutineTracking tracking = getTracking(patientId);
-        tracking.setBreakfastDone(true);
+        tracking.setBreakfastDone(!tracking.isBreakfastDone());
         return trackingRepository.save(tracking);
     }
 
@@ -66,7 +66,7 @@ public class RoutineTrackingService {
     @Transactional
     public RoutineTracking markLunch(Long patientId) {
         RoutineTracking tracking = getTracking(patientId);
-        tracking.setLunchDone(true);
+        tracking.setLunchDone(!tracking.isLunchDone());
         return trackingRepository.save(tracking);
     }
 
@@ -74,7 +74,7 @@ public class RoutineTrackingService {
     @Transactional
     public RoutineTracking markDinner(Long patientId) {
         RoutineTracking tracking = getTracking(patientId);
-        tracking.setDinnerDone(true);
+        tracking.setDinnerDone(!tracking.isDinnerDone());
         return trackingRepository.save(tracking);
     }
 
@@ -82,7 +82,7 @@ public class RoutineTrackingService {
     @Transactional
     public RoutineTracking markBath(Long patientId) {
         RoutineTracking tracking = getTracking(patientId);
-        tracking.setBathDone(true);
+        tracking.setBathDone(!tracking.isBathDone());
         return trackingRepository.save(tracking);
     }
 
@@ -90,7 +90,7 @@ public class RoutineTrackingService {
     @Transactional
     public RoutineTracking markHydration(Long patientId) {
         RoutineTracking tracking = getTracking(patientId);
-        tracking.setHydrationDone(true);
+        tracking.setHydrationDone(!tracking.isHydrationDone());
         return trackingRepository.save(tracking);
     }
 }
