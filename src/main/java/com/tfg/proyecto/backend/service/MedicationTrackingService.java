@@ -25,20 +25,19 @@ public class MedicationTrackingService {
         this.prescriptionRepository = prescriptionRepository;
     }
 
-    // -------------------- Obtiene y genera las tomas del día --------------------
-    // obtiene las tomas del día para un paciente específico, si las tomas no existen, se generan
+    // -------------------- Obtiene y genera las tomas para cualquier día --------------------
+    // obtiene las tomas de cualquier día para un paciente específico, si las tomas no existen, se generan
     @Transactional
-    public List<MedicationTrackingRequest> getTodayTracking(Long patientId) {
-        LocalDate today = LocalDate.now(); // obtiene el día actual
-        LocalDateTime startOfDay = today.atStartOfDay(); // inicio del día
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay(); // final del día
+    public List<MedicationTrackingRequest> getMedicationTracking(Long patientId, LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay(); // inicio del día
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // fin del día
 
         // obtiene las prescripciones del paciente
         List<Prescription> prescriptions = prescriptionRepository
                 .findByPatientIdAndStatus(patientId, Prescription.PrescriptionStatus.ACTIVE)// busca las que están activas
                 .stream()
                 .filter(p -> p.getStartDate() != null && p.getEndDate() != null) // que tengan fechas válidas
-                .filter(p -> !today.isBefore(p.getStartDate()) && !today.isAfter(p.getEndDate())) // y que está dentro del rango
+                .filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())) // y que está dentro del rango
                 .toList(); // lo convierte en una lista
 
         List<MedicationTrackingRequest> result = new ArrayList<>(); // lista que se envía al front
@@ -55,7 +54,7 @@ public class MedicationTrackingService {
 
                 // si la hora de la primera toma existe, la usa, sino la crea en 00:00
                 if (p.getFirstDoseTime() != null) {
-                    doseTime = LocalDateTime.of(today, p.getFirstDoseTime());
+                    doseTime = LocalDateTime.of(date, p.getFirstDoseTime());
                 } else {
                     doseTime = startOfDay;
                 }
@@ -84,7 +83,6 @@ public class MedicationTrackingService {
 
             // se iteran las tomas
             for (MedicationTracking t : trackingList) {
-
                 // solo se envían los datos necesarios
                 times.add(new MedicationTrackingRequest.MedicationTrackingTimeRequest(
                         t.getScheduledTime().toString(), // se pasa la fecha a string

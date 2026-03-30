@@ -4,6 +4,7 @@ import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
 import com.tfg.proyecto.backend.service.MedicationTrackingService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,16 +18,19 @@ public class MedicationTrackingController {
         this.service = service;
     }
 
-    // Obtiene el seguimiento del día
-    @GetMapping("/{patientId}/tracking/today")
-    public List<MedicationTrackingRequest> getTodayTracking(@PathVariable Long patientId) {
-        return service.getTodayTracking(patientId); // obtiene el tracking de un paciente en específico
+    // -------------------- Obtiene el seguimiento por fecha --------------------
+    // recibe el id del paciente y una fecha, devuelve todas las tomas de ese día
+    @GetMapping("/{patientId}/tracking")
+    public List<MedicationTrackingRequest> getMedicationTracking(@PathVariable Long patientId, @RequestParam String date) {
+        LocalDate parsedDate = LocalDate.parse(date); // convierte el string a LocalDate
+        return service.getMedicationTracking(patientId, parsedDate); // llama al service
     }
 
+    // -------------------- Toggle del seguimiento --------------------
     // Cambia entre true y false el estado de la toma del medicamento
     @PutMapping("/tracking/toggle")
-    // recibe el id de la prescripción y la hora
     public void toggleTracking(@RequestParam Long prescriptionId, @RequestParam String scheduledTime) {
-        service.toggleTracking(prescriptionId, LocalDateTime.parse(scheduledTime)); // le pasa la hora como localdatetime
+        LocalDateTime dateTime = LocalDateTime.parse(scheduledTime); // convierte a LocalDateTime
+        service.toggleTracking(prescriptionId, dateTime); // llama al service
     }
 }
