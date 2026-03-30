@@ -22,9 +22,6 @@ public class MedicationTracking {
 
     private Boolean taken;// tomada o pendiente
 
-    // Hora programada o real de la toma
-    private LocalTime time;
-
     // Estado de la toma
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -38,13 +35,12 @@ public class MedicationTracking {
     public MedicationTracking() {
     }
 
-    public MedicationTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken, LocalTime time, TrackingStatus status) {
+    public MedicationTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken, TrackingStatus status) {
         this.id = id;
         this.prescription = prescription;
         this.scheduledTime = scheduledTime;
         this.takenTime = takenTime;
         this.taken = taken;
-        this.time = time;
         this.status = status;
     }
 
@@ -87,14 +83,6 @@ public class MedicationTracking {
 
     public void setTaken(Boolean taken) {
         this.taken = taken;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
     }
 
     public TrackingStatus getStatus() {
