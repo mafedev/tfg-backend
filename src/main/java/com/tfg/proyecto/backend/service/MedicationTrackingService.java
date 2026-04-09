@@ -3,6 +3,7 @@ package com.tfg.proyecto.backend.service;
 import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
 import com.tfg.proyecto.backend.model.medication.MedicationTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
+import com.tfg.proyecto.backend.model.notification.Notification;
 import com.tfg.proyecto.backend.repository.MedicationTrackingRepository;
 import com.tfg.proyecto.backend.repository.PrescriptionRepository;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,12 @@ public class MedicationTrackingService {
 
     private final MedicationTrackingRepository trackingRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final NotificationService notificationService;
 
-    public MedicationTrackingService(MedicationTrackingRepository trackingRepository,
-                                     PrescriptionRepository prescriptionRepository) {
+    public MedicationTrackingService(MedicationTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, NotificationService notificationService) {
         this.trackingRepository = trackingRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.notificationService = notificationService;
     }
 
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
@@ -119,6 +121,11 @@ public class MedicationTrackingService {
             tracking.setStatus(MedicationTracking.TrackingStatus.TAKEN); // lo pasa a TAKEN
             tracking.setTaken(true); // lo pone a true
             tracking.setTakenTime(LocalDateTime.now()); // y guarda la hora actual
+
+            //Crea la notificación solo para el paciente
+            Prescription p = tracking.getPrescription();
+
+            notificationService.createNotification(p.getPatient().getId(), "Medicamento tomado", "Has tomado " + p.getMedication().getName());
         }
         return trackingRepository.save(tracking); // lo guarda
     }
