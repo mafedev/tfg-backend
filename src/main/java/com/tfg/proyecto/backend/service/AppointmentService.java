@@ -1,11 +1,14 @@
 package com.tfg.proyecto.backend.service;
 
 import com.tfg.proyecto.backend.dto.request.AppointmentRequest;
+import com.tfg.proyecto.backend.dto.response.AppointmentResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.AppointmentRepository;
 import com.tfg.proyecto.backend.repository.PatientRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AppointmentService {
@@ -31,5 +34,10 @@ public class AppointmentService {
         appointment.setPatient(patient);
 
         return appointmentRepository.save(appointment);
+    }
+
+    public List<AppointmentResponse> getAppointmentsByPatient(Long patientId) {
+        List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
+        return appointments.stream().map(a -> new AppointmentResponse(a.getId(), a.getTitle(), a.getDescription(), a.getLocation(), a.getDateTime())).toList();
     }
 }
