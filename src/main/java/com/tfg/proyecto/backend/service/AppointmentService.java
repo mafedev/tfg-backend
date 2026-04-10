@@ -51,4 +51,15 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
         return true;
     }
+
+    public Appointment updateAppointment(Long id, AppointmentRequest dto) {
+        Appointment appointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        appointment.setTitle(dto.getTitle());
+        appointment.setDescription(dto.getDescription());
+        appointment.setLocation(dto.getLocation());
+        appointment.setDateTime(dto.getDateTime());
+
+        return appointmentRepository.save(appointment);
+    }
 }

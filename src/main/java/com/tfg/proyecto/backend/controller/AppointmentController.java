@@ -40,4 +40,10 @@ public class AppointmentController {
 
         return ResponseEntity.ok("Cita eliminada");
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody AppointmentRequest dto) {
+        Appointment updated = appointmentService.updateAppointment(id, dto);
+        return ResponseEntity.ok(updated);
+    }
 }
