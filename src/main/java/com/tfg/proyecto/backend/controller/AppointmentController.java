@@ -30,4 +30,14 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentResponse>> getByPatient(@PathVariable Long patientId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsByPatient(patientId));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
+        boolean deleted = appointmentService.deleteAppointment(id);
+        if (!deleted) {
+            return ResponseEntity.status(404).body("Cita no encontrada");
+        }
+
+        return ResponseEntity.ok("Cita eliminada");
+    }
 }

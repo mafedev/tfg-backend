@@ -6,6 +6,7 @@ import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.AppointmentRepository;
 import com.tfg.proyecto.backend.repository.PatientRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +40,15 @@ public class AppointmentService {
     public List<AppointmentResponse> getAppointmentsByPatient(Long patientId) {
         List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
         return appointments.stream().map(a -> new AppointmentResponse(a.getId(), a.getTitle(), a.getDescription(), a.getLocation(), a.getDateTime())).toList();
+    }
+
+    // borrar
+    @Transactional
+    public boolean deleteAppointment(Long id) {
+        if (!appointmentRepository.existsById(id)) {
+            return false;
+        }
+        appointmentRepository.deleteById(id);
+        return true;
     }
 }
