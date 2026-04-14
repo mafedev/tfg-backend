@@ -70,9 +70,21 @@ public class PrescriptionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        prescriptionRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+
+        Optional<Prescription> optional = prescriptionRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Prescripción no encontrada");
+        }
+
+        Prescription prescription = optional.get();
+
+        prescription.setStatus(Prescription.PrescriptionStatus.CANCELLED);
+
+        prescriptionRepository.save(prescription);
+
+        return ResponseEntity.ok("Prescripción cancelada");
     }
 
     @PutMapping("/{id}")
