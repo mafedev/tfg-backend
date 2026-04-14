@@ -43,6 +43,6 @@ public class NotificationService {
 
     // Obtiene todas las notificaciones de un paciente
     public List<com.tfg.proyecto.backend.dto.response.NotificationResponse> getNotifications(Long patientId) {
-        return notificationRepository.findByPatientIdOrderByCreatedAtDesc(patientId).stream().map(n -> new com.tfg.proyecto.backend.dto.response.NotificationResponse(n.getId(), n.getTitle(), n.getMessage(), n.isRead(), n.getCreatedAt())).collect(Collectors.toList());
+        return notificationRepository.findByPatientIdOrderByCreatedAtDesc(patientId).stream().map(n -> new com.tfg.proyecto.backend.dto.response.NotificationResponse(n.getId(), n.getTitle(), n.getMessage(), n.getCreatedAt())).collect(Collectors.toList());
     }
 }
