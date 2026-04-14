@@ -5,11 +5,13 @@ import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.medication.Medication;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.repository.MedicationRepository;
+import com.tfg.proyecto.backend.repository.MedicationTrackingRepository;
 import com.tfg.proyecto.backend.repository.PatientRepository;
 import com.tfg.proyecto.backend.repository.PrescriptionRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -20,11 +22,13 @@ public class PrescriptionController {
     private final PatientRepository patientRepository;
     private final MedicationRepository medicationRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final MedicationTrackingRepository medicationTrackingRepository;
 
-    public PrescriptionController(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository) {
+    public PrescriptionController(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository, MedicationTrackingRepository medicationTrackingRepository) {
         this.patientRepository = patientRepository;
         this.medicationRepository = medicationRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.medicationTrackingRepository = medicationTrackingRepository;
     }
 
     @PostMapping
@@ -125,6 +129,7 @@ public class PrescriptionController {
         }
 
         prescriptionRepository.save(prescription);
+        medicationTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
 
         return ResponseEntity.ok("Prescripción actualizada");
     }
