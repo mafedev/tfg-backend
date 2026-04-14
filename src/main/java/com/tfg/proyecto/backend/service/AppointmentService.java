@@ -39,7 +39,7 @@ public class AppointmentService {
 
     public List<AppointmentResponse> getAppointmentsByPatient(Long patientId) {
         List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
-        return appointments.stream().map(a -> new AppointmentResponse(a.getId(), a.getTitle(), a.getDescription(), a.getLocation(), a.getDateTime())).toList();
+        return appointments.stream().map(a -> new AppointmentResponse(a.getId(), a.getTitle(), a.getDescription(), a.getLocation(), a.getDateTime(), a.getStatus().name())).toList();
     }
 
     // borrar
@@ -61,5 +61,11 @@ public class AppointmentService {
         appointment.setDateTime(dto.getDateTime());
 
         return appointmentRepository.save(appointment);
+    }
+
+    public void updateStatus(Long appointmentId, Appointment.AppointmentStatus status) {
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+        appointment.setStatus(status);
+        appointmentRepository.save(appointment);
     }
 }

@@ -9,6 +9,7 @@ public class AppointmentRequest {
     private String location;
     private LocalDateTime dateTime;
     private Long patientId;
+    private String status;
 
     public AppointmentRequest() {
     }
@@ -31,5 +32,9 @@ public class AppointmentRequest {
 
     public Long getPatientId() {
         return patientId;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

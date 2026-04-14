@@ -22,16 +22,24 @@ public class Appointment {
     private String location;
     private LocalDateTime dateTime;
 
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status = AppointmentStatus.PENDING;
+
+    public enum AppointmentStatus {
+        PENDING, ATTENDED, MISSED, CANCELLED
+    }
+
     public Appointment() {
     }
 
-    public Appointment(Long id, Patient patient, String title, String description, String location, LocalDateTime dateTime) {
+    public Appointment(Long id, Patient patient, String title, String description, String location, LocalDateTime dateTime, AppointmentStatus status) {
         this.id = id;
         this.patient = patient;
         this.title = title;
         this.description = description;
         this.location = location;
         this.dateTime = dateTime;
+        this.status = status;
     }
 
     public Long getId() {
@@ -80,5 +88,13 @@ public class Appointment {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public AppointmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AppointmentStatus status) {
+        this.status = status;
     }
 }
