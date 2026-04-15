@@ -3,7 +3,6 @@ package com.tfg.proyecto.backend.service;
 import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
 import com.tfg.proyecto.backend.model.medication.MedicationTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
-import com.tfg.proyecto.backend.model.notification.Notification;
 import com.tfg.proyecto.backend.repository.MedicationTrackingRepository;
 import com.tfg.proyecto.backend.repository.PrescriptionRepository;
 import org.springframework.stereotype.Service;
@@ -51,15 +50,20 @@ public class MedicationTrackingService {
 
             // si no hay tomas, se generan
             if (trackingList.isEmpty()) {
+                boolean isFirstDay = date.equals(p.getStartDate()); // solo el primer día usa la hora de primera dosis
 
                 LocalDateTime doseTime;
 
-                // si la hora de la primera toma existe, la usa, sino la crea en 00:00
-                if (p.getFirstDoseTime() != null) {
+                // si es el primer día usa la hora de la primera dosis
+                if (isFirstDay && p.getFirstDoseTime() != null) {
                     doseTime = LocalDateTime.of(date, p.getFirstDoseTime());
                 } else {
+                    // días siguientes empiezan desde el inicio del día
                     doseTime = startOfDay;
                 }
+
+                // frecuencia de toma si no existe, se asume cada 24h por seguridad
+                int frequency = p.getFrequencyHours() != null ? p.getFrequencyHours() : 24;
 
                 // -------------------- Generación de las tomas --------------------
                 // mientras la hora de la toma no este después del final del día
@@ -71,8 +75,11 @@ public class MedicationTrackingService {
                     t.setTaken(false); // por defecto está sin tomar
                     trackingRepository.save(t); // la guarda
 
-                    // Empieza a sumar las horas dependiendo de la frecuencia
-                    doseTime = doseTime.plusHours(p.getFrequencyHours());
+                    // siguiente toma según frecuencia
+                    doseTime = doseTime.plusHours(frequency);
+
+                    // seguridad básica para evitar bucles infinitos si la frecuencia es inválida
+                    if (frequency <= 0) break;
                 }
 
                 // vuelve a consultar las tomas creadas
