@@ -53,7 +53,6 @@ public class PrescriptionController {
         prescription.setEndDate(request.getEndDate());
         prescription.setFrequencyHours(request.getFrequencyHours());
         prescription.setFirstDoseTime(request.getFirstDoseTime());
-        prescription.setDaysOfWeek(request.getDaysOfWeek());
         prescription.setNotes(request.getNotes());
         prescription.setStatus(request.getStatus());
 
@@ -120,7 +119,6 @@ public class PrescriptionController {
         prescription.setStartDate(request.getStartDate());
         prescription.setEndDate(request.getEndDate());
         prescription.setFirstDoseTime(request.getFirstDoseTime());
-        prescription.setDaysOfWeek(request.getDaysOfWeek()); // List<DayOfWeek>
         prescription.setNotes(request.getNotes());
 
         // Solo actualizar status si viene en la request
