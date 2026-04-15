@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.repository.medication;
 
-import com.tfg.proyecto.backend.model.medication.MedicationTracking;
+import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface MedicationTrackingRepository extends JpaRepository<MedicationTracking, Long> {
+public interface MedicationTrackingRepository extends JpaRepository<PrescriptionTracking, Long> {
 
     // busca los registros de una prescripción en un rango de fechas
-    List<MedicationTracking> findByPrescriptionIdAndScheduledTimeBetween(
+    List<PrescriptionTracking> findByPrescriptionIdAndScheduledTimeBetween(
             Long prescriptionId, // id de la prescripción
             LocalDateTime start, // fecha de inicio
             LocalDateTime end // fecha de fin
     );
 
     // Busca un registro en específico por hora e id
-    Optional<MedicationTracking> findByPrescription_IdAndScheduledTime(Long prescriptionId, LocalDateTime scheduledTime);
+    Optional<PrescriptionTracking> findByPrescription_IdAndScheduledTime(Long prescriptionId, LocalDateTime scheduledTime);
 
     @Modifying
     @Transactional

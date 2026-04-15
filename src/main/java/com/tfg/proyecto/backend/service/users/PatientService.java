@@ -2,7 +2,7 @@ package com.tfg.proyecto.backend.service.users;
 
 import com.tfg.proyecto.backend.dto.request.medication.MedicationTrackingRequest;
 import com.tfg.proyecto.backend.dto.request.patient.PatientRequest;
-import com.tfg.proyecto.backend.model.medication.MedicationTracking;
+import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
@@ -59,7 +59,7 @@ public class PatientService {
         // itera las prescripciones
         for (Prescription p : prescriptions) {
             // busca las tomas generadas para ese día
-            List<MedicationTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
+            List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
 
             // Genera las tomas si no existen
             if (trackingList.isEmpty()) {
@@ -67,10 +67,10 @@ public class PatientService {
 
                 // las genera hasta el final del día
                 while (doseTime.isBefore(endOfDay)) {
-                    MedicationTracking t = new MedicationTracking();
+                    PrescriptionTracking t = new PrescriptionTracking();
                     t.setPrescription(p);
                     t.setScheduledTime(doseTime);
-                    t.setStatus(MedicationTracking.TrackingStatus.PENDING);
+                    t.setStatus(PrescriptionTracking.TrackingStatus.PENDING);
                     t.setTaken(false);
                     trackingRepository.save(t);
                     doseTime = doseTime.plusHours(p.getFrequencyHours());
