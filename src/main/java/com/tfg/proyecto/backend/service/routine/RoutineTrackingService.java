@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.routine;
 
 import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.model.routine.RoutineTracking;

@@ -9,7 +9,7 @@ import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
-import com.tfg.proyecto.backend.service.PatientService;
+import com.tfg.proyecto.backend.service.users.PatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

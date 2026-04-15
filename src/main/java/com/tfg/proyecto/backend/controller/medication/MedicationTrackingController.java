@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller.medication;
 
 import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
-import com.tfg.proyecto.backend.service.MedicationTrackingService;
+import com.tfg.proyecto.backend.service.medication.MedicationTrackingService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;

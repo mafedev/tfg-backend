@@ -2,7 +2,7 @@ package com.tfg.proyecto.backend.controller.routine;
 
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
-import com.tfg.proyecto.backend.service.RoutineTrackingService;
+import com.tfg.proyecto.backend.service.routine.RoutineTrackingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

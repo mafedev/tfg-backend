@@ -1,10 +1,11 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.medication;
 
 import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
 import com.tfg.proyecto.backend.model.medication.MedicationTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
+import com.tfg.proyecto.backend.service.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

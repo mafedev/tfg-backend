@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.users;
 
 import com.tfg.proyecto.backend.dto.request.SignupRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
