@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller;
 
 import com.tfg.proyecto.backend.dto.request.RelationRequest;
-import com.tfg.proyecto.backend.dto.response.PatientListResponse;
+import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.dto.response.RelationResponse;
 import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.security.JwtUtil;

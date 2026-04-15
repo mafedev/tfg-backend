@@ -5,7 +5,7 @@ import com.tfg.proyecto.backend.dto.response.AppointmentResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.AppointmentRepository;
-import com.tfg.proyecto.backend.repository.PatientRepository;
+import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
