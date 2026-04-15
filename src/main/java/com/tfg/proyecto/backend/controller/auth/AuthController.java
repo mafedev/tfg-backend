@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.controller;
+package com.tfg.proyecto.backend.controller.auth;
 
 import com.tfg.proyecto.backend.dto.request.LoginRequest;
 import com.tfg.proyecto.backend.dto.response.LoginResponse;

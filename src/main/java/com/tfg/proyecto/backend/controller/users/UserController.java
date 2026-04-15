@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.controller;
+package com.tfg.proyecto.backend.controller.users;
 
 import com.tfg.proyecto.backend.dto.request.PatientUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;

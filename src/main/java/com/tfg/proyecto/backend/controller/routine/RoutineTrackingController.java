@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.controller;
+package com.tfg.proyecto.backend.controller.routine;
 
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;

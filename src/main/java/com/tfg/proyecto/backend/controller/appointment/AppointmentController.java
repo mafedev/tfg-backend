@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.controller;
+package com.tfg.proyecto.backend.controller.appointment;
 
 import com.tfg.proyecto.backend.dto.request.AppointmentRequest;
 import com.tfg.proyecto.backend.dto.response.AppointmentResponse;
