@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.response;
+package com.tfg.proyecto.backend.dto.response.auth;
 
 import com.tfg.proyecto.backend.model.users.User.Role;
 import com.tfg.proyecto.backend.model.users.User;

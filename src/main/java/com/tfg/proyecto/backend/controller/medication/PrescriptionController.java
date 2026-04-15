@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.controller.medication;
 
-import com.tfg.proyecto.backend.dto.request.PrescriptionRequest;
+import com.tfg.proyecto.backend.dto.request.medication.PrescriptionRequest;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.medication.Medication;
 import com.tfg.proyecto.backend.model.medication.Prescription;

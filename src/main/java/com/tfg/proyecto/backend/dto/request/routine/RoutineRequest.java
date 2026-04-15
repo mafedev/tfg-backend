@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.request;
+package com.tfg.proyecto.backend.dto.request.routine;
 
 import jakarta.validation.constraints.NotNull;
 

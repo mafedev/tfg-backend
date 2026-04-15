@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.request;
+package com.tfg.proyecto.backend.dto.request.medication;
 
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import jakarta.validation.constraints.NotNull;

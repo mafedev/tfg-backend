@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.controller.users;
 
-import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
-import com.tfg.proyecto.backend.dto.request.PatientRequest;
+import com.tfg.proyecto.backend.dto.request.medication.MedicationTrackingRequest;
+import com.tfg.proyecto.backend.dto.request.patient.PatientRequest;
 import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;

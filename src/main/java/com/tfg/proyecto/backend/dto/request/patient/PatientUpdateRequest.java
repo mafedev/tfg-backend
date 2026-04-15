@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.request;
+package com.tfg.proyecto.backend.dto.request.patient;
 
 import com.tfg.proyecto.backend.model.users.Patient;
 

@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.response;
+package com.tfg.proyecto.backend.dto.response.patient;
 
 import com.tfg.proyecto.backend.model.users.Patient.DiseaseStage;
 

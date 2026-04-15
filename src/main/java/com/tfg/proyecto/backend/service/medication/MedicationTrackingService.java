@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.service.medication;
 
-import com.tfg.proyecto.backend.dto.request.MedicationTrackingRequest;
+import com.tfg.proyecto.backend.dto.request.medication.MedicationTrackingRequest;
 import com.tfg.proyecto.backend.model.medication.MedicationTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;

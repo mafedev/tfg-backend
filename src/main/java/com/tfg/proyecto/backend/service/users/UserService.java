@@ -1,7 +1,7 @@
 package com.tfg.proyecto.backend.service.users;
 
-import com.tfg.proyecto.backend.dto.request.SignupRequest;
-import com.tfg.proyecto.backend.dto.response.PatientListDetailsResponse;
+import com.tfg.proyecto.backend.dto.request.auth.SignupRequest;
+import com.tfg.proyecto.backend.dto.response.patient.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.model.users.User;

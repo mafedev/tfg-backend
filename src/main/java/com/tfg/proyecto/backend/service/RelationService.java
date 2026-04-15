@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.service;
 
-import com.tfg.proyecto.backend.dto.response.PatientListResponse;
+import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.model.users.User;

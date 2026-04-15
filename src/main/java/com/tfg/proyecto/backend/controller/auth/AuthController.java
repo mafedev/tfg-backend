@@ -1,8 +1,8 @@
 package com.tfg.proyecto.backend.controller.auth;
 
-import com.tfg.proyecto.backend.dto.request.LoginRequest;
-import com.tfg.proyecto.backend.dto.response.LoginResponse;
-import com.tfg.proyecto.backend.dto.request.SignupRequest;
+import com.tfg.proyecto.backend.dto.request.auth.LoginRequest;
+import com.tfg.proyecto.backend.dto.response.auth.LoginResponse;
+import com.tfg.proyecto.backend.dto.request.auth.SignupRequest;
 import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.users.UserService;
