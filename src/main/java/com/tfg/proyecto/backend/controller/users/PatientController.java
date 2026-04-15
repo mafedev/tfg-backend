@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.controller.users;
 
-import com.tfg.proyecto.backend.dto.request.medication.MedicationTrackingRequest;
+import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingRequest;
 import com.tfg.proyecto.backend.dto.request.patient.PatientRequest;
 import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.model.users.Patient;
@@ -76,7 +76,7 @@ public class PatientController {
 
     // ------------------- Obtiene el tracking del paciente autenticado -------------------
     @GetMapping("/prescription-tracking")
-    public ResponseEntity<?> getMedicationTracking(@RequestParam String date, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> getPrescriptionTracking(@RequestParam String date, @RequestHeader("Authorization") String authHeader) {
         try {
             String token = authHeader.substring(7);
             Long userId = Long.parseLong(jwtUtil.extractId(token));
@@ -88,7 +88,7 @@ public class PatientController {
                 return ResponseEntity.status(403).body("Solo los pacientes pueden acceder a su tracking");
             }
 
-            List<MedicationTrackingRequest> result = patientService.getMedicationTrackingForUser(userId, date);
+            List<PrescriptionTrackingRequest> result = patientService.getPrescriptionTrackingForUser(userId, date);
             return ResponseEntity.ok(result);
 
         } catch (Exception e) {

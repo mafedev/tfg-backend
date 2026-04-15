@@ -1,11 +1,11 @@
 package com.tfg.proyecto.backend.service.users;
 
-import com.tfg.proyecto.backend.dto.request.medication.MedicationTrackingRequest;
+import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingRequest;
 import com.tfg.proyecto.backend.dto.request.patient.PatientRequest;
 import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
+import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import jakarta.transaction.Transactional;
@@ -21,9 +21,9 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final PrescriptionRepository prescriptionRepository;
-    private final MedicationTrackingRepository trackingRepository;
+    private final PrescriptionTrackingRepository trackingRepository;
 
-    public PatientService(PatientRepository patientRepository, PrescriptionRepository prescriptionRepository, MedicationTrackingRepository trackingRepository) {
+    public PatientService(PatientRepository patientRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository trackingRepository) {
         this.patientRepository = patientRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.trackingRepository = trackingRepository;
@@ -40,7 +40,7 @@ public class PatientService {
 
     // Obtiene el tracking de la medicación por susuario y fecha
     @Transactional
-    public List<MedicationTrackingRequest> getMedicationTrackingForUser(Long userId, String dateStr) {
+    public List<PrescriptionTrackingRequest> getPrescriptionTrackingForUser(Long userId, String dateStr) {
 
         // Busca al paciente
         Patient patient = patientRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
@@ -54,7 +54,7 @@ public class PatientService {
         List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndStatus(patient.getId(), Prescription.PrescriptionStatus.ACTIVE).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).toList();
 
         // lista que se pasa al front
-        List<MedicationTrackingRequest> result = new ArrayList<>();
+        List<PrescriptionTrackingRequest> result = new ArrayList<>();
 
         // itera las prescripciones
         for (Prescription p : prescriptions) {
@@ -80,10 +80,10 @@ public class PatientService {
             }
 
             // convierte a DTO
-            List<MedicationTrackingRequest.MedicationTrackingTimeRequest> times = trackingList.stream().map(t -> new MedicationTrackingRequest.MedicationTrackingTimeRequest(t.getScheduledTime().toString(), t.getTaken(), t.getStatus().name())).toList();
+            List<PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest> times = trackingList.stream().map(t -> new PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest(t.getScheduledTime().toString(), t.getTaken(), t.getStatus().name())).toList();
 
             // Agrupa los medicamentos con la dosis y la hora
-            result.add(new MedicationTrackingRequest(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
+            result.add(new PrescriptionTrackingRequest(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
         }
         return result; // devuelve toda la info
     }

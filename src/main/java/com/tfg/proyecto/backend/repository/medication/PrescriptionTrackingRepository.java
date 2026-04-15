@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface MedicationTrackingRepository extends JpaRepository<PrescriptionTracking, Long> {
+public interface PrescriptionTrackingRepository extends JpaRepository<PrescriptionTracking, Long> {
 
     // busca los registros de una prescripción en un rango de fechas
     List<PrescriptionTracking> findByPrescriptionIdAndScheduledTimeBetween(
@@ -24,6 +24,6 @@ public interface MedicationTrackingRepository extends JpaRepository<Prescription
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM MedicationTracking t WHERE t.prescription.id = :id AND t.scheduledTime > :now")
+    @Query("DELETE FROM PrescriptionTracking t WHERE t.prescription.id = :id AND t.scheduledTime > :now")
     void deleteFutureTracking(Long id, LocalDateTime now);
 }

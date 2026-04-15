@@ -5,7 +5,7 @@ import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.medication.Medication;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.repository.medication.MedicationRepository;
-import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
+import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ public class PrescriptionController {
     private final PatientRepository patientRepository;
     private final MedicationRepository medicationRepository;
     private final PrescriptionRepository prescriptionRepository;
-    private final MedicationTrackingRepository medicationTrackingRepository;
+    private final PrescriptionTrackingRepository prescriptionTrackingRepository;
 
-    public PrescriptionController(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository, MedicationTrackingRepository medicationTrackingRepository) {
+    public PrescriptionController(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository) {
         this.patientRepository = patientRepository;
         this.medicationRepository = medicationRepository;
         this.prescriptionRepository = prescriptionRepository;
-        this.medicationTrackingRepository = medicationTrackingRepository;
+        this.prescriptionTrackingRepository = prescriptionTrackingRepository;
     }
 
     @PostMapping
@@ -127,7 +127,7 @@ public class PrescriptionController {
         }
 
         prescriptionRepository.save(prescription);
-        medicationTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
+        prescriptionTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
 
         return ResponseEntity.ok("Prescripción actualizada");
     }
