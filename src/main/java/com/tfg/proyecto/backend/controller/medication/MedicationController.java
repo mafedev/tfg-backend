@@ -2,7 +2,7 @@ package com.tfg.proyecto.backend.controller.medication;
 
 import com.tfg.proyecto.backend.dto.request.MedicationRequest;
 import com.tfg.proyecto.backend.model.medication.Medication;
-import com.tfg.proyecto.backend.repository.MedicationRepository;
+import com.tfg.proyecto.backend.repository.medication.MedicationRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

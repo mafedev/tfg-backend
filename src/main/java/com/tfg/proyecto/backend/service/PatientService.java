@@ -5,9 +5,9 @@ import com.tfg.proyecto.backend.dto.request.PatientRequest;
 import com.tfg.proyecto.backend.model.medication.MedicationTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.MedicationTrackingRepository;
-import com.tfg.proyecto.backend.repository.PatientRepository;
-import com.tfg.proyecto.backend.repository.PrescriptionRepository;
+import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
+import com.tfg.proyecto.backend.repository.users.PatientRepository;
+import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

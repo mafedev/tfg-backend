@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.repository;
+package com.tfg.proyecto.backend.repository.routine;
 
 import com.tfg.proyecto.backend.model.routine.Routine;
 import org.springframework.data.jpa.repository.JpaRepository;

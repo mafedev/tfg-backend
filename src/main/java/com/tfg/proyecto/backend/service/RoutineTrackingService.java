@@ -2,8 +2,8 @@ package com.tfg.proyecto.backend.service;
 
 import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.model.routine.RoutineTracking;
-import com.tfg.proyecto.backend.repository.RoutineRepository;
-import com.tfg.proyecto.backend.repository.RoutineTrackingRepository;
+import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
+import com.tfg.proyecto.backend.repository.routine.RoutineTrackingRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

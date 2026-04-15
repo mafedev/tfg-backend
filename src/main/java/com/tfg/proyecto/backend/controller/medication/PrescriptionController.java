@@ -4,10 +4,10 @@ import com.tfg.proyecto.backend.dto.request.PrescriptionRequest;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.medication.Medication;
 import com.tfg.proyecto.backend.model.medication.Prescription;
-import com.tfg.proyecto.backend.repository.MedicationRepository;
-import com.tfg.proyecto.backend.repository.MedicationTrackingRepository;
-import com.tfg.proyecto.backend.repository.PatientRepository;
-import com.tfg.proyecto.backend.repository.PrescriptionRepository;
+import com.tfg.proyecto.backend.repository.medication.MedicationRepository;
+import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
+import com.tfg.proyecto.backend.repository.users.PatientRepository;
+import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

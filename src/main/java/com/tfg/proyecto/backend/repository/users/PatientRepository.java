@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.repository;
+package com.tfg.proyecto.backend.repository.users;
 
 import com.tfg.proyecto.backend.model.users.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
