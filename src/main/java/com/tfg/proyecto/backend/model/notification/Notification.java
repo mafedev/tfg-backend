@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.model.notification;
 
+import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,13 +8,13 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "notifications")
 public class Notification {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "patient_id", nullable = false)
-    private Long patientId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     private String title;
     private String message;
@@ -32,12 +33,12 @@ public class Notification {
         this.id = id;
     }
 
-    public Long getPatientId() {
-        return patientId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setPatientId(Long patientId) {
-        this.patientId = patientId;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public String getTitle() {

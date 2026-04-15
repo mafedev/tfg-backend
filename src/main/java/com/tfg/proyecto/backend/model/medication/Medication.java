@@ -10,25 +10,16 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nombre del medicamento
     @NotBlank
     @Column(nullable = false, unique = true)
     private String name;
 
-    // Descripción del medicamento
     @Column(nullable = true)
     private String description;
 
-    // De qué tipo es
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MedicationType type;
-
-    /*
-     *
-     * ********** Imagen del medicamento **********
-     *
-     */
 
     public enum MedicationType {
         TABLET,

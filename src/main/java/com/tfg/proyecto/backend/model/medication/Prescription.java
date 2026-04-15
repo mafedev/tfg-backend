@@ -4,20 +4,17 @@ import com.tfg.proyecto.backend.model.users.Patient;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Table(name = "prescriptions")
 public class Prescription {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false) // un paciente puede tener muchas preescripciones
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
@@ -25,27 +22,15 @@ public class Prescription {
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 
-    // -------------------- Dosis--------------------
-    // Cantidad por dosis
     @Column(nullable = false)
     private BigDecimal dose; // BigDecimal para más precisión
 
-    // Unidad de la dosis, mg, ml, cápsula etc...
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DoseUnit doseUnit;
 
-    // Cada cuánto se toma
     private Integer frequencyHours;
 
-    // Cuáles días la toma
-    @ElementCollection(targetClass = DayOfWeek.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "prescription_days", joinColumns = @JoinColumn(name = "prescription_id"))
-    @Column(name = "day_of_week")
-    private List<DayOfWeek> daysOfWeek;
-
-    // -------------------- Fechas --------------------
     // Fecha de inicio del tratamiento
     private LocalDate startDate;
 
@@ -55,15 +40,12 @@ public class Prescription {
     // Hora de la primera dosis
     private LocalTime firstDoseTime;
 
-    // Notas
     @Column(length = 500)
     private String notes;
 
-    // si se encuentra activa, suspendida, cancelada o terminada
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PrescriptionStatus status = PrescriptionStatus.ACTIVE; // valor por defecto
-
 
     public enum PrescriptionStatus {
         ACTIVE,
@@ -86,14 +68,13 @@ public class Prescription {
     public Prescription() {
     }
 
-    public Prescription(Long id, Patient patient, Medication medication, BigDecimal dose, DoseUnit doseUnit, Integer frequencyHours, List<DayOfWeek> daysOfWeek, LocalDate startDate, LocalDate endDate, LocalTime firstDoseTime, String notes, PrescriptionStatus status) {
+    public Prescription(Long id, Patient patient, Medication medication, BigDecimal dose, DoseUnit doseUnit, Integer frequencyHours, LocalDate startDate, LocalDate endDate, LocalTime firstDoseTime, String notes, PrescriptionStatus status) {
         this.id = id;
         this.patient = patient;
         this.medication = medication;
         this.dose = dose;
         this.doseUnit = doseUnit;
         this.frequencyHours = frequencyHours;
-        this.daysOfWeek = daysOfWeek;
         this.startDate = startDate;
         this.endDate = endDate;
         this.firstDoseTime = firstDoseTime;
@@ -148,14 +129,6 @@ public class Prescription {
 
     public void setFrequencyHours(Integer frequencyHours) {
         this.frequencyHours = frequencyHours;
-    }
-
-    public List<DayOfWeek> getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
     }
 
     public LocalDate getStartDate() {

@@ -33,7 +33,7 @@ public class NotificationService {
         if (user != null && user.getRole() == User.Role.PATIENT) {
 
             Notification notification = new Notification();
-            notification.setPatientId(patientId);
+            notification.setPatient(patient);
             notification.setTitle(title);
             notification.setMessage(message);
 

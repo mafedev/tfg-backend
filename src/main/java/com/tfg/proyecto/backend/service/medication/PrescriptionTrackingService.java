@@ -1,9 +1,9 @@
 package com.tfg.proyecto.backend.service.medication;
 
-import com.tfg.proyecto.backend.dto.request.medication.MedicationTrackingRequest;
-import com.tfg.proyecto.backend.model.medication.MedicationTracking;
+import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingRequest;
+import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
-import com.tfg.proyecto.backend.repository.medication.MedicationTrackingRepository;
+import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.service.NotificationService;
 import org.springframework.stereotype.Service;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MedicationTrackingService {
+public class PrescriptionTrackingService {
 
-    private final MedicationTrackingRepository trackingRepository;
+    private final PrescriptionTrackingRepository trackingRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final NotificationService notificationService;
 
-    public MedicationTrackingService(MedicationTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, NotificationService notificationService) {
+    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, NotificationService notificationService) {
         this.trackingRepository = trackingRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.notificationService = notificationService;
@@ -30,7 +30,7 @@ public class MedicationTrackingService {
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
     // obtiene las tomas de cualquier día para un paciente específico, si las tomas no existen, se generan
     @Transactional
-    public List<MedicationTrackingRequest> getMedicationTracking(Long patientId, LocalDate date) {
+    public List<PrescriptionTrackingRequest> getPrescriptionTracking(Long patientId, LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay(); // inicio del día
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // fin del día
 
@@ -42,12 +42,12 @@ public class MedicationTrackingService {
                 .filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())) // y que está dentro del rango
                 .toList(); // lo convierte en una lista
 
-        List<MedicationTrackingRequest> result = new ArrayList<>(); // lista que se envía al front
+        List<PrescriptionTrackingRequest> result = new ArrayList<>(); // lista que se envía al front
 
         // Itera cada prescripción
         for (Prescription p : prescriptions) {
             // Busca si ya hay tomas para hoy
-            List<MedicationTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
+            List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
 
             // si no hay tomas, se generan
             if (trackingList.isEmpty()) {
@@ -69,10 +69,10 @@ public class MedicationTrackingService {
                 // -------------------- Generación de las tomas --------------------
                 // mientras la hora de la toma no este después del final del día
                 while (doseTime.isBefore(endOfDay)) {
-                    MedicationTracking t = new MedicationTracking(); // nueva toma
+                    PrescriptionTracking t = new PrescriptionTracking(); // nueva toma
                     t.setPrescription(p); // agrega la prescripción
                     t.setScheduledTime(doseTime); // hora programada
-                    t.setStatus(MedicationTracking.TrackingStatus.PENDING); // estado pendiente por defecto
+                    t.setStatus(PrescriptionTracking.TrackingStatus.PENDING); // estado pendiente por defecto
                     t.setTaken(false); // por defecto está sin tomar
                     trackingRepository.save(t); // la guarda
 
@@ -89,12 +89,12 @@ public class MedicationTrackingService {
 
             // --------- Pasarlas a DTO ---------
             // Aquí se guardan las horas de las tomas ya convertidas a DTO
-            List<MedicationTrackingRequest.MedicationTrackingTimeRequest> times = new ArrayList<>();
+            List<PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest> times = new ArrayList<>();
 
             // se iteran las tomas
-            for (MedicationTracking t : trackingList) {
+            for (PrescriptionTracking t : trackingList) {
                 // solo se envían los datos necesarios
-                times.add(new MedicationTrackingRequest.MedicationTrackingTimeRequest(
+                times.add(new PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest(
                         t.getScheduledTime().toString(), // se pasa la fecha a string
                         t.getTaken(), // se agrega el boolean
                         t.getStatus().name() // y el nombre del estado
@@ -102,7 +102,7 @@ public class MedicationTrackingService {
             }
 
             // Este agrupa la información del medicamento junto con el tiempo de las tomas
-            result.add(new MedicationTrackingRequest(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
+            result.add(new PrescriptionTrackingRequest(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
         }
 
         return result;
@@ -111,9 +111,9 @@ public class MedicationTrackingService {
     // -------------------- Toggle del seguimiento --------------------
     // Cambia el estado entre true y false, TAKEN o PENDING
     @Transactional
-    public MedicationTracking toggleTracking(Long prescriptionId, LocalDateTime scheduledTime) {
+    public PrescriptionTracking toggleTracking(Long prescriptionId, LocalDateTime scheduledTime) {
         // busca la toma en la tabla
-        MedicationTracking tracking = trackingRepository.findByPrescription_IdAndScheduledTime(prescriptionId, scheduledTime).orElse(null);
+        PrescriptionTracking tracking = trackingRepository.findByPrescription_IdAndScheduledTime(prescriptionId, scheduledTime).orElse(null);
 
         // si no hay nada, sale
         if (tracking == null) {
@@ -121,12 +121,12 @@ public class MedicationTrackingService {
         }
 
         // Si el estado es TAKEN
-        if (tracking.getStatus() == MedicationTracking.TrackingStatus.TAKEN) {
-            tracking.setStatus(MedicationTracking.TrackingStatus.PENDING); // lo pasa a PENDING
+        if (tracking.getStatus() == PrescriptionTracking.TrackingStatus.TAKEN) {
+            tracking.setStatus(PrescriptionTracking.TrackingStatus.PENDING); // lo pasa a PENDING
             tracking.setTaken(false); // lo pone a false
             tracking.setTakenTime(null); // y quita el tiempo de la toma
         } else { // si el estado es PENDING
-            tracking.setStatus(MedicationTracking.TrackingStatus.TAKEN); // lo pasa a TAKEN
+            tracking.setStatus(PrescriptionTracking.TrackingStatus.TAKEN); // lo pasa a TAKEN
             tracking.setTaken(true); // lo pone a true
             tracking.setTakenTime(LocalDateTime.now()); // y guarda la hora actual
 

@@ -3,26 +3,22 @@ package com.tfg.proyecto.backend.model.medication;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
-public class MedicationTracking {
-
+public class PrescriptionTracking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "prescription_id", nullable = false)
+    @ManyToOne // muchas tomas pueden pertenecer a una prescripción
+    @JoinColumn(name = "prescription_id", nullable = false) // define la columna FK
     private Prescription prescription;
 
-    // -------------------- Fechas --------------------
     private LocalDateTime scheduledTime;
     private LocalDateTime takenTime;
 
     private Boolean taken;// tomada o pendiente
 
-    // Estado de la toma
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TrackingStatus status;
@@ -32,10 +28,10 @@ public class MedicationTracking {
     }
 
     // -------------------- Constructores --------------------
-    public MedicationTracking() {
+    public PrescriptionTracking() {
     }
 
-    public MedicationTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken, TrackingStatus status) {
+    public PrescriptionTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken, TrackingStatus status) {
         this.id = id;
         this.prescription = prescription;
         this.scheduledTime = scheduledTime;

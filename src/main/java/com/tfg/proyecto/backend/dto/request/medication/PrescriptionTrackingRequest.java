@@ -3,16 +3,16 @@ package com.tfg.proyecto.backend.dto.request.medication;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicationTrackingRequest {
+public class PrescriptionTrackingRequest {
     private Long prescriptionId;
     private String medicationName;
     private String dose;
-    private List<MedicationTrackingTimeRequest> times = new ArrayList<>();
+    private List<PrescriptionTrackingTimeRequest> times = new ArrayList<>();
 
-    public MedicationTrackingRequest() {
+    public PrescriptionTrackingRequest() {
     }
 
-    public MedicationTrackingRequest(Long prescriptionId, String medicationName, String dose, List<MedicationTrackingTimeRequest> times) {
+    public PrescriptionTrackingRequest(Long prescriptionId, String medicationName, String dose, List<PrescriptionTrackingTimeRequest> times) {
         this.prescriptionId = prescriptionId;
         this.medicationName = medicationName;
         this.dose = dose;
@@ -43,24 +43,24 @@ public class MedicationTrackingRequest {
         this.dose = dose;
     }
 
-    public List<MedicationTrackingTimeRequest> getTimes() {
+    public List<PrescriptionTrackingTimeRequest> getTimes() {
         return times;
     }
 
-    public void setTimes(List<MedicationTrackingTimeRequest> times) {
+    public void setTimes(List<PrescriptionTrackingTimeRequest> times) {
         this.times = times;
     }
 
     // ------------ Tiempo de cada toma ------------
-    public static class MedicationTrackingTimeRequest {
+    public static class PrescriptionTrackingTimeRequest {
         private String scheduledTime;
         private Boolean taken;
         private String status;
 
-        public MedicationTrackingTimeRequest() {
+        public PrescriptionTrackingTimeRequest() {
         }
 
-        public MedicationTrackingTimeRequest(String scheduledTime, Boolean taken, String status) {
+        public PrescriptionTrackingTimeRequest(String scheduledTime, Boolean taken, String status) {
             this.scheduledTime = scheduledTime;
             this.taken = taken;
             this.status = status;
