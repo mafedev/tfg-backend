@@ -2,36 +2,34 @@ package com.tfg.proyecto.backend.controller.medication;
 
 import com.tfg.proyecto.backend.dto.request.medication.MedicationRequest;
 import com.tfg.proyecto.backend.model.medication.Medication;
-import com.tfg.proyecto.backend.repository.medication.MedicationRepository;
+import com.tfg.proyecto.backend.service.medication.MedicationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/medications")
 @CrossOrigin("*")
 public class MedicationController {
 
-    private final MedicationRepository medicationRepository;
+    private final MedicationService medicationService;
 
-    public MedicationController(MedicationRepository medicationRepository) {
-        this.medicationRepository = medicationRepository;
+    public MedicationController(MedicationService medicationService) {
+        this.medicationService = medicationService;
     }
 
     // -------- Crear medicamento --------
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody MedicationRequest request) {
-        Medication medication = new Medication(
-                request.getName(),
-                request.getDescription(),
-                request.getType()
-        );
-        return ResponseEntity.ok(medicationRepository.save(medication));
+    public ResponseEntity<Medication> create(@Valid @RequestBody MedicationRequest request) {
+        Medication saved = medicationService.createMedication(request);
+        return ResponseEntity.ok(saved);
     }
 
-
+    // -------- Obtener medicamentos --------
     @GetMapping
-    public ResponseEntity<?> getMedication() {
-        return ResponseEntity.ok(medicationRepository.findAll());
+    public ResponseEntity<List<Medication>> getAll() {
+        return ResponseEntity.ok(medicationService.getAllMedications());
     }
 }
