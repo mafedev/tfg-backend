@@ -5,9 +5,11 @@ import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
+import com.tfg.proyecto.backend.repository.routine.RoutineTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,12 +19,14 @@ public class RoutineService {
     private final RoutineRepository routineRepository;
     private final PatientRepository patientRepository;
     private final RelationRepository relationRepository;
+    private final RoutineTrackingRepository routineTrackingRepository;
     private final JwtUtil jwtUtil;
 
-    public RoutineService(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
+    public RoutineService(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, RoutineTrackingRepository routineTrackingRepository, JwtUtil jwtUtil) {
         this.routineRepository = routineRepository;
         this.patientRepository = patientRepository;
         this.relationRepository = relationRepository;
+        this.routineTrackingRepository = routineTrackingRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -96,6 +100,7 @@ public class RoutineService {
     }
 
     // ------------- Eliminar una rutina -------------
+    @Transactional
     public boolean deleteRoutine(Long patientId, String authHeader) {
         Long caregiverId = extractId(authHeader);
         boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
@@ -110,7 +115,10 @@ public class RoutineService {
             return false;
         }
 
-        routineRepository.delete(optional.get());
+        Routine routine = optional.get();
+        routineTrackingRepository.deleteByRoutineId(routine.getId());
+        routineRepository.delete(routine);
+
         return true;
     }
 
