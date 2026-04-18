@@ -50,7 +50,6 @@ public class PrescriptionService {
         prescription.setFrequencyHours(request.getFrequencyHours());
         prescription.setFirstDoseTime(request.getFirstDoseTime());
         prescription.setNotes(request.getNotes());
-        prescription.setStatus(request.getStatus());
 
         return prescriptionRepository.save(prescription);
     }
@@ -104,11 +103,6 @@ public class PrescriptionService {
         prescription.setEndDate(request.getEndDate());
         prescription.setFirstDoseTime(request.getFirstDoseTime());
         prescription.setNotes(request.getNotes());
-
-        if (request.getStatus() != null) {
-            prescription.setStatus(request.getStatus());
-        }
-
         prescriptionRepository.save(prescription);
         prescriptionTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
 
