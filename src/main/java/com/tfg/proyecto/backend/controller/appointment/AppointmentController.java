@@ -19,37 +19,45 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    // Crear cita
+    // -------------------- Crear cita --------------------
     @PostMapping
-    public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentRequest request) {
-        Appointment appointment = appointmentService.createAppointment(request);
-        return ResponseEntity.ok(appointment);
+    public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody AppointmentRequest request) {
+        AppointmentResponse response = appointmentService.createAppointment(request);
+        return ResponseEntity.status(201).body(response);
     }
 
+    // -------------------- Obtener citas por paciente --------------------
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<List<AppointmentResponse>> getByPatient(@PathVariable Long patientId) {
-        return ResponseEntity.ok(appointmentService.getAppointmentsByPatient(patientId));
+        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByPatient(patientId);
+        return ResponseEntity.ok(appointments);
     }
 
+    // -------------------- Eliminar cita --------------------
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAppointment(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
         boolean deleted = appointmentService.deleteAppointment(id);
         if (!deleted) {
-            return ResponseEntity.status(404).body("Cita no encontrada");
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok("Cita eliminada");
+        return ResponseEntity.noContent().build();
     }
 
+    // -------------------- Actualizar cita completa --------------------
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody AppointmentRequest dto) {
-        Appointment updated = appointmentService.updateAppointment(id, dto);
+    public ResponseEntity<AppointmentResponse> updateAppointment(@PathVariable Long id, @RequestBody AppointmentRequest request) {
+        AppointmentResponse updated = appointmentService.updateAppointment(id, request);
         return ResponseEntity.ok(updated);
     }
 
+    // -------------------- Actualizar solo el estado --------------------
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus(@PathVariable Long id, @RequestParam Appointment.AppointmentStatus status) {
-        appointmentService.updateStatus(id, status);
-        return ResponseEntity.ok().build();
+        boolean updated = appointmentService.updateStatus(id, status);
+
+        if (!updated) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }

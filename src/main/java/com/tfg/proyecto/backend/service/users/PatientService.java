@@ -1,90 +1,52 @@
 package com.tfg.proyecto.backend.service.users;
 
-import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingRequest;
 import com.tfg.proyecto.backend.dto.request.patient.PatientRequest;
-import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
-import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
+import com.tfg.proyecto.backend.model.users.User;
+import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
-import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
-import jakarta.transaction.Transactional;
+import com.tfg.proyecto.backend.repository.users.UserRepository;
+import com.tfg.proyecto.backend.security.JwtUtil;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PatientService {
 
     private final PatientRepository patientRepository;
-    private final PrescriptionRepository prescriptionRepository;
-    private final PrescriptionTrackingRepository trackingRepository;
+    private final UserRepository userRepository;
+    private final RelationRepository relationRepository;
+    private final JwtUtil jwtUtil;
 
-    public PatientService(PatientRepository patientRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository trackingRepository) {
+    public PatientService(PatientRepository patientRepository, UserRepository userRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
         this.patientRepository = patientRepository;
-        this.prescriptionRepository = prescriptionRepository;
-        this.trackingRepository = trackingRepository;
+        this.userRepository = userRepository;
+        this.relationRepository = relationRepository;
+        this.jwtUtil = jwtUtil;
     }
 
-    public Patient createSimplePatient(PatientRequest request) {
+    public Patient createPatient(PatientRequest request, String authHeader) {
+        Long caregiverId = extractId(authHeader);
+        User caregiver = userRepository.findById(caregiverId).orElseThrow(() -> new RuntimeException("Cuidador no encontrado"));
+
         Patient patient = new Patient();
-        patient.setUser(null);
+
+        if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            patient.setUser(user);
+        }
+
         patient.setDiseaseStage(request.getDiseaseStage());
         patient.setNotes(request.getNotes());
-        patientRepository.save(patient);
-        return patient;
+        patient.setName(request.getName());
+        patient.setPhone(request.getPhone());
+        Patient savedPatient = patientRepository.save(patient);
+        relationRepository.save(new com.tfg.proyecto.backend.model.Relation(null, caregiver, savedPatient, null));
+
+        return savedPatient;
     }
 
-    // Obtiene el tracking de la medicación por susuario y fecha
-    @Transactional
-    public List<PrescriptionTrackingRequest> getPrescriptionTrackingForUser(Long userId, String dateStr) {
-
-        // Busca al paciente
-        Patient patient = patientRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
-
-        // pasa el string a localdate
-        LocalDate date = LocalDate.parse(dateStr);
-        LocalDateTime startOfDay = date.atStartOfDay(); // inicio del día
-        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // final del día
-
-        // Obtiene todas las prescripciones activas del paciente para esa fecha
-        List<Prescription> prescriptions = prescriptionRepository.findByPatientIdAndStatus(patient.getId(), Prescription.PrescriptionStatus.ACTIVE).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).toList();
-
-        // lista que se pasa al front
-        List<PrescriptionTrackingRequest> result = new ArrayList<>();
-
-        // itera las prescripciones
-        for (Prescription p : prescriptions) {
-            // busca las tomas generadas para ese día
-            List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
-
-            // Genera las tomas si no existen
-            if (trackingList.isEmpty()) {
-                LocalDateTime doseTime = p.getFirstDoseTime() != null ? LocalDateTime.of(date, p.getFirstDoseTime()) : startOfDay;
-
-                // las genera hasta el final del día
-                while (doseTime.isBefore(endOfDay)) {
-                    PrescriptionTracking t = new PrescriptionTracking();
-                    t.setPrescription(p);
-                    t.setScheduledTime(doseTime);
-                    t.setStatus(PrescriptionTracking.TrackingStatus.PENDING);
-                    t.setTaken(false);
-                    trackingRepository.save(t);
-                    doseTime = doseTime.plusHours(p.getFrequencyHours());
-                }
-                // vuelve a buscar las tomas generadas
-                trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
-            }
-
-            // convierte a DTO
-            List<PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest> times = trackingList.stream().map(t -> new PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest(t.getScheduledTime().toString(), t.getTaken(), t.getStatus().name())).toList();
-
-            // Agrupa los medicamentos con la dosis y la hora
-            result.add(new PrescriptionTrackingRequest(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
-        }
-        return result; // devuelve toda la info
+    private Long extractId(String authHeader) {
+        String token = authHeader.substring(7);
+        return Long.parseLong(jwtUtil.extractId(token));
     }
 }
