@@ -1,12 +1,13 @@
 package com.tfg.proyecto.backend.dto.request.routine;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalTime;
 
 public class RoutineRequest {
 
-    @NotNull
+    @NotNull(message = "El paciente es obligatorio")
     private Long patientId;
 
     private LocalTime breakfastTime;
@@ -15,6 +16,8 @@ public class RoutineRequest {
     private LocalTime bathTime;
 
     private boolean hydrationEnabled;
+
+    @Positive(message = "Las horas de recordatorio deben ser mayores que 0")
     private Integer hydrationReminderHours;
 
     // -------------------- Constructor --------------------
