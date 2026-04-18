@@ -29,9 +29,9 @@ public class RelationController {
     @PostMapping("/generate")
     public ResponseEntity<?> generateRelation(@RequestHeader("Authorization") String authHeader) { // String que contiene el "Bearer + token"
         Long caregiverId = extractId(authHeader); //obtiene el id
-        Relation relation = relationService.createRelation(caregiverId); // crea la relación desde el service
-        if (relation != null) {
-            return ResponseEntity.ok(new RelationResponse(relation.getCode()));  // Devuelve el código en un RelationResponse
+        RelationResponse response = relationService.createRelation(caregiverId);
+        if (response != null) {
+            return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }

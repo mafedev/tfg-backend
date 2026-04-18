@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.service;
 
+import com.tfg.proyecto.backend.dto.response.RelationResponse;
 import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.Relation;
@@ -39,18 +40,20 @@ public class RelationService {
 
     // Crea la "relación", solo con el id del cuidador y el código
     // para que luego cuando el paciente lo ingrese, se agrega a la fila/relación
-    public Relation createRelation(Long caregiverId) {
+    public RelationResponse createRelation(Long caregiverId) {
         Optional<User> caregiverRep = userRepository.findById(caregiverId);
+
         if (caregiverRep.isPresent() && caregiverRep.get().getRole() == User.Role.CAREGIVER) {
-            User caregiver = caregiverRep.get();
 
             Relation relation = new Relation();
-            relation.setCaregiver(caregiver);
+            relation.setCaregiver(caregiverRep.get());
             relation.setPatient(null);
             relation.setCode(generateCode());
+            relationRepository.save(relation);
 
-            return relationRepository.save(relation);
+            return new RelationResponse(relation.getCode());
         }
+
         return null;
     }
 
