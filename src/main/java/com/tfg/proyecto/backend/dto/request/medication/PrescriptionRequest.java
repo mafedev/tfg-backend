@@ -32,7 +32,6 @@ public class PrescriptionRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime firstDoseTime;
-    private List<DayOfWeek> daysOfWeek;
 
     @Size(max = 500, message = "Las notas no pueden superar los 500 caracteres")
     private String notes;
@@ -104,14 +103,6 @@ public class PrescriptionRequest {
 
     public void setFirstDoseTime(LocalTime firstDoseTime) {
         this.firstDoseTime = firstDoseTime;
-    }
-
-    public List<DayOfWeek> getDaysOfWeek() {
-        return daysOfWeek;
-    }
-
-    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) {
-        this.daysOfWeek = daysOfWeek;
     }
 
     public String getNotes() {
