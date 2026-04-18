@@ -7,6 +7,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface RoutineTrackingRepository extends JpaRepository<RoutineTracking, Long> {
-
     Optional<RoutineTracking> findByRoutineIdAndDate(Long routineId, LocalDate date);
+    void deleteByRoutineId(Long routineId);
 }
