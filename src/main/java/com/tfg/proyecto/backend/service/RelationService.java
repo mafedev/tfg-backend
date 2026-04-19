@@ -1,12 +1,13 @@
 package com.tfg.proyecto.backend.service;
 
-import com.tfg.proyecto.backend.dto.response.PatientListResponse;
+import com.tfg.proyecto.backend.dto.response.RelationResponse;
+import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.model.users.User;
-import com.tfg.proyecto.backend.repository.PatientRepository;
+import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.RelationRepository;
-import com.tfg.proyecto.backend.repository.UserRepository;
+import com.tfg.proyecto.backend.repository.users.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
@@ -39,18 +40,20 @@ public class RelationService {
 
     // Crea la "relación", solo con el id del cuidador y el código
     // para que luego cuando el paciente lo ingrese, se agrega a la fila/relación
-    public Relation createRelation(Long caregiverId) {
+    public RelationResponse createRelation(Long caregiverId) {
         Optional<User> caregiverRep = userRepository.findById(caregiverId);
+
         if (caregiverRep.isPresent() && caregiverRep.get().getRole() == User.Role.CAREGIVER) {
-            User caregiver = caregiverRep.get();
 
             Relation relation = new Relation();
-            relation.setCaregiver(caregiver);
+            relation.setCaregiver(caregiverRep.get());
             relation.setPatient(null);
             relation.setCode(generateCode());
+            relationRepository.save(relation);
 
-            return relationRepository.save(relation);
+            return new RelationResponse(relation.getCode());
         }
+
         return null;
     }
 

@@ -1,9 +1,7 @@
 package com.tfg.proyecto.backend.controller;
 
-import com.tfg.proyecto.backend.dto.request.RelationRequest;
-import com.tfg.proyecto.backend.dto.response.PatientListResponse;
+import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.dto.response.RelationResponse;
-import com.tfg.proyecto.backend.model.Relation;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.RelationService;
 import org.springframework.http.HttpStatus;
@@ -27,20 +25,20 @@ public class RelationController {
 
     // Genera una relación desde el cuidador
     @PostMapping("/generate")
-    public ResponseEntity<?> generateRelation(@RequestHeader("Authorization") String authHeader) { // String que contiene el "Bearer + token"
+    public ResponseEntity<?> generateRelation(@RequestHeader("Authorization") String authHeader) {
         Long caregiverId = extractId(authHeader); //obtiene el id
-        Relation relation = relationService.createRelation(caregiverId); // crea la relación desde el service
-        if (relation != null) {
-            return ResponseEntity.ok(new RelationResponse(relation.getCode()));  // Devuelve el código en un RelationResponse
+        RelationResponse response = relationService.createRelation(caregiverId);
+        if (response != null) {
+            return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     // Enlaza al paciente con el cuidador por medio del código creado
     @PostMapping("/link")
-    public ResponseEntity<Void> linkPatient(@RequestBody RelationRequest request, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Void> linkPatient(@RequestParam String code, @RequestHeader("Authorization") String authHeader) {
         Long patientId = extractId(authHeader); // obtiene el id
-        boolean linked = relationService.linkPatient(request.getCode(), patientId); // vincula al paciente usando el código y el id del paciente
+        boolean linked = relationService.linkPatient(code, patientId); // vincula al paciente usando el código y el id del paciente
         if (!linked) { // si no se puede vincular, porque está repetido, o ya existe o similar
             return ResponseEntity.badRequest().build();
         }

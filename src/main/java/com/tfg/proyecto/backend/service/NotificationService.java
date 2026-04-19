@@ -4,7 +4,7 @@ import com.tfg.proyecto.backend.model.notification.Notification;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.repository.NotificationRepository;
-import com.tfg.proyecto.backend.repository.PatientRepository;
+import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class NotificationService {
         if (user != null && user.getRole() == User.Role.PATIENT) {
 
             Notification notification = new Notification();
-            notification.setPatientId(patientId);
+            notification.setPatient(patient);
             notification.setTitle(title);
             notification.setMessage(message);
 

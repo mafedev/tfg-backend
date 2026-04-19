@@ -8,13 +8,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "appointments")
 public class Appointment {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // id autogenerado
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
+    @ManyToOne // muchas citas puedes pertenecer a un paciente
+    @JoinColumn(name = "patient_id") // define la FK
     private Patient patient;
 
     private String title;
@@ -22,13 +21,15 @@ public class Appointment {
     private String location;
     private LocalDateTime dateTime;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // guarda el enum como string en la bdd
+    // Representa el estado de la cita, por defecto está pendiente
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
     public enum AppointmentStatus {
         PENDING, ATTENDED, MISSED, CANCELLED
     }
 
+    // -------------------- Constructores --------------------
     public Appointment() {
     }
 
@@ -42,6 +43,7 @@ public class Appointment {
         this.status = status;
     }
 
+    // -------------------- Getters y Setters --------------------
     public Long getId() {
         return id;
     }
