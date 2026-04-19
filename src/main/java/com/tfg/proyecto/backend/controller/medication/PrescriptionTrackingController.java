@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/patients")
+@RequestMapping("/api/prescription-tracking")
 public class PrescriptionTrackingController {
 
     private final PrescriptionTrackingService service;
@@ -20,7 +20,7 @@ public class PrescriptionTrackingController {
 
     // -------------------- Obtiene el seguimiento por fecha --------------------
     // recibe el id del paciente y una fecha, devuelve todas las tomas de ese día
-    @GetMapping("/{patientId}/tracking")
+    @GetMapping("/{patientId}")
     public List<PrescriptionTrackingResponse> getPrescriptionTracking(@PathVariable Long patientId, @RequestParam String date) {
         LocalDate parsedDate = LocalDate.parse(date); // convierte el string a LocalDate
         return service.getPrescriptionTracking(patientId, parsedDate); // llama al service
@@ -28,7 +28,7 @@ public class PrescriptionTrackingController {
 
     // -------------------- Toggle del seguimiento --------------------
     // Cambia entre true y false el estado de la toma del medicamento
-    @PutMapping("/tracking/toggle")
+    @PutMapping("/toggle")
     public void toggleTracking(@RequestParam Long prescriptionId, @RequestParam String scheduledTime) {
         LocalDateTime dateTime = LocalDateTime.parse(scheduledTime); // convierte a LocalDateTime
         service.toggleTracking(prescriptionId, dateTime); // llama al service

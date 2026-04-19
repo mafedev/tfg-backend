@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/routine")
 @CrossOrigin(origins = "*")
 public class RoutineController {
 
@@ -19,7 +19,7 @@ public class RoutineController {
     }
 
     // ------------- Crear una rutina -------------
-    @PostMapping("/routine/{patientId}")
+    @PostMapping("/{patientId}")
     public ResponseEntity<?> createRoutine(@PathVariable Long patientId, @RequestBody RoutineRequest request, @RequestHeader("Authorization") String authHeader) {
         Routine routine = routineService.createRoutine(patientId, request, authHeader);
 
@@ -31,7 +31,7 @@ public class RoutineController {
     }
 
     // ------------- Obtener rutina (paciente) -------------
-    @GetMapping("/routine")
+    @GetMapping
     public ResponseEntity<?> getOwnRoutine(@RequestHeader("Authorization") String authHeader) {
         Routine routine = routineService.getOwnRoutine(authHeader);
 
@@ -42,7 +42,7 @@ public class RoutineController {
     }
 
     // ------------- Obtener rutina de un paciente (cuidador) -------------
-    @GetMapping("/routine/{patientId}")
+    @GetMapping("/{patientId}")
     public ResponseEntity<?> getRoutineAsCaregiver(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
         Routine routine = routineService.getRoutineAsCaregiver(patientId, authHeader);
 
@@ -54,7 +54,7 @@ public class RoutineController {
     }
 
     // ------------- Editar una rutina -------------
-    @PutMapping("/routine/{patientId}")
+    @PutMapping("/{patientId}")
     public ResponseEntity<?> update(@PathVariable Long patientId, @RequestBody RoutineRequest request, @RequestHeader("Authorization") String authHeader) {
         Routine routine = routineService.updateRoutine(patientId, request, authHeader);
 
@@ -66,7 +66,7 @@ public class RoutineController {
     }
 
     // ------------- Eliminar una rutina -------------
-    @DeleteMapping("/routine/{patientId}")
+    @DeleteMapping("/{patientId}")
     public ResponseEntity<?> delete(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
         boolean deleted = routineService.deleteRoutine(patientId, authHeader);
 
