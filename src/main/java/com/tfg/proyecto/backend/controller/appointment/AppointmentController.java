@@ -29,15 +29,15 @@ public class AppointmentController {
     // -------------------- Obtener citas por paciente --------------------
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<List<AppointmentResponse>> getByPatient(@PathVariable Long patientId) {
-        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByPatient(patientId);
+        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByPatient(patientId); // obtiene las citas de ese paciente
         return ResponseEntity.ok(appointments);
     }
 
     // -------------------- Eliminar cita --------------------
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
-        boolean deleted = appointmentService.deleteAppointment(id);
-        if (!deleted) {
+        boolean deleted = appointmentService.deleteAppointment(id); // intenta eliminar la cita
+        if (!deleted) { // si no se pudo
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
@@ -54,7 +54,6 @@ public class AppointmentController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus(@PathVariable Long id, @RequestParam Appointment.AppointmentStatus status) {
         boolean updated = appointmentService.updateStatus(id, status);
-
         if (!updated) {
             return ResponseEntity.notFound().build();
         }
