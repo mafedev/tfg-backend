@@ -3,6 +3,7 @@ package com.tfg.proyecto.backend.dto.request.medication;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -12,61 +13,104 @@ import java.util.List;
 
 public class PrescriptionRequest {
 
-    @NotNull
+    @NotNull(message = "El paciente es obligatorio")
     private Long patientId;
 
-    @NotNull
+    @NotNull(message = "El medicamento es obligatorio")
     private Long medicationId;
 
-    @Positive
+    @NotNull(message = "La dosis es obligatoria")
+    @Positive(message = "La dosis debe ser mayor que 0")
     private BigDecimal dose;
 
-    @NotNull
+    @NotNull(message = "La unidad de dosis es obligatoria")
     private Prescription.DoseUnit doseUnit;
 
+    @Positive(message = "La frecuencia debe ser mayor que 0")
     private Integer frequencyHours;
+
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime firstDoseTime;
-    private List<DayOfWeek> daysOfWeek;
+
+    @Size(max = 500, message = "Las notas no pueden superar los 500 caracteres")
     private String notes;
-    private Prescription.PrescriptionStatus status;
 
     // -------------------- Constructor --------------------
     public PrescriptionRequest() {
     }
 
     // -------------------- Getters y Setters --------------------
-    public Long getPatientId() { return patientId; }
-    public void setPatientId(Long patientId) { this.patientId = patientId; }
+    public Long getPatientId() {
+        return patientId;
+    }
 
-    public Long getMedicationId() { return medicationId; }
-    public void setMedicationId(Long medicationId) { this.medicationId = medicationId; }
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
 
-    public BigDecimal getDose() { return dose; }
-    public void setDose(BigDecimal dose) { this.dose = dose; }
+    public Long getMedicationId() {
+        return medicationId;
+    }
 
-    public Prescription.DoseUnit getDoseUnit() { return doseUnit; }
-    public void setDoseUnit(Prescription.DoseUnit doseUnit) { this.doseUnit = doseUnit; }
+    public void setMedicationId(Long medicationId) {
+        this.medicationId = medicationId;
+    }
 
-    public Integer getFrequencyHours() { return frequencyHours; }
-    public void setFrequencyHours(Integer frequencyHours) { this.frequencyHours = frequencyHours; }
+    public BigDecimal getDose() {
+        return dose;
+    }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public void setDose(BigDecimal dose) {
+        this.dose = dose;
+    }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public Prescription.DoseUnit getDoseUnit() {
+        return doseUnit;
+    }
 
-    public LocalTime getFirstDoseTime() { return firstDoseTime; }
-    public void setFirstDoseTime(LocalTime firstDoseTime) { this.firstDoseTime = firstDoseTime; }
+    public void setDoseUnit(Prescription.DoseUnit doseUnit) {
+        this.doseUnit = doseUnit;
+    }
 
-    public List<DayOfWeek> getDaysOfWeek() { return daysOfWeek; }
-    public void setDaysOfWeek(List<DayOfWeek> daysOfWeek) { this.daysOfWeek = daysOfWeek; }
+    public Integer getFrequencyHours() {
+        return frequencyHours;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setFrequencyHours(Integer frequencyHours) {
+        this.frequencyHours = frequencyHours;
+    }
 
-    public Prescription.PrescriptionStatus getStatus() { return status; }
-    public void setStatus(Prescription.PrescriptionStatus status) { this.status = status; }
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalTime getFirstDoseTime() {
+        return firstDoseTime;
+    }
+
+    public void setFirstDoseTime(LocalTime firstDoseTime) {
+        this.firstDoseTime = firstDoseTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
 }

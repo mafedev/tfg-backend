@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import com.tfg.proyecto.backend.model.users.User.Role;
 
-// Datos que envia el front para crear un usuario
 public class SignupRequest {
 
     @NotBlank(message = "El username es obligatorio")
@@ -20,7 +19,7 @@ public class SignupRequest {
     @Size(min = 6, message = "La contraseña debe tener mínimo 6 caracteres")
     private String password;
 
-    @NotNull
+    @NotNull(message = "El rol es obligatorio")
     private Role role;
 
     @NotBlank(message = "El teléfono es obligatorio")

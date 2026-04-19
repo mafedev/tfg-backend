@@ -3,16 +3,16 @@ package com.tfg.proyecto.backend.dto.request.medication;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PrescriptionTrackingRequest {
+public class PrescriptionTrackingResponse {
     private Long prescriptionId;
     private String medicationName;
     private String dose;
-    private List<PrescriptionTrackingTimeRequest> times = new ArrayList<>();
+    private List<PrescriptionTrackingTimeResponse> times = new ArrayList<>();
 
-    public PrescriptionTrackingRequest() {
+    public PrescriptionTrackingResponse() {
     }
 
-    public PrescriptionTrackingRequest(Long prescriptionId, String medicationName, String dose, List<PrescriptionTrackingTimeRequest> times) {
+    public PrescriptionTrackingResponse(Long prescriptionId, String medicationName, String dose, List<PrescriptionTrackingTimeResponse> times) {
         this.prescriptionId = prescriptionId;
         this.medicationName = medicationName;
         this.dose = dose;
@@ -43,24 +43,24 @@ public class PrescriptionTrackingRequest {
         this.dose = dose;
     }
 
-    public List<PrescriptionTrackingTimeRequest> getTimes() {
+    public List<PrescriptionTrackingTimeResponse> getTimes() {
         return times;
     }
 
-    public void setTimes(List<PrescriptionTrackingTimeRequest> times) {
+    public void setTimes(List<PrescriptionTrackingTimeResponse> times) {
         this.times = times;
     }
 
     // ------------ Tiempo de cada toma ------------
-    public static class PrescriptionTrackingTimeRequest {
+    public static class PrescriptionTrackingTimeResponse {
         private String scheduledTime;
         private Boolean taken;
         private String status;
 
-        public PrescriptionTrackingTimeRequest() {
+        public PrescriptionTrackingTimeResponse() {
         }
 
-        public PrescriptionTrackingTimeRequest(String scheduledTime, Boolean taken, String status) {
+        public PrescriptionTrackingTimeResponse(String scheduledTime, Boolean taken, String status) {
             this.scheduledTime = scheduledTime;
             this.taken = taken;
             this.status = status;

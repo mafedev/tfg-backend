@@ -1,6 +1,6 @@
 package com.tfg.proyecto.backend.service.medication;
 
-import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingRequest;
+import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingResponse;
 import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
@@ -30,7 +30,7 @@ public class PrescriptionTrackingService {
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
     // obtiene las tomas de cualquier día para un paciente específico, si las tomas no existen, se generan
     @Transactional
-    public List<PrescriptionTrackingRequest> getPrescriptionTracking(Long patientId, LocalDate date) {
+    public List<PrescriptionTrackingResponse> getPrescriptionTracking(Long patientId, LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay(); // inicio del día
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // fin del día
 
@@ -42,7 +42,7 @@ public class PrescriptionTrackingService {
                 .filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())) // y que está dentro del rango
                 .toList(); // lo convierte en una lista
 
-        List<PrescriptionTrackingRequest> result = new ArrayList<>(); // lista que se envía al front
+        List<PrescriptionTrackingResponse> result = new ArrayList<>(); // lista que se envía al front
 
         // Itera cada prescripción
         for (Prescription p : prescriptions) {
@@ -89,12 +89,12 @@ public class PrescriptionTrackingService {
 
             // --------- Pasarlas a DTO ---------
             // Aquí se guardan las horas de las tomas ya convertidas a DTO
-            List<PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest> times = new ArrayList<>();
+            List<PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse> times = new ArrayList<>();
 
             // se iteran las tomas
             for (PrescriptionTracking t : trackingList) {
                 // solo se envían los datos necesarios
-                times.add(new PrescriptionTrackingRequest.PrescriptionTrackingTimeRequest(
+                times.add(new PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse(
                         t.getScheduledTime().toString(), // se pasa la fecha a string
                         t.getTaken(), // se agrega el boolean
                         t.getStatus().name() // y el nombre del estado
@@ -102,7 +102,7 @@ public class PrescriptionTrackingService {
             }
 
             // Este agrupa la información del medicamento junto con el tiempo de las tomas
-            result.add(new PrescriptionTrackingRequest(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
+            result.add(new PrescriptionTrackingResponse(p.getId(), p.getMedication().getName(), p.getDose() + " " + p.getDoseUnit().name(), times));
         }
 
         return result;
