@@ -24,7 +24,7 @@ public class RelationController {
     }
 
     // Genera una relación desde el cuidador
-    @PostMapping("/generate")
+    @PostMapping
     public ResponseEntity<?> generateRelation(@RequestHeader("Authorization") String authHeader) {
         Long caregiverId = extractId(authHeader); //obtiene el id
         RelationResponse response = relationService.createRelation(caregiverId);
@@ -55,12 +55,6 @@ public class RelationController {
         return ResponseEntity.ok(patientsList);
     }
 
-    // Extrae el id del token
-    public Long extractId(String authHeader) {
-        String token = authHeader.substring(7); // extrae el id del token
-        return Long.parseLong(jwtUtil.extractId(token));
-    }
-
     // Elimina la relación
     @DeleteMapping("/{patientId}")
     public ResponseEntity<String> deleteRelation(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
@@ -72,5 +66,11 @@ public class RelationController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // Extrae el id del token
+    private Long extractId(String authHeader) {
+        String token = authHeader.substring(7); // extrae el id del token
+        return Long.parseLong(jwtUtil.extractId(token));
     }
 }

@@ -1,7 +1,5 @@
 package com.tfg.proyecto.backend.controller.users;
 
-import com.tfg.proyecto.backend.dto.request.patient.PatientUpdateRequest;
-import com.tfg.proyecto.backend.dto.response.patient.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.service.users.UserService;
 import org.springframework.http.ResponseEntity;
@@ -28,29 +26,5 @@ public class UserController {
         }
 
         return ResponseEntity.ok(user);
-    }
-
-    // -------------------- Obtener detalle paciente --------------------
-    @GetMapping("/patients/{id}")
-    public ResponseEntity<?> getPatientDetails(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
-        PatientListDetailsResponse response = userService.getPatientDetails(id, authHeader);
-
-        if (response == null) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
-    // -------------------- Actualizar paciente --------------------
-    @PutMapping("/patients/{id}")
-    public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody PatientUpdateRequest request, @RequestHeader("Authorization") String authHeader) {
-        boolean updated = userService.updatePatient(id, request, authHeader);
-
-        if (!updated) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return ResponseEntity.ok().build();
     }
 }
