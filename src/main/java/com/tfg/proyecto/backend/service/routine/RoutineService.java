@@ -1,17 +1,17 @@
 package com.tfg.proyecto.backend.service.routine;
 
-import com.tfg.proyecto.backend.dto.request.routine.RoutineRequest;
+import com.tfg.proyecto.backend.dto.response.routine.RoutineItemResponse;
+import com.tfg.proyecto.backend.dto.response.routine.RoutineResponse;
 import com.tfg.proyecto.backend.model.routine.Routine;
+import com.tfg.proyecto.backend.model.routine.RoutineItem;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.RelationRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
-import com.tfg.proyecto.backend.repository.routine.RoutineTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class RoutineService {
@@ -19,19 +19,17 @@ public class RoutineService {
     private final RoutineRepository routineRepository;
     private final PatientRepository patientRepository;
     private final RelationRepository relationRepository;
-    private final RoutineTrackingRepository routineTrackingRepository;
     private final JwtUtil jwtUtil;
 
-    public RoutineService(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, RoutineTrackingRepository routineTrackingRepository, JwtUtil jwtUtil) {
+    public RoutineService(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
         this.routineRepository = routineRepository;
         this.patientRepository = patientRepository;
         this.relationRepository = relationRepository;
-        this.routineTrackingRepository = routineTrackingRepository;
         this.jwtUtil = jwtUtil;
     }
 
     // ------------- Crear una rutina -------------
-    public Routine createRoutine(Long patientId, RoutineRequest request, String authHeader) {
+    public RoutineResponse createRoutine(Long patientId, String authHeader) {
         Long caregiverId = extractId(authHeader);
         boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
 
@@ -39,28 +37,22 @@ public class RoutineService {
             return null;
         }
 
-        Optional<Patient> patientOptional = patientRepository.findById(patientId);
-
-        if (patientOptional.isEmpty()) {
-            return null;
-        }
+        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
         if (routineRepository.findByPatientId(patientId).isPresent()) {
             return null;
         }
 
-        Routine routine = new Routine(null, patientOptional.get(), request.getBreakfastTime(), request.getLunchTime(), request.getDinnerTime(), request.getBathTime(), request.isHydrationEnabled(), request.getHydrationReminderHours());
-        return routineRepository.save(routine);
-    }
+        Routine routine = new Routine();
+        routine.setPatient(patient);
 
-    // ------------- Obtener rutina (paciente) -------------
-    public Routine getOwnRoutine(String authHeader) {
-        Long patientId = extractId(authHeader);
-        return routineRepository.findByPatientId(patientId).orElse(null);
+        Routine saved = routineRepository.save(routine);
+
+        return mapToResponse(saved);
     }
 
     // ------------- Obtener rutina de un paciente (cuidador) -------------
-    public Routine getRoutineAsCaregiver(Long patientId, String authHeader) {
+    public RoutineResponse getRoutineAsCaregiver(Long patientId, String authHeader) {
         Long caregiverId = extractId(authHeader);
 
         boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
@@ -69,57 +61,32 @@ public class RoutineService {
             return null;
         }
 
-        return routineRepository.findByPatientId(patientId).orElse(null);
+        Routine routine = routineRepository.findByPatientId(patientId).orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+
+        return mapToResponse(routine);
     }
 
-    // ------------- Editar una rutina -------------
-    public Routine updateRoutine(Long patientId, RoutineRequest request, String authHeader) {
-        Long caregiverId = extractId(authHeader);
+    private RoutineResponse mapToResponse(Routine routine) {
+        RoutineResponse res = new RoutineResponse();
+        res.setId(routine.getId());
+        res.setPatientId(routine.getPatient().getId());
 
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        List<RoutineItemResponse> items = routine.getItems().stream().map(this::mapItem).toList();
 
-        if (!allowed) {
-            return null;
-        }
+        res.setItems(items);
 
-        Optional<Routine> optional = routineRepository.findByPatientId(patientId);
-
-        if (optional.isEmpty()) {
-            return null;
-        }
-
-        Routine routine = optional.get();
-        routine.setBreakfastTime(request.getBreakfastTime());
-        routine.setLunchTime(request.getLunchTime());
-        routine.setDinnerTime(request.getDinnerTime());
-        routine.setBathTime(request.getBathTime());
-        routine.setHydrationEnabled(request.isHydrationEnabled());
-        routine.setHydrationReminderHours(request.getHydrationReminderHours());
-
-        return routineRepository.save(routine);
+        return res;
     }
 
-    // ------------- Eliminar una rutina -------------
-    @Transactional
-    public boolean deleteRoutine(Long patientId, String authHeader) {
-        Long caregiverId = extractId(authHeader);
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+    private RoutineItemResponse mapItem(RoutineItem item) {
 
-        if (!allowed) {
-            return false;
-        }
+        RoutineItemResponse dto = new RoutineItemResponse();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setTime(item.getTime());
+        dto.setType(item.getType().name());
 
-        Optional<Routine> optional = routineRepository.findByPatientId(patientId);
-
-        if (optional.isEmpty()) {
-            return false;
-        }
-
-        Routine routine = optional.get();
-        routineTrackingRepository.deleteByRoutineId(routine.getId());
-        routineRepository.delete(routine);
-
-        return true;
+        return dto;
     }
 
     private Long extractId(String authHeader) {
