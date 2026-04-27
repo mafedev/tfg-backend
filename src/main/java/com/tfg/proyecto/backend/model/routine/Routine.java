@@ -19,7 +19,7 @@ public class Routine {
     @JoinColumn(name = "patient_id", nullable = false, unique = true)
     private Patient patient;
 
-    @OneToMany(mappedBy = "routine", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoutineItem> items = new ArrayList<>();
 
     // -------------------- Constructores --------------------

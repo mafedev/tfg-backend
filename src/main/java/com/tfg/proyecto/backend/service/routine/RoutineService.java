@@ -31,13 +31,13 @@ public class RoutineService {
     // ------------- Crear una rutina -------------
     public RoutineResponse createRoutine(Long patientId, String authHeader) {
         Long caregiverId = extractId(authHeader);
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        validateRelation(caregiverId, patientId);
 
-        if (!allowed) {
+        Patient patient = patientRepository.findById(patientId).orElse(null);
+
+        if (patient == null){
             return null;
         }
-
-        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
         if (routineRepository.findByPatientId(patientId).isPresent()) {
             return null;
@@ -54,16 +54,29 @@ public class RoutineService {
     // ------------- Obtener rutina de un paciente (cuidador) -------------
     public RoutineResponse getRoutineAsCaregiver(Long patientId, String authHeader) {
         Long caregiverId = extractId(authHeader);
+        validateRelation(caregiverId, patientId);
 
-        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
 
-        if (!allowed) {
+        if (routine == null){
             return null;
         }
 
-        Routine routine = routineRepository.findByPatientId(patientId).orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
-
         return mapToResponse(routine);
+    }
+
+    // ---------------- Eliminar rutina ----------------
+    public void deleteRoutine(Long patientId, String authHeader) {
+        Long caregiverId = extractId(authHeader);
+        validateRelation(caregiverId, patientId);
+
+        Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
+
+        if (routine == null) {
+            return;
+        }
+
+        routineRepository.delete(routine);
     }
 
     private RoutineResponse mapToResponse(Routine routine) {
@@ -87,6 +100,13 @@ public class RoutineService {
         dto.setType(item.getType().name());
 
         return dto;
+    }
+
+    private void validateRelation(Long caregiverId, Long patientId) {
+        boolean allowed = relationRepository.existsByCaregiverIdAndPatientId(caregiverId, patientId);
+        if (!allowed) {
+            return;
+        }
     }
 
     private Long extractId(String authHeader) {

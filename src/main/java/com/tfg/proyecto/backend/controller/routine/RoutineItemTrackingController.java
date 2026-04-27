@@ -18,11 +18,6 @@ public class RoutineItemTrackingController {
         this.trackingService = trackingService;
     }
 
-    @PostMapping("/{itemId}")
-    public RoutineItemTracking createTracking(@PathVariable Long itemId, @RequestParam String date) {
-        return trackingService.createTracking(itemId, LocalDate.parse(date));
-    }
-
     @GetMapping("/{patientId}")
     public List<RoutineItemTrackingResponse> getByPatientAndDate(@PathVariable Long patientId, @RequestParam String date) {
         LocalDate parsedDate = LocalDate.parse(date);

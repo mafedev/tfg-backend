@@ -3,6 +3,8 @@ package com.tfg.proyecto.backend.model.routine;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "routine_items")
@@ -22,6 +24,9 @@ public class RoutineItem {
 
     @Enumerated(EnumType.STRING)
     private ItemType type;
+
+    @OneToMany(mappedBy = "routineItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoutineItemTracking> trackingList = new ArrayList<>();
 
     public enum ItemType {
         MEAL, HYGIENE, HEALTH, OTHER
@@ -78,5 +83,13 @@ public class RoutineItem {
 
     public void setType(ItemType type) {
         this.type = type;
+    }
+
+    public List<RoutineItemTracking> getTrackingList() {
+        return trackingList;
+    }
+
+    public void setTrackingList(List<RoutineItemTracking> trackingList) {
+        this.trackingList = trackingList;
     }
 }

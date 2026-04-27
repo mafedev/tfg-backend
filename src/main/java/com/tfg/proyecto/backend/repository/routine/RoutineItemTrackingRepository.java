@@ -13,4 +13,5 @@ public interface RoutineItemTrackingRepository extends JpaRepository<RoutineItem
     Optional<RoutineItemTracking> findByRoutineItemIdAndDate(Long itemId, LocalDate date);
 
     List<RoutineItemTracking> findByRoutineItem_Routine_IdAndDate(Long routineId, LocalDate date);
+    List<RoutineItemTracking> findByRoutineItemId(Long itemId);
 }

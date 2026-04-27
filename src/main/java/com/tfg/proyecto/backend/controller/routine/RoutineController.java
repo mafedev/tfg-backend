@@ -28,4 +28,11 @@ public class RoutineController {
         RoutineResponse response = routineService.getRoutineAsCaregiver(patientId, authHeader);
         return ResponseEntity.ok(response);
     }
+
+    // ------------- Borrar rutina -------------
+    @DeleteMapping("/{patientId}")
+    public ResponseEntity<Void> deleteRoutine(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        routineService.deleteRoutine(patientId, authHeader);
+        return ResponseEntity.noContent().build();
+    }
 }
