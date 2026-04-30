@@ -1,15 +1,12 @@
 package com.tfg.proyecto.backend.controller.routine;
 
-import com.tfg.proyecto.backend.dto.request.routine.RoutineRequest;
-import com.tfg.proyecto.backend.model.routine.Routine;
+import com.tfg.proyecto.backend.dto.response.routine.RoutineResponse;
 import com.tfg.proyecto.backend.service.routine.RoutineService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/routine")
-@CrossOrigin(origins = "*")
 public class RoutineController {
 
     private final RoutineService routineService;
@@ -20,59 +17,28 @@ public class RoutineController {
 
     // ------------- Crear una rutina -------------
     @PostMapping("/{patientId}")
-    public ResponseEntity<?> createRoutine(@PathVariable Long patientId, @RequestBody RoutineRequest request, @RequestHeader("Authorization") String authHeader) {
-        Routine routine = routineService.createRoutine(patientId, request, authHeader);
-
-        if (routine == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        return ResponseEntity.ok(routine);
-    }
-
-    // ------------- Obtener rutina (paciente) -------------
-    @GetMapping
-    public ResponseEntity<?> getOwnRoutine(@RequestHeader("Authorization") String authHeader) {
-        Routine routine = routineService.getOwnRoutine(authHeader);
-
-        if (routine == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(routine);
+    public ResponseEntity<RoutineResponse> createRoutine(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        RoutineResponse response = routineService.createRoutine(patientId, authHeader);
+        return ResponseEntity.ok(response);
     }
 
     // ------------- Obtener rutina de un paciente (cuidador) -------------
     @GetMapping("/{patientId}")
-    public ResponseEntity<?> getRoutineAsCaregiver(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Routine routine = routineService.getRoutineAsCaregiver(patientId, authHeader);
-
-        if (routine == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        return ResponseEntity.ok(routine);
+    public ResponseEntity<RoutineResponse> getRoutineByPatient(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        RoutineResponse response = routineService.getRoutineAsCaregiver(patientId, authHeader);
+        return ResponseEntity.ok(response);
     }
 
-    // ------------- Editar una rutina -------------
-    @PutMapping("/{patientId}")
-    public ResponseEntity<?> update(@PathVariable Long patientId, @RequestBody RoutineRequest request, @RequestHeader("Authorization") String authHeader) {
-        Routine routine = routineService.updateRoutine(patientId, request, authHeader);
-
-        if (routine == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        return ResponseEntity.ok(routine);
-    }
-
-    // ------------- Eliminar una rutina -------------
+    // ------------- Borrar rutina -------------
     @DeleteMapping("/{patientId}")
-    public ResponseEntity<?> delete(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        boolean deleted = routineService.deleteRoutine(patientId, authHeader);
+    public ResponseEntity<Void> deleteRoutine(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
+        routineService.deleteRoutine(patientId, authHeader);
+        return ResponseEntity.noContent().build();
+    }
 
-        if (!deleted) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok().build();
+    @GetMapping("/me")
+    public ResponseEntity<RoutineResponse> getMyRoutine(@RequestHeader("Authorization") String authHeader) {
+        RoutineResponse response = routineService.getRoutineAsPatient(authHeader);
+        return ResponseEntity.ok(response);
     }
 }
