@@ -35,7 +35,7 @@ public class RoutineService {
 
         Patient patient = patientRepository.findById(patientId).orElse(null);
 
-        if (patient == null){
+        if (patient == null) {
             return null;
         }
 
@@ -58,7 +58,7 @@ public class RoutineService {
 
         Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
 
-        if (routine == null){
+        if (routine == null) {
             return null;
         }
 
@@ -112,5 +112,22 @@ public class RoutineService {
     private Long extractId(String authHeader) {
         String token = authHeader.substring(7);
         return Long.parseLong(jwtUtil.extractId(token));
+    }
+
+    public RoutineResponse getRoutineAsPatient(String authHeader) {
+        Long userId = extractId(authHeader);
+        Patient patient = patientRepository.findByUserId(userId).orElse(null);
+
+        if (patient == null) {
+            return null;
+        }
+
+        Routine routine = routineRepository.findByPatientId(patient.getId()).orElse(null);
+
+        if (routine == null) {
+            return null;
+        }
+
+        return mapToResponse(routine);
     }
 }

@@ -35,4 +35,10 @@ public class RoutineController {
         routineService.deleteRoutine(patientId, authHeader);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<RoutineResponse> getMyRoutine(@RequestHeader("Authorization") String authHeader) {
+        RoutineResponse response = routineService.getRoutineAsPatient(authHeader);
+        return ResponseEntity.ok(response);
+    }
 }
