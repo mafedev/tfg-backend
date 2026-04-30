@@ -59,22 +59,28 @@ public class PrescriptionTrackingService {
 
             // obtiene las prescripciones del paciente
             List<Prescription> prescriptions = prescriptionRepository
-                    .findByPatientIdAndStatus(patientId, Prescription.PrescriptionStatus.ACTIVE)
+                    .findByPatientId(patientId)
                     .stream()
-                    .filter(p -> p.getStartDate() != null && p.getEndDate() != null) // se comprueba que tengan fechas válidas
-                    .filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())) // y que está dentro del rango
-                    .toList(); // lo convierte en una lista
+                    .filter(p -> p.getStartDate() != null && p.getEndDate() != null)
+                    .filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate()))
+                    .filter(p -> {
+                        if (p.getStatus() == Prescription.PrescriptionStatus.CANCELLED) {
+                            return !date.isAfter(LocalDate.now());
+                        }
+                        return true;
+                    })
+                    .toList();
 
             // Itera cada prescripción
             for (Prescription p : prescriptions) {
                 // Busca si ya hay tomas para hoy
                 List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
 
-                // si no hay tomas, se generan
-                if (trackingList.isEmpty()) {
-                    boolean isFirstDay = date.equals(p.getStartDate()); // solo el primer día usa la hora de primera dosis
+                if (trackingList.isEmpty() && p.getStatus() == Prescription.PrescriptionStatus.ACTIVE) {
 
-                    LocalDateTime doseTime = (isFirstDay && p.getFirstDoseTime() != null) ? LocalDateTime.of(date, p.getFirstDoseTime()) : startOfDay;
+                    boolean isFirstDay = date.equals(p.getStartDate());
+
+                    LocalDateTime doseTime =(isFirstDay && p.getFirstDoseTime() != null)? LocalDateTime.of(date, p.getFirstDoseTime()): startOfDay;
 
                     // frecuencia de toma si no existe, se asume cada 24h por seguridad
                     int frequency = p.getFrequencyHours() != null ? p.getFrequencyHours() : 24;
