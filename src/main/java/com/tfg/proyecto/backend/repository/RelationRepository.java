@@ -1,7 +1,9 @@
 package com.tfg.proyecto.backend.repository;
 
 import com.tfg.proyecto.backend.model.Relation;
+import com.tfg.proyecto.backend.model.users.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,4 +14,5 @@ public interface RelationRepository extends JpaRepository<Relation, Long> { // i
     boolean existsByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
     List<Relation> findByCaregiverIdAndPatientIdIsNotNull(Long caregiverId);
     Relation findByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
+    List<Relation> findByCaregiverId(Long caregiverId);
 }
