@@ -55,81 +55,86 @@ public class PrescriptionTrackingService {
                 continue;
             }
 
-            Long patientId = patient.getId();
+            List<Prescription> prescriptions = getValidPrescriptions(patient.getId(), date);
 
-            // obtiene las prescripciones del paciente
-            List<Prescription> prescriptions = prescriptionRepository
-                    .findByPatientId(patientId)
-                    .stream()
-                    .filter(p -> p.getStartDate() != null && p.getEndDate() != null)
-                    .filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate()))
-                    .filter(p -> {
-                        if (p.getStatus() == Prescription.PrescriptionStatus.CANCELLED) {
-                            return !date.isAfter(LocalDate.now());
-                        }
-                        return true;
-                    })
-                    .toList();
-
-            // Itera cada prescripción
             for (Prescription p : prescriptions) {
-                // Busca si ya hay tomas para hoy
-                List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
-
-                if (trackingList.isEmpty() && p.getStatus() == Prescription.PrescriptionStatus.ACTIVE) {
-
-                    boolean isFirstDay = date.equals(p.getStartDate());
-
-                    LocalDateTime doseTime =(isFirstDay && p.getFirstDoseTime() != null)? LocalDateTime.of(date, p.getFirstDoseTime()): startOfDay;
-
-                    // frecuencia de toma si no existe, se asume cada 24h por seguridad
-                    int frequency = p.getFrequencyHours() != null ? p.getFrequencyHours() : 24;
-
-                    // -------------------- Generación de las tomas --------------------
-                    // mientras la hora de la toma no este después del final del día
-                    while (doseTime.isBefore(endOfDay)) {
-                        PrescriptionTracking t = new PrescriptionTracking(); // nueva toma
-                        t.setPrescription(p); // se asocia la prescripción
-                        t.setScheduledTime(doseTime); // hora programada
-                        t.setStatus(PrescriptionTracking.TrackingStatus.PENDING); // estado pendiente por defecto
-                        t.setTaken(false); // por defecto está sin tomar
-                        trackingRepository.save(t); // la guarda
-
-                        // siguiente toma según frecuencia
-                        doseTime = doseTime.plusHours(frequency);
-
-                        // seguridad básica para evitar bucles infinitos si la frecuencia es inválida
-                        if (frequency <= 0) break;
-                    }
-                }
-                // vuelve a consultar las tomas creadas
-                trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
-
-                // --------- Pasarlas a DTO ---------
-                PrescriptionTrackingResponse dto = new PrescriptionTrackingResponse();
-
-                dto.setPrescriptionId(p.getId()); // id de la prescripción
-                dto.setMedicationName(p.getMedication().getName()); // nombre medicamento
-                dto.setDose(p.getDose() + " " + p.getDoseUnit()); // dosis + unidad
-
-                // Aquí se guardan las horas de las tomas ya convertidas a DTO
-                List<PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse> times = new ArrayList<>();
-
-                // se iteran las tomas
-                for (PrescriptionTracking t : trackingList) {
-                    PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse timeDto = new PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse();
-                    timeDto.setScheduledTime(t.getScheduledTime().toString());
-                    timeDto.setTaken(t.getTaken());
-                    timeDto.setStatus(t.getStatus().name());
-
-                    times.add(timeDto);
-                }
-                dto.setTimes(times);
-                result.add(dto);
+                generateTrackingIfNeeded(p, date, startOfDay, endOfDay);
+                List<PrescriptionTracking> trackingList = getTrackingForDay(p, startOfDay, endOfDay);
+                result.add(mapToDto(p, trackingList));
             }
         }
 
         return result;
+    }
+
+    private List<Prescription> getValidPrescriptions(Long patientId, LocalDate date) {
+        return prescriptionRepository.findByPatientId(patientId).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).filter(p -> {
+            if (p.getStatus() == Prescription.PrescriptionStatus.CANCELLED) {
+                return !date.isAfter(LocalDate.now());
+            }
+            return true;
+        }).toList();
+    }
+
+    private void generateTrackingIfNeeded(Prescription p, LocalDate date, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
+
+        if (!trackingList.isEmpty()){
+            return;
+        }
+
+        if (p.getStatus() != Prescription.PrescriptionStatus.ACTIVE){
+            return;
+        }
+
+        boolean isFirstDay = date.equals(p.getStartDate());
+
+        LocalDateTime doseTime = (isFirstDay && p.getFirstDoseTime() != null) ? LocalDateTime.of(date, p.getFirstDoseTime()) : startOfDay;
+
+        int frequency = p.getFrequencyHours() != null ? p.getFrequencyHours() : 24;
+
+        while (doseTime.isBefore(endOfDay)) {
+            PrescriptionTracking t = new PrescriptionTracking();
+            t.setPrescription(p);
+            t.setScheduledTime(doseTime);
+            t.setStatus(PrescriptionTracking.TrackingStatus.PENDING);
+            t.setTaken(false);
+
+            trackingRepository.save(t);
+
+            doseTime = doseTime.plusHours(frequency);
+
+            if (frequency <= 0){
+                break;
+            }
+        }
+    }
+
+    private List<PrescriptionTracking> getTrackingForDay(Prescription p, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
+    }
+
+    private PrescriptionTrackingResponse mapToDto(Prescription p, List<PrescriptionTracking> trackingList) {
+        PrescriptionTrackingResponse dto = new PrescriptionTrackingResponse();
+
+        dto.setPrescriptionId(p.getId());
+        dto.setMedicationName(p.getMedication().getName());
+        dto.setDose(p.getDose() + " " + p.getDoseUnit());
+
+        List<PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse> times = new ArrayList<>();
+
+        for (PrescriptionTracking t : trackingList) {
+            var timeDto = new PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse();
+            timeDto.setScheduledTime(t.getScheduledTime().toString());
+            timeDto.setTaken(t.getTaken());
+            timeDto.setStatus(t.getStatus().name());
+
+            times.add(timeDto);
+        }
+
+        dto.setTimes(times);
+
+        return dto;
     }
 
     // -------------------- Toggle del seguimiento --------------------
