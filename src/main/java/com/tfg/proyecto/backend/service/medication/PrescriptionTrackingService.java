@@ -168,4 +168,29 @@ public class PrescriptionTrackingService {
         }
         return trackingRepository.save(tracking); // lo guarda
     }
+
+    @Transactional
+    public void deleteFutureTracking(Long prescriptionId) {
+        LocalDateTime now = LocalDateTime.now();
+        List<PrescriptionTracking> list = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(prescriptionId, now, now.plusYears(10));
+        trackingRepository.deleteAll(list);
+    }
+
+    @Transactional
+    public void regenerateTodayTracking(Long prescriptionId) {
+        LocalDate today = LocalDate.now();
+
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay();
+
+        trackingRepository.deleteByPrescriptionIdAndScheduledTimeBetween(prescriptionId, startOfDay, endOfDay);
+
+        Optional<Prescription> optional = prescriptionRepository.findById(prescriptionId);
+        if (optional.isEmpty()) {
+            return;
+        }
+
+        Prescription p = optional.get();
+        generateTrackingIfNeeded(p, today, startOfDay, endOfDay);
+    }
 }

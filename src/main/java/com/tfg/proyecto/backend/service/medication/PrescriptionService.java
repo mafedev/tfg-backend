@@ -6,12 +6,10 @@ import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.medication.MedicationRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
-import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +19,13 @@ public class PrescriptionService {
     private final PatientRepository patientRepository;
     private final MedicationRepository medicationRepository;
     private final PrescriptionRepository prescriptionRepository;
-    private final PrescriptionTrackingRepository prescriptionTrackingRepository;
+    private final PrescriptionTrackingService prescriptionTrackingService;
 
-    public PrescriptionService(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository) {
+    public PrescriptionService(PatientRepository patientRepository, MedicationRepository medicationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingService prescriptionTrackingService) {
         this.patientRepository = patientRepository;
         this.medicationRepository = medicationRepository;
         this.prescriptionRepository = prescriptionRepository;
-        this.prescriptionTrackingRepository = prescriptionTrackingRepository;
+        this.prescriptionTrackingService = prescriptionTrackingService;
     }
 
     public Prescription createPrescription(PrescriptionRequest request) {
@@ -73,13 +71,13 @@ public class PrescriptionService {
 
         Prescription prescription = optional.get();
         prescription.setStatus(Prescription.PrescriptionStatus.CANCELLED);
-
         prescriptionRepository.save(prescription);
-        prescriptionTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
+        prescriptionTrackingService.deleteFutureTracking(id);
 
         return true;
     }
 
+    @Transactional
     public boolean updatePrescription(Long id, PrescriptionRequest request) {
         Optional<Prescription> optionalPrescription = prescriptionRepository.findById(id);
         if (optionalPrescription.isEmpty()) {
@@ -108,7 +106,9 @@ public class PrescriptionService {
         prescription.setFirstDoseTime(request.getFirstDoseTime());
         prescription.setNotes(request.getNotes());
         prescriptionRepository.save(prescription);
-        prescriptionTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
+
+        prescriptionTrackingService.deleteFutureTracking(id);   // borra futuro
+        prescriptionTrackingService.regenerateTodayTracking(id); // borra hoy
 
         return true;
     }
