@@ -9,6 +9,7 @@ import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,6 +62,8 @@ public class PrescriptionService {
 
         return prescriptionRepository.findByPatientId(patientId);
     }
+
+    @Transactional
     public boolean deletePrescription(Long id) {
         Optional<Prescription> optional = prescriptionRepository.findById(id);
 
@@ -72,6 +75,7 @@ public class PrescriptionService {
         prescription.setStatus(Prescription.PrescriptionStatus.CANCELLED);
 
         prescriptionRepository.save(prescription);
+        prescriptionTrackingRepository.deleteFutureTracking(id, LocalDateTime.now());
 
         return true;
     }
