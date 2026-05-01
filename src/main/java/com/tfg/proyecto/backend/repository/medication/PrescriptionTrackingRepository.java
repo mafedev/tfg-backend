@@ -1,10 +1,7 @@
 package com.tfg.proyecto.backend.repository.medication;
 
 import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,8 +19,5 @@ public interface PrescriptionTrackingRepository extends JpaRepository<Prescripti
     // Busca un registro en específico por hora e id
     Optional<PrescriptionTracking> findByPrescription_IdAndScheduledTime(Long prescriptionId, LocalDateTime scheduledTime);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM PrescriptionTracking t WHERE t.prescription.id = :id AND t.scheduledTime > :now")
-    void deleteFutureTracking(Long id, LocalDateTime now);
+    void deleteByPrescriptionIdAndScheduledTimeBetween(Long prescriptionId, LocalDateTime start, LocalDateTime end);
 }
