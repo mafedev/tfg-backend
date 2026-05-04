@@ -1,12 +1,14 @@
 package com.tfg.proyecto.backend.controller.medication;
 
 import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingResponse;
+import com.tfg.proyecto.backend.dto.request.medication.ToggleTrackingRequest;
+import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.medication.PrescriptionTrackingService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,8 +38,11 @@ public class PrescriptionTrackingController {
     // -------------------- Toggle del seguimiento --------------------
     // Cambia entre true y false el estado de la toma del medicamento
     @PutMapping("/toggle")
-    public void toggleTracking(@RequestParam Long prescriptionId, @RequestParam String scheduledTime) {
-        LocalDateTime dateTime = LocalDateTime.parse(scheduledTime); // convierte a LocalDateTime
-        service.toggleTracking(prescriptionId, dateTime); // llama al service
+    public ResponseEntity<?> toggle(@RequestBody ToggleTrackingRequest request) {
+        PrescriptionTracking tracking = service.toggleTracking(request.getPrescriptionId(), request.getScheduledTime());
+        if (tracking == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
     }
 }
