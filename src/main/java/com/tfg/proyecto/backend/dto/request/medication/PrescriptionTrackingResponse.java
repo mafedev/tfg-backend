@@ -54,15 +54,13 @@ public class PrescriptionTrackingResponse {
     // ------------ Tiempo de cada toma ------------
     public static class PrescriptionTrackingTimeResponse {
         private String scheduledTime;
-        private Boolean taken;
         private String status;
 
         public PrescriptionTrackingTimeResponse() {
         }
 
-        public PrescriptionTrackingTimeResponse(String scheduledTime, Boolean taken, String status) {
+        public PrescriptionTrackingTimeResponse(String scheduledTime, String status) {
             this.scheduledTime = scheduledTime;
-            this.taken = taken;
             this.status = status;
         }
 
@@ -72,14 +70,6 @@ public class PrescriptionTrackingResponse {
 
         public void setScheduledTime(String scheduledTime) {
             this.scheduledTime = scheduledTime;
-        }
-
-        public Boolean getTaken() {
-            return taken;
-        }
-
-        public void setTaken(Boolean taken) {
-            this.taken = taken;
         }
 
         public String getStatus() {

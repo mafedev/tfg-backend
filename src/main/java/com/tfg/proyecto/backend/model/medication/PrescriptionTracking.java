@@ -17,26 +17,23 @@ public class PrescriptionTracking {
     private LocalDateTime scheduledTime;
     private LocalDateTime takenTime;
 
-    private Boolean taken;// tomada o pendiente
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TrackingStatus status;
 
     public enum TrackingStatus {
-        PENDING, TAKEN, SKIPPED
+        PENDING, TAKEN
     }
 
     // -------------------- Constructores --------------------
     public PrescriptionTracking() {
     }
 
-    public PrescriptionTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, Boolean taken, TrackingStatus status) {
+    public PrescriptionTracking(Long id, Prescription prescription, LocalDateTime scheduledTime, LocalDateTime takenTime, TrackingStatus status) {
         this.id = id;
         this.prescription = prescription;
         this.scheduledTime = scheduledTime;
         this.takenTime = takenTime;
-        this.taken = taken;
         this.status = status;
     }
 
@@ -71,14 +68,6 @@ public class PrescriptionTracking {
 
     public void setTakenTime(LocalDateTime takenTime) {
         this.takenTime = takenTime;
-    }
-
-    public Boolean getTaken() {
-        return taken;
-    }
-
-    public void setTaken(Boolean taken) {
-        this.taken = taken;
     }
 
     public TrackingStatus getStatus() {

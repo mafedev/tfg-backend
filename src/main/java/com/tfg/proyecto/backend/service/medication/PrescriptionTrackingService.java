@@ -98,7 +98,7 @@ public class PrescriptionTrackingService {
             t.setPrescription(p);
             t.setScheduledTime(doseTime);
             t.setStatus(PrescriptionTracking.TrackingStatus.PENDING);
-            t.setTaken(false);
+            t.setTakenTime(null);
 
             trackingRepository.save(t);
 
@@ -126,7 +126,6 @@ public class PrescriptionTrackingService {
         for (PrescriptionTracking t : trackingList) {
             var timeDto = new PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse();
             timeDto.setScheduledTime(t.getScheduledTime().toString());
-            timeDto.setTaken(t.getTaken());
             timeDto.setStatus(t.getStatus().name());
 
             times.add(timeDto);
@@ -154,11 +153,9 @@ public class PrescriptionTrackingService {
         // Si el estado es TAKEN
         if (tracking.getStatus() == PrescriptionTracking.TrackingStatus.TAKEN) {
             tracking.setStatus(PrescriptionTracking.TrackingStatus.PENDING); // lo pasa a PENDING
-            tracking.setTaken(false); // lo pone a false
             tracking.setTakenTime(null); // y quita el tiempo de la toma
         } else { // si el estado es PENDING
             tracking.setStatus(PrescriptionTracking.TrackingStatus.TAKEN); // lo pasa a TAKEN
-            tracking.setTaken(true); // lo pone a true
             tracking.setTakenTime(LocalDateTime.now()); // y guarda la hora actual
 
             // se obtiene la prescripción asociada
@@ -166,7 +163,9 @@ public class PrescriptionTrackingService {
 
             notificationService.createNotification(p.getPatient().getId(), "Medicamento tomado", "Has tomado " + p.getMedication().getName());
         }
-        return trackingRepository.save(tracking); // lo guarda
+
+        PrescriptionTracking saved = trackingRepository.save(tracking);
+        return saved;
     }
 
     @Transactional
