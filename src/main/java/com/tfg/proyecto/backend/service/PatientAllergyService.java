@@ -7,6 +7,7 @@ import com.tfg.proyecto.backend.repository.allergies.AllergyRepository;
 import com.tfg.proyecto.backend.repository.allergies.PatientAllergyRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +49,11 @@ public class PatientAllergyService {
         pa.setSeverity(severity);
 
         return patientAllergyRepository.save(pa);
+    }
+
+    // -------------------- DELETE --------------------
+    @Transactional
+    public void delete(Long patientId, Long allergyId) {
+        patientAllergyRepository.deleteByPatientIdAndAllergyId(patientId, allergyId);
     }
 }

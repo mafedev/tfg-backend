@@ -28,4 +28,10 @@ public class PatientAllergyController {
     public PatientAllergy create(@PathVariable Long patientId, @RequestBody PatientAllergyRequest request) {
         return service.addAllergy(patientId, request.getName(), request.getDescription(), request.getSeverity());
     }
+
+    // -------------------- DELETE --------------------
+    @DeleteMapping("/{allergyId}")
+    public void delete(@PathVariable Long patientId, @PathVariable Long allergyId) {
+        service.delete(patientId, allergyId);
+    }
 }
