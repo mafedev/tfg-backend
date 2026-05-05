@@ -56,4 +56,14 @@ public class PatientAllergyService {
     public void delete(Long patientId, Long allergyId) {
         patientAllergyRepository.deleteByPatientIdAndAllergyId(patientId, allergyId);
     }
+
+    // -------------------- UPDATE --------------------
+    @Transactional
+    public PatientAllergy updateSeverity(Long patientId, Long allergyId, PatientAllergy.AllergySeverity severity) {
+        PatientAllergy pa = patientAllergyRepository.findByPatientIdAndAllergyId(patientId, allergyId).orElseThrow(() -> new RuntimeException("Relación no encontrada"));
+        pa.setSeverity(severity);
+
+        PatientAllergy updated = patientAllergyRepository.save(pa);
+        return updated;
+    }
 }

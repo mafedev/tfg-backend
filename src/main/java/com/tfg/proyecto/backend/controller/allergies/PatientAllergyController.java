@@ -34,4 +34,10 @@ public class PatientAllergyController {
     public void delete(@PathVariable Long patientId, @PathVariable Long allergyId) {
         service.delete(patientId, allergyId);
     }
+
+    // -------------------- UPDATE --------------------
+    @PutMapping("/{allergyId}")
+    public PatientAllergy updateSeverity(@PathVariable Long patientId, @PathVariable Long allergyId, @RequestBody PatientAllergyRequest request) {
+        return service.updateSeverity(patientId, allergyId, request.getSeverity());
+    }
 }
