@@ -21,7 +21,11 @@ public class RoutineItemTrackingController {
     @GetMapping("/{patientId}")
     public List<RoutineItemTrackingResponse> getByPatientAndDate(@PathVariable Long patientId, @RequestParam String date) {
         LocalDate parsedDate = LocalDate.parse(date);
-        trackingService.generateDailyTracking(patientId, parsedDate);
+
+        if (parsedDate.equals(LocalDate.now())) {
+            trackingService.generateDailyTracking(patientId, parsedDate);
+        }
+
         return trackingService.getTrackingByPatientAndDate(patientId, parsedDate).stream().map(RoutineItemTrackingResponse::new).toList();
     }
 
