@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.response;
+package com.tfg.proyecto.backend.dto.response.notification;
 
 import java.time.LocalDateTime;
 

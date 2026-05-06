@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.model;
+package com.tfg.proyecto.backend.model.relation;
 
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;

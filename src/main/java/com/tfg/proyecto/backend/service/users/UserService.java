@@ -5,7 +5,7 @@ import com.tfg.proyecto.backend.dto.request.patient.PatientUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.patient.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
-import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;

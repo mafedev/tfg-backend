@@ -1,9 +1,10 @@
 package com.tfg.proyecto.backend.service.users;
 
 import com.tfg.proyecto.backend.dto.request.patient.PatientRequest;
+import com.tfg.proyecto.backend.model.relation.Relation;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
-import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;
@@ -40,7 +41,7 @@ public class PatientService {
         patient.setName(request.getName());
         patient.setPhone(request.getPhone());
         Patient savedPatient = patientRepository.save(patient);
-        relationRepository.save(new com.tfg.proyecto.backend.model.Relation(null, caregiver, savedPatient, null));
+        relationRepository.save(new Relation(null, caregiver, savedPatient, null));
 
         return savedPatient;
     }

@@ -1,10 +1,10 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.appointment;
 
-import com.tfg.proyecto.backend.dto.request.AppointmentRequest;
-import com.tfg.proyecto.backend.dto.response.AppointmentResponse;
+import com.tfg.proyecto.backend.dto.request.appointment.AppointmentRequest;
+import com.tfg.proyecto.backend.dto.response.appointment.AppointmentResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.AppointmentRepository;
+import com.tfg.proyecto.backend.repository.appointment.AppointmentRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

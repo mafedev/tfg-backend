@@ -1,7 +1,7 @@
-package com.tfg.proyecto.backend.controller;
+package com.tfg.proyecto.backend.controller.notification;
 
-import com.tfg.proyecto.backend.dto.response.NotificationResponse;
-import com.tfg.proyecto.backend.service.NotificationService;
+import com.tfg.proyecto.backend.dto.response.notification.NotificationResponse;
+import com.tfg.proyecto.backend.service.notification.NotificationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

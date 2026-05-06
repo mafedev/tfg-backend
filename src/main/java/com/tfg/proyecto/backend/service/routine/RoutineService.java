@@ -5,7 +5,7 @@ import com.tfg.proyecto.backend.dto.response.routine.RoutineResponse;
 import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.model.routine.RoutineItem;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.security.JwtUtil;

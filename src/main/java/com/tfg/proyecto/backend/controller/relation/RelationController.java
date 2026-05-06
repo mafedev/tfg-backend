@@ -1,9 +1,9 @@
-package com.tfg.proyecto.backend.controller;
+package com.tfg.proyecto.backend.controller.relation;
 
 import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
-import com.tfg.proyecto.backend.dto.response.RelationResponse;
+import com.tfg.proyecto.backend.dto.response.relation.RelationResponse;
 import com.tfg.proyecto.backend.security.JwtUtil;
-import com.tfg.proyecto.backend.service.RelationService;
+import com.tfg.proyecto.backend.service.relation.RelationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

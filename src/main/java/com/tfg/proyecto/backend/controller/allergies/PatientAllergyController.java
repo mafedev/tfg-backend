@@ -2,7 +2,7 @@ package com.tfg.proyecto.backend.controller.allergies;
 
 import com.tfg.proyecto.backend.dto.request.allergies.PatientAllergyRequest;
 import com.tfg.proyecto.backend.model.allergies.PatientAllergy;
-import com.tfg.proyecto.backend.service.PatientAllergyService;
+import com.tfg.proyecto.backend.service.allergies.PatientAllergyService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

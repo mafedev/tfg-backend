@@ -1,10 +1,10 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.notification;
 
-import com.tfg.proyecto.backend.dto.response.NotificationResponse;
+import com.tfg.proyecto.backend.dto.response.notification.NotificationResponse;
 import com.tfg.proyecto.backend.model.notification.Notification;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
-import com.tfg.proyecto.backend.repository.NotificationRepository;
+import com.tfg.proyecto.backend.repository.notification.NotificationRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import org.springframework.stereotype.Service;
 

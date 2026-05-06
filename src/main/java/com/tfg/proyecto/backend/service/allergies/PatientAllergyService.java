@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.allergies;
 
 import com.tfg.proyecto.backend.model.allergies.Allergy;
 import com.tfg.proyecto.backend.model.allergies.PatientAllergy;

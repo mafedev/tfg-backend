@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.request;
+package com.tfg.proyecto.backend.dto.request.appointment;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

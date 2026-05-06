@@ -1,12 +1,12 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.relation;
 
-import com.tfg.proyecto.backend.dto.response.RelationResponse;
+import com.tfg.proyecto.backend.dto.response.relation.RelationResponse;
 import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.model.Relation;
+import com.tfg.proyecto.backend.model.relation.Relation;
 import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
-import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
