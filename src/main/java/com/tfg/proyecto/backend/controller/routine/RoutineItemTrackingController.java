@@ -33,4 +33,9 @@ public class RoutineItemTrackingController {
     public RoutineItemTracking updateStatus(@PathVariable Long trackingId, @RequestParam String status) {
         return trackingService.updateStatus(trackingId, RoutineItemTracking.Status.valueOf(status.toUpperCase()));
     }
+
+    @GetMapping("/me")
+    public List<RoutineItemTrackingResponse> getMyTracking(@RequestHeader("Authorization") String authHeader, @RequestParam String date) {
+        return trackingService.getTrackingForPatient(authHeader, date);
+    }
 }
