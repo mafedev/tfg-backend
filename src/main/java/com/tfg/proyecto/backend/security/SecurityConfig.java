@@ -2,8 +2,8 @@ package com.tfg.proyecto.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,19 +20,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf(csrf -> csrf.disable()) // desactivar CSRF para Postman / Flutter
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/routine/**").authenticated()
-                        .requestMatchers("/api/medications/**").authenticated()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults()); // desactiva seguridad por defecto
+        http.csrf(csrf -> csrf.disable()) // desactivar CSRF porque se usa JWT
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // no se usarán sesiones
+                .authorizeHttpRequests(auth -> auth // define permisos de acceso a endpoints
+                        .requestMatchers("/api/auth/**").permitAll() // públicos
+                        .anyRequest().authenticated()); // todos los demás autenticados
 
-        // agrega el filtro jwt antes del filtro de autenticación
+        // agrega el filtro jwt antes del filtro de autenticación normal de Spring
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+        return http.build(); // se contruye la configuración de seguridad
     }
 }
