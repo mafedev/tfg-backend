@@ -6,10 +6,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public class PrescriptionRequest {
 
@@ -35,6 +33,8 @@ public class PrescriptionRequest {
 
     @Size(max = 500, message = "Las notas no pueden superar los 500 caracteres")
     private String notes;
+
+    private Prescription.PrescriptionStatus status;
 
     // -------------------- Constructor --------------------
     public PrescriptionRequest() {
@@ -113,4 +113,11 @@ public class PrescriptionRequest {
         this.notes = notes;
     }
 
+    public Prescription.PrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Prescription.PrescriptionStatus status) {
+        this.status = status;
+    }
 }
