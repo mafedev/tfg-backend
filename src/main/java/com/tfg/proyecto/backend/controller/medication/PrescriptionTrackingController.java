@@ -25,14 +25,13 @@ public class PrescriptionTrackingController {
 
     // -------------------- Obtiene el seguimiento por fecha --------------------
     // recibe el id del paciente y una fecha, devuelve todas las tomas de ese día
-    @GetMapping
-    public List<PrescriptionTrackingResponse> getPrescriptionTracking(@RequestHeader("Authorization") String header, @RequestParam String date) {
+    @GetMapping("/patient/{patientId}")
+    public List<PrescriptionTrackingResponse> getPrescriptionTracking(@RequestHeader("Authorization") String header, @PathVariable Long patientId, @RequestParam String date) {
         // se obtiene el token
         String token = header.substring(7);
-        // se extrae el id del usuario
-        Long userId = Long.parseLong(jwtUtil.extractId(token));
+        jwtUtil.extractId(token);
         LocalDate parsedDate = LocalDate.parse(date); // se pasa la fecha a localdate
-        return service.getPrescriptionTracking(userId, parsedDate); // llama al service
+        return service.getPrescriptionTracking(patientId, parsedDate); // llama al service
     }
 
     // -------------------- Toggle del seguimiento --------------------

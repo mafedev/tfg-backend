@@ -24,22 +24,19 @@ public class PrescriptionTrackingService {
     private final PrescriptionTrackingRepository trackingRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final NotificationService notificationService;
-    private final RelationRepository relationRepository;
 
-    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, NotificationService notificationService, RelationRepository relationRepository) {
+    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, NotificationService notificationService) {
         this.trackingRepository = trackingRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.notificationService = notificationService;
-        this.relationRepository = relationRepository;
     }
 
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
     // obtiene las tomas de cualquier día para un paciente específico, si las tomas no existen, se generan
     @Transactional
-    public List<PrescriptionTrackingResponse> getPrescriptionTracking(Long userId, LocalDate date) {
-        List<Relation> relations = relationRepository.findByCaregiverId(userId);
+    public List<PrescriptionTrackingResponse> getPrescriptionTracking(Long patientId, LocalDate date) {
 
-        if (relations.isEmpty()) {
+        if (prescriptionRepository.findByPatientId(patientId).isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -48,20 +45,12 @@ public class PrescriptionTrackingService {
 
         List<PrescriptionTrackingResponse> result = new ArrayList<>(); // lista que se envía al front
 
-        for (Relation relation : relations) {
-            Patient patient = relation.getPatient();
+        List<Prescription> prescriptions = getValidPrescriptions(patientId, date);
 
-            if (patient == null) {
-                continue;
-            }
-
-            List<Prescription> prescriptions = getValidPrescriptions(patient.getId(), date);
-
-            for (Prescription p : prescriptions) {
-                generateTrackingIfNeeded(p, date, startOfDay, endOfDay);
-                List<PrescriptionTracking> trackingList = getTrackingForDay(p, startOfDay, endOfDay);
-                result.add(mapToDto(p, trackingList));
-            }
+        for (Prescription p : prescriptions) {
+            generateTrackingIfNeeded(p, date, startOfDay, endOfDay);
+            List<PrescriptionTracking> trackingList = getTrackingForDay(p, startOfDay, endOfDay);
+            result.add(mapToDto(p, trackingList));
         }
 
         return result;
