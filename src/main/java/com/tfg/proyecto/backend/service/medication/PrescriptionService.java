@@ -105,6 +105,7 @@ public class PrescriptionService {
         prescription.setEndDate(request.getEndDate());
         prescription.setFirstDoseTime(request.getFirstDoseTime());
         prescription.setNotes(request.getNotes());
+        prescription.setStatus(request.getStatus());
         prescriptionRepository.save(prescription);
 
         prescriptionTrackingService.deleteFutureTracking(id);   // borra futuro
