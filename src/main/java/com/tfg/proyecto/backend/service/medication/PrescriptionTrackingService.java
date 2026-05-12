@@ -1,14 +1,10 @@
 package com.tfg.proyecto.backend.service.medication;
 
 import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingResponse;
-import com.tfg.proyecto.backend.model.relation.Relation;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
-import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
-import com.tfg.proyecto.backend.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +19,10 @@ public class PrescriptionTrackingService {
 
     private final PrescriptionTrackingRepository trackingRepository;
     private final PrescriptionRepository prescriptionRepository;
-    private final NotificationService notificationService;
 
-    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, NotificationService notificationService) {
+    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository) {
         this.trackingRepository = trackingRepository;
         this.prescriptionRepository = prescriptionRepository;
-        this.notificationService = notificationService;
     }
 
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
@@ -149,8 +143,6 @@ public class PrescriptionTrackingService {
 
             // se obtiene la prescripción asociada
             Prescription p = tracking.getPrescription();
-
-            notificationService.createNotification(p.getPatient().getId(), "Medicamento tomado", "Has tomado " + p.getMedication().getName());
         }
 
         PrescriptionTracking saved = trackingRepository.save(tracking);
