@@ -7,6 +7,7 @@ import com.tfg.proyecto.backend.model.relation.Relation;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.relation.RelationRepository;
+import com.tfg.proyecto.backend.service.medication.PrescriptionTrackingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,11 +21,13 @@ public class CaregiverHomeService {
     private final RelationRepository relationRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final PrescriptionTrackingRepository prescriptionTrackingRepository;
+    private final PrescriptionTrackingService prescriptionTrackingService;
 
-    public CaregiverHomeService(RelationRepository relationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository) {
+    public CaregiverHomeService(RelationRepository relationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository, PrescriptionTrackingService prescriptionTrackingService) {
         this.relationRepository = relationRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.prescriptionTrackingRepository = prescriptionTrackingRepository;
+        this.prescriptionTrackingService = prescriptionTrackingService;
     }
 
     public List<HomeTrackingResponse> getTodayTrackingByCaregiver(Long caregiverId) {
@@ -45,6 +48,9 @@ public class CaregiverHomeService {
 
         List<HomeTrackingResponse> result = new ArrayList<>();
 
+        for (Long patientId : patientIds) {
+            prescriptionTrackingService.getPrescriptionTracking(patientId, today);
+        }
         for (Prescription p : prescriptions) {
 
             List<PrescriptionTracking> trackingList = prescriptionTrackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), start, end);
@@ -52,6 +58,10 @@ public class CaregiverHomeService {
             for (PrescriptionTracking t : trackingList) {
 
                 if (t.getStatus() == PrescriptionTracking.TrackingStatus.TAKEN) {
+                    continue;
+                }
+
+                if (t.getScheduledTime().isBefore(LocalDateTime.now())) {
                     continue;
                 }
 
