@@ -1,9 +1,12 @@
 package com.tfg.proyecto.backend.service.home;
 
+import com.tfg.proyecto.backend.dto.response.home.HomeCalendarResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeTrackingResponse;
+import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
 import com.tfg.proyecto.backend.model.relation.Relation;
+import com.tfg.proyecto.backend.repository.appointment.AppointmentRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.relation.RelationRepository;
@@ -22,12 +25,14 @@ public class CaregiverHomeService {
     private final PrescriptionRepository prescriptionRepository;
     private final PrescriptionTrackingRepository prescriptionTrackingRepository;
     private final PrescriptionTrackingService prescriptionTrackingService;
+    private final AppointmentRepository appointmentRepository;
 
-    public CaregiverHomeService(RelationRepository relationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository, PrescriptionTrackingService prescriptionTrackingService) {
+    public CaregiverHomeService(RelationRepository relationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository, PrescriptionTrackingService prescriptionTrackingService, AppointmentRepository appointmentRepository) {
         this.relationRepository = relationRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.prescriptionTrackingRepository = prescriptionTrackingRepository;
         this.prescriptionTrackingService = prescriptionTrackingService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public List<HomeTrackingResponse> getTodayTrackingByCaregiver(Long caregiverId) {
@@ -80,5 +85,24 @@ public class CaregiverHomeService {
             }
         }
         return result;
+    }
+
+    public List<HomeCalendarResponse> getAppointmentDays(Long caregiverId) {
+        List<Relation> relations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
+        List<Long> patientIds = relations.stream().map(r -> r.getPatient().getId()).toList();
+
+        if (patientIds.isEmpty()) {
+            return List.of();
+        }
+
+        LocalDate today = LocalDate.now();
+
+        return appointmentRepository.findByPatientIdIn(patientIds).stream()
+                // solo desde hoy
+                .filter(a -> !a.getDateTime().toLocalDate().isBefore(today))
+                // ignora las canceladas
+                .filter(a -> a.getStatus() != Appointment.AppointmentStatus.CANCELLED)
+                // quita fechas repetidas
+                .map(a -> a.getDateTime().toLocalDate()).distinct().sorted().map(HomeCalendarResponse::new).toList();
     }
 }
