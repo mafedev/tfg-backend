@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
     List<Prescription> findByPatientId(Long patientId);
-    List<Prescription> findByPatientIdAndStatus(Long patientId, Prescription.PrescriptionStatus status);
+    List<Prescription> findByPatientIdIn(List<Long> patientIds);
 }
