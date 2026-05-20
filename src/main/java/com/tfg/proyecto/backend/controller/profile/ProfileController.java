@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.controller.profile;
 
+import com.tfg.proyecto.backend.dto.request.profile.ChangePasswordRequest;
 import com.tfg.proyecto.backend.dto.request.profile.ProfileUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.profile.ProfileResponse;
 import com.tfg.proyecto.backend.security.JwtUtil;
@@ -40,5 +41,12 @@ public class ProfileController {
     private Long extractId(String authHeader) {
         String token = authHeader.substring(7);
         return Long.parseLong(jwtUtil.extractId(token));
+    }
+
+    // ---------------- CHANGE PASSWORD ----------------
+    @PutMapping("/me/password")
+    public void changePassword(@RequestHeader("Authorization") String authHeader, @RequestBody ChangePasswordRequest request) {
+        Long userId = extractId(authHeader);
+        profileService.changePassword(userId, request);
     }
 }

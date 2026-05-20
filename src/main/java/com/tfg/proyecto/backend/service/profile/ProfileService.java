@@ -1,23 +1,26 @@
 package com.tfg.proyecto.backend.service.profile;
 
+import com.tfg.proyecto.backend.dto.request.profile.ChangePasswordRequest;
 import com.tfg.proyecto.backend.dto.request.profile.ProfileUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.profile.ProfileResponse;
 import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProfileService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ProfileService(UserRepository userRepository) {
+    public ProfileService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // ---------------- Obtener datos ----------------
     public ProfileResponse getProfile(Long userId) {
-
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         return map(user);
@@ -37,9 +40,20 @@ public class ProfileService {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
 
-        User saved = userRepository.save(user);
+        return map(userRepository.save(user));
+    }
 
-        return map(saved);
+    // ---------------- Cambiar contraseña ----------------
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Contraseña actual incorrecta");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     private ProfileResponse map(User user) {
