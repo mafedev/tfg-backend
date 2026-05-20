@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.service.home;
 
+import com.tfg.proyecto.backend.dto.response.home.HomeAppointmentDetailResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeCalendarResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeTrackingResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
@@ -104,5 +105,18 @@ public class CaregiverHomeService {
                 .filter(a -> a.getStatus() != Appointment.AppointmentStatus.CANCELLED)
                 // quita fechas repetidas
                 .map(a -> a.getDateTime().toLocalDate()).distinct().sorted().map(HomeCalendarResponse::new).toList();
+    }
+
+    public List<HomeAppointmentDetailResponse> getAppointmentsByDate(Long caregiverId, LocalDate date) {
+        List<Relation> relations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
+        List<Long> patientIds = relations.stream().map(r -> r.getPatient().getId()).toList();
+
+        if (patientIds.isEmpty()) {
+            return List.of();
+        }
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+        return appointmentRepository.findByPatientIdIn(patientIds).stream().filter(a -> a.getDateTime().isAfter(start) && a.getDateTime().isBefore(end)).filter(a -> a.getStatus() != Appointment.AppointmentStatus.CANCELLED).map(a -> new HomeAppointmentDetailResponse(a.getTitle(), a.getPatient().getUser() != null ? a.getPatient().getUser().getUsername() : a.getPatient().getName(), a.getLocation(), a.getDateTime().toString())).toList();
     }
 }
