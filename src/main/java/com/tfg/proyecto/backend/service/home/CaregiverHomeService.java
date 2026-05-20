@@ -2,6 +2,7 @@ package com.tfg.proyecto.backend.service.home;
 
 import com.tfg.proyecto.backend.dto.response.home.HomeAppointmentDetailResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeCalendarResponse;
+import com.tfg.proyecto.backend.dto.response.home.HomePendingTrackingResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeTrackingResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.medication.Prescription;
@@ -118,5 +119,48 @@ public class CaregiverHomeService {
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay();
         return appointmentRepository.findByPatientIdIn(patientIds).stream().filter(a -> a.getDateTime().isAfter(start) && a.getDateTime().isBefore(end)).filter(a -> a.getStatus() != Appointment.AppointmentStatus.CANCELLED).map(a -> new HomeAppointmentDetailResponse(a.getTitle(), a.getPatient().getUser() != null ? a.getPatient().getUser().getUsername() : a.getPatient().getName(), a.getLocation(), a.getDateTime().toString())).toList();
+    }
+
+    public List<HomePendingTrackingResponse> getPendingToday(Long caregiverId) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+        List<Relation> relations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
+
+        List<Long> patientIds = relations.stream().map(r -> r.getPatient().getId()).toList();
+
+        if (patientIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<Prescription> prescriptions = prescriptionRepository.findByPatientIdIn(patientIds).stream().filter(p -> p.getStatus() == Prescription.PrescriptionStatus.ACTIVE).toList();
+
+        List<HomePendingTrackingResponse> result = new ArrayList<>();
+
+        for (Prescription p : prescriptions) {
+
+            List<PrescriptionTracking> trackings = prescriptionTrackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), start, end);
+
+            for (PrescriptionTracking t : trackings) {
+                if (t.getStatus() != PrescriptionTracking.TrackingStatus.PENDING) {
+                    continue;
+                }
+                HomePendingTrackingResponse dto = new HomePendingTrackingResponse();
+
+                dto.setTrackingId(t.getId());
+                dto.setPrescriptionId(p.getId());
+
+                dto.setMedicationName(p.getMedication().getName());
+
+                dto.setPatientName(p.getPatient().getUser() != null ? p.getPatient().getUser().getUsername() : p.getPatient().getName());
+
+                dto.setScheduledTime(t.getScheduledTime().toString());
+
+                result.add(dto);
+            }
+        }
+
+        return result;
     }
 }

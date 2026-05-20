@@ -2,6 +2,7 @@ package com.tfg.proyecto.backend.controller.home;
 
 import com.tfg.proyecto.backend.dto.response.home.HomeAppointmentDetailResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeCalendarResponse;
+import com.tfg.proyecto.backend.dto.response.home.HomePendingTrackingResponse;
 import com.tfg.proyecto.backend.dto.response.home.HomeTrackingResponse;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.home.CaregiverHomeService;
@@ -46,5 +47,11 @@ public class CaregiverHomeController {
     public List<HomeAppointmentDetailResponse> getDayAppointments(@RequestHeader("Authorization") String authHeader, @RequestParam String date) {
         Long caregiverId = extractId(authHeader);
         return service.getAppointmentsByDate(caregiverId, LocalDate.parse(date));
+    }
+
+    @GetMapping("/pending")
+    public List<HomePendingTrackingResponse> getPending(@RequestHeader("Authorization") String authHeader) {
+        Long caregiverId = extractId(authHeader);
+        return service.getPendingToday(caregiverId);
     }
 }
