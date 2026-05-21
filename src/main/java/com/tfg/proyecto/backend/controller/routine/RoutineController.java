@@ -17,28 +17,25 @@ public class RoutineController {
 
     // ------------- Crear una rutina -------------
     @PostMapping("/{patientId}")
-    public ResponseEntity<RoutineResponse> createRoutine(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        RoutineResponse response = routineService.createRoutine(patientId, authHeader);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<RoutineResponse> createRoutine(@PathVariable Long patientId) {
+        return ResponseEntity.ok(routineService.createRoutine(patientId));
     }
 
     // ------------- Obtener rutina de un paciente (cuidador) -------------
     @GetMapping("/{patientId}")
-    public ResponseEntity<RoutineResponse> getRoutineByPatient(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        RoutineResponse response = routineService.getRoutineAsCaregiver(patientId, authHeader);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<RoutineResponse> getRoutineByPatient(@PathVariable Long patientId) {
+        return ResponseEntity.ok(routineService.getRoutineAsCaregiver(patientId));
     }
 
     // ------------- Borrar rutina -------------
     @DeleteMapping("/{patientId}")
-    public ResponseEntity<Void> deleteRoutine(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        routineService.deleteRoutine(patientId, authHeader);
+    public ResponseEntity<Void> deleteRoutine(@PathVariable Long patientId) {
+        routineService.deleteRoutine(patientId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<RoutineResponse> getMyRoutine(@RequestHeader("Authorization") String authHeader) {
-        RoutineResponse response = routineService.getRoutineAsPatient(authHeader);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<RoutineResponse> getMyRoutine() {
+        return ResponseEntity.ok(routineService.getRoutineAsPatient());
     }
 }
