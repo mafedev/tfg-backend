@@ -12,5 +12,5 @@ public interface RelationRepository extends JpaRepository<Relation, Long> { // i
     boolean existsByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
     List<Relation> findByCaregiverIdAndPatientIdIsNotNull(Long caregiverId);
     Relation findByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
-    List<Relation> findByCaregiverId(Long caregiverId);
+    List<Relation> findByPatientId(Long patientId);
 }

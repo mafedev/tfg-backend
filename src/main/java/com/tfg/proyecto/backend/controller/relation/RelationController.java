@@ -1,6 +1,7 @@
 package com.tfg.proyecto.backend.controller.relation;
 
 import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
+import com.tfg.proyecto.backend.dto.response.relation.CaregiverContactResponse;
 import com.tfg.proyecto.backend.dto.response.relation.RelationResponse;
 import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.relation.RelationService;
@@ -72,5 +73,12 @@ public class RelationController {
     private Long extractId(String authHeader) {
         String token = authHeader.substring(7); // extrae el id del token
         return Long.parseLong(jwtUtil.extractId(token));
+    }
+
+    @GetMapping("/my-caregivers")
+    public ResponseEntity<List<CaregiverContactResponse>> getMyCaregivers(@RequestHeader("Authorization") String authHeader) {
+        Long patientUserId = extractId(authHeader);
+        List<CaregiverContactResponse> caregivers = relationService.getPatientCaregivers(patientUserId);
+        return ResponseEntity.ok(caregivers);
     }
 }
