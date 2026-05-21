@@ -3,8 +3,10 @@ package com.tfg.proyecto.backend.service.medication;
 import com.tfg.proyecto.backend.dto.request.medication.PrescriptionTrackingResponse;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
+import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
+import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +21,12 @@ public class PrescriptionTrackingService {
 
     private final PrescriptionTrackingRepository trackingRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final PatientRepository patientRepository;
 
-    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository) {
+    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, PatientRepository patientRepository) {
         this.trackingRepository = trackingRepository;
         this.prescriptionRepository = prescriptionRepository;
+        this.patientRepository = patientRepository;
     }
 
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
@@ -51,22 +55,17 @@ public class PrescriptionTrackingService {
     }
 
     private List<Prescription> getValidPrescriptions(Long patientId, LocalDate date) {
-        return prescriptionRepository.findByPatientId(patientId).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).filter(p -> {
-            if (p.getStatus() == Prescription.PrescriptionStatus.CANCELLED) {
-                return !date.isAfter(LocalDate.now());
-            }
-            return true;
-        }).toList();
+        return prescriptionRepository.findByPatientId(patientId).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).filter(p -> p.getStatus() == Prescription.PrescriptionStatus.ACTIVE).toList();
     }
 
     private void generateTrackingIfNeeded(Prescription p, LocalDate date, LocalDateTime startOfDay, LocalDateTime endOfDay) {
         List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
 
-        if (!trackingList.isEmpty()){
+        if (!trackingList.isEmpty()) {
             return;
         }
 
-        if (p.getStatus() != Prescription.PrescriptionStatus.ACTIVE){
+        if (p.getStatus() != Prescription.PrescriptionStatus.ACTIVE) {
             return;
         }
 
@@ -87,7 +86,7 @@ public class PrescriptionTrackingService {
 
             doseTime = doseTime.plusHours(frequency);
 
-            if (frequency <= 0){
+            if (frequency <= 0) {
                 break;
             }
         }
@@ -172,5 +171,16 @@ public class PrescriptionTrackingService {
 
         Prescription p = optional.get();
         generateTrackingIfNeeded(p, today, startOfDay, endOfDay);
+    }
+
+    public List<PrescriptionTrackingResponse> getPrescriptionTrackingForUser(Long userId, LocalDate date) {
+        Optional<Patient> patientOpt = patientRepository.findByUserId(userId);
+
+        if (patientOpt.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Long patientId = patientOpt.get().getId();
+        return getPrescriptionTracking(patientId, date);
     }
 }

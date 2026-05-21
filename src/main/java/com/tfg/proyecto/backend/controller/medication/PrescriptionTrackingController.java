@@ -44,4 +44,12 @@ public class PrescriptionTrackingController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/me")
+    public List<PrescriptionTrackingResponse> getMyPrescriptionTracking(@RequestHeader("Authorization") String header, @RequestParam String date) {
+        String token = header.substring(7);
+        Long userId = Long.parseLong(jwtUtil.extractId(token));
+        LocalDate parsedDate = LocalDate.parse(date);
+        return service.getPrescriptionTrackingForUser(userId, parsedDate);
+    }
 }
