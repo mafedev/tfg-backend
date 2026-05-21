@@ -55,12 +55,7 @@ public class PrescriptionTrackingService {
     }
 
     private List<Prescription> getValidPrescriptions(Long patientId, LocalDate date) {
-        return prescriptionRepository.findByPatientId(patientId).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).filter(p -> {
-            if (p.getStatus() == Prescription.PrescriptionStatus.CANCELLED) {
-                return !date.isAfter(LocalDate.now());
-            }
-            return true;
-        }).toList();
+        return prescriptionRepository.findByPatientId(patientId).stream().filter(p -> p.getStartDate() != null && p.getEndDate() != null).filter(p -> !date.isBefore(p.getStartDate()) && !date.isAfter(p.getEndDate())).filter(p -> p.getStatus() == Prescription.PrescriptionStatus.ACTIVE).toList();
     }
 
     private void generateTrackingIfNeeded(Prescription p, LocalDate date, LocalDateTime startOfDay, LocalDateTime endOfDay) {
