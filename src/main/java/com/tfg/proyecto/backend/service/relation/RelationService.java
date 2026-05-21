@@ -1,5 +1,6 @@
 package com.tfg.proyecto.backend.service.relation;
 
+import com.tfg.proyecto.backend.dto.response.relation.CaregiverContactResponse;
 import com.tfg.proyecto.backend.dto.response.relation.RelationResponse;
 import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
@@ -136,11 +137,7 @@ public class RelationService {
                         phone = patient.getPhone();
                     }
 
-                    patients.add(new PatientListResponse(
-                            patient.getId(),
-                            name,
-                            phone
-                    ));
+                    patients.add(new PatientListResponse(patient.getId(), name, phone));
                 }
             }
         }
@@ -154,5 +151,23 @@ public class RelationService {
             return true;
         }
         return false;
+    }
+
+    public List<CaregiverContactResponse> getPatientCaregivers(Long userId) {
+        List<CaregiverContactResponse> caregivers = new ArrayList<>();
+        Optional<Patient> patientOpt = patientRepository.findByUserId(userId);
+
+        if (patientOpt.isEmpty()) {
+            return caregivers;
+        }
+
+        Patient patient = patientOpt.get();
+        List<Relation> relations = relationRepository.findByPatientId(patient.getId());
+
+        for (Relation relation : relations) {
+            User caregiver = relation.getCaregiver();
+            caregivers.add(new CaregiverContactResponse(caregiver.getId(), caregiver.getUsername(), caregiver.getPhone()));
+        }
+        return caregivers;
     }
 }
