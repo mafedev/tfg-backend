@@ -121,4 +121,16 @@ public class AppointmentService {
     private AppointmentResponse mapToResponse(Appointment a) {
         return new AppointmentResponse(a.getId(), a.getTitle(), a.getDescription(), a.getLocation(), a.getDateTime(), a.getStatus().name());
     }
+
+    // -------------------- Obtener citas paciente --------------------
+    public List<AppointmentResponse> getAppointmentsByUser(Long userId) {
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+
+        if (optionalPatient.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Patient patient = optionalPatient.get();
+        return getAppointmentsByPatient(patient.getId());
+    }
 }
