@@ -35,7 +35,7 @@ public class RoutineItemTrackingController {
     }
 
     @GetMapping("/me")
-    public List<RoutineItemTrackingResponse> getMyTracking(@RequestHeader("Authorization") String authHeader, @RequestParam String date) {
+    public List<RoutineItemTrackingResponse> getMyTracking(@RequestParam String date) {
         return trackingService.getTrackingForPatient(date);
     }
 }

@@ -9,7 +9,7 @@ import com.tfg.proyecto.backend.repository.routine.RoutineItemRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineItemTrackingRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,12 +23,14 @@ public class RoutineItemTrackingService {
     private final RoutineItemRepository itemRepository;
     private final RoutineRepository routineRepository;
     private final PatientRepository patientRepository;
+    private final SecurityUtils securityUtils;
 
-    public RoutineItemTrackingService(RoutineItemTrackingRepository trackingRepository, RoutineItemRepository itemRepository, RoutineRepository routineRepository, PatientRepository patientRepository) {
+    public RoutineItemTrackingService(RoutineItemTrackingRepository trackingRepository, RoutineItemRepository itemRepository, RoutineRepository routineRepository, PatientRepository patientRepository, SecurityUtils securityUtils) {
         this.trackingRepository = trackingRepository;
         this.itemRepository = itemRepository;
         this.routineRepository = routineRepository;
         this.patientRepository = patientRepository;
+        this.securityUtils = securityUtils;
     }
 
     public RoutineItemTracking createTracking(Long itemId, LocalDate date) {
@@ -76,7 +78,7 @@ public class RoutineItemTrackingService {
     }
 
     public List<RoutineItemTrackingResponse> getTrackingForPatient(String date) {
-        Long userId = Long.parseLong( SecurityContextHolder.getContext().getAuthentication().getName());
+        Long userId = securityUtils.getCurrentUserId();
 
         Patient patient = patientRepository.findByUserId(userId).orElse(null);
 
