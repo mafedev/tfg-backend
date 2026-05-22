@@ -39,6 +39,16 @@ public class PrescriptionService {
             return null;
         }
 
+        // evita prescripciones con medicamentos duplicados
+        boolean exists = prescriptionRepository.existsByPatientIdAndMedicationId(
+                request.getPatientId(),
+                request.getMedicationId()
+        );
+
+        if (exists) {
+            return null;
+        }
+
         Prescription prescription = new Prescription();
         prescription.setPatient(patientOptional.get());
         prescription.setMedication(medicationOptional.get());
