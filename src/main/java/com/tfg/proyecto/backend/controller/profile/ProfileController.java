@@ -3,7 +3,6 @@ package com.tfg.proyecto.backend.controller.profile;
 import com.tfg.proyecto.backend.dto.request.profile.ChangePasswordRequest;
 import com.tfg.proyecto.backend.dto.request.profile.ProfileUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.profile.ProfileResponse;
-import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.profile.ProfileService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,40 +12,26 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
     private final ProfileService profileService;
-    private final JwtUtil jwtUtil;
 
-    public ProfileController(ProfileService profileService, JwtUtil jwtUtil) {
+    public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
-        this.jwtUtil = jwtUtil;
     }
 
     // ---------------- Obtener datos ----------------
     @GetMapping("/me")
-    public ProfileResponse getMyProfile(@RequestHeader("Authorization") String authHeader) {
-
-        Long userId = extractId(authHeader);
-
-        return profileService.getProfile(userId);
+    public ProfileResponse getMyProfile() {
+        return profileService.getProfile();
     }
 
     // ---------------- Actualizar datos ----------------
     @PutMapping("/me")
-    public ProfileResponse updateMyProfile(@RequestHeader("Authorization") String authHeader, @RequestBody ProfileUpdateRequest request) {
-
-        Long userId = extractId(authHeader);
-
-        return profileService.updateProfile(userId, request);
+    public ProfileResponse updateMyProfile(@RequestBody ProfileUpdateRequest request) {
+        return profileService.updateProfile(request);
     }
 
-    private Long extractId(String authHeader) {
-        String token = authHeader.substring(7);
-        return Long.parseLong(jwtUtil.extractId(token));
-    }
-
-    // ---------------- CHANGE PASSWORD ----------------
+    // ---------------- Cambiar contraseña ----------------
     @PutMapping("/me/password")
-    public void changePassword(@RequestHeader("Authorization") String authHeader, @RequestBody ChangePasswordRequest request) {
-        Long userId = extractId(authHeader);
-        profileService.changePassword(userId, request);
+    public void changePassword(@RequestBody ChangePasswordRequest request) {
+        profileService.changePassword(request);
     }
 }
