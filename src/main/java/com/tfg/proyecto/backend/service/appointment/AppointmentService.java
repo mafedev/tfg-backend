@@ -131,6 +131,17 @@ public class AppointmentService {
         }
 
         Patient patient = optionalPatient.get();
-        return getAppointmentsByPatient(patient.getId());
+        List<Appointment> appointments = appointmentRepository.findByPatientId(patient.getId());
+        List<AppointmentResponse> responseList = new ArrayList<>();
+
+        for (Appointment a : appointments) {
+            if (a.getStatus() != Appointment.AppointmentStatus.PENDING) {
+                continue;
+            }
+
+            responseList.add(mapToResponse(a));
+        }
+
+        return responseList;
     }
 }
