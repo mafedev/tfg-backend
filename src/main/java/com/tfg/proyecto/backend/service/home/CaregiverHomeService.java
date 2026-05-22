@@ -126,7 +126,7 @@ public class CaregiverHomeService {
         Long caregiverId = securityUtils.getCurrentUserId();
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
-        LocalDateTime end = today.plusDays(1).atStartOfDay();
+        LocalDateTime end = LocalDateTime.now();
 
         List<Relation> relations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
 
