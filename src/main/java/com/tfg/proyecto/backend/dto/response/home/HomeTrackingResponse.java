@@ -1,5 +1,10 @@
 package com.tfg.proyecto.backend.dto.response.home;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class HomeTrackingResponse {
 
     private Long trackingId;
@@ -11,51 +16,16 @@ public class HomeTrackingResponse {
     private String scheduledTime;
     private String status;
 
-    public Long getTrackingId() {
-        return trackingId;
+    // -------------------- Constructor --------------------
+    public HomeTrackingResponse() {
     }
 
-    public void setTrackingId(Long trackingId) {
+    public HomeTrackingResponse(Long trackingId, Long prescriptionId, String medicationName, String patientName, String scheduledTime, String status) {
         this.trackingId = trackingId;
-    }
-
-    public Long getPrescriptionId() {
-        return prescriptionId;
-    }
-
-    public void setPrescriptionId(Long prescriptionId) {
         this.prescriptionId = prescriptionId;
-    }
-
-    public String getMedicationName() {
-        return medicationName;
-    }
-
-    public void setMedicationName(String medicationName) {
         this.medicationName = medicationName;
-    }
-
-    public String getPatientName() {
-        return patientName;
-    }
-
-    public void setPatientName(String patientName) {
         this.patientName = patientName;
-    }
-
-    public String getScheduledTime() {
-        return scheduledTime;
-    }
-
-    public void setScheduledTime(String scheduledTime) {
         this.scheduledTime = scheduledTime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
         this.status = status;
     }
 }

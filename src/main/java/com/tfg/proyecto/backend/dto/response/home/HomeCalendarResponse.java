@@ -1,22 +1,15 @@
 package com.tfg.proyecto.backend.dto.response.home;
 
+import lombok.Getter;
+
 import java.time.LocalDate;
 
+@Getter
 public class HomeCalendarResponse {
     private LocalDate date;
 
-    public HomeCalendarResponse() {
-    }
-
+    // -------------------- Constructor --------------------
     public HomeCalendarResponse(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
         this.date = date;
     }
 }

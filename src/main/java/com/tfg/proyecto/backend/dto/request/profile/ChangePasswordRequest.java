@@ -1,22 +1,16 @@
 package com.tfg.proyecto.backend.dto.request.profile;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class ChangePasswordRequest {
+    // -------------------- Getters y Setters --------------------
     private String currentPassword;
     private String newPassword;
 
-    public String getCurrentPassword() {
-        return currentPassword;
-    }
-
-    public void setCurrentPassword(String currentPassword) {
-        this.currentPassword = currentPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    // -------------------- Constructor --------------------
+    public ChangePasswordRequest() {
     }
 }

@@ -2,9 +2,13 @@ package com.tfg.proyecto.backend.dto.request.profile;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class ProfileUpdateRequest {
-
+    // -------------------- Getters y Setters --------------------
     @NotBlank
     private String username;
 
@@ -15,30 +19,7 @@ public class ProfileUpdateRequest {
     @NotBlank
     private String phone;
 
+    // -------------------- Constructor --------------------
     public ProfileUpdateRequest() {
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }

@@ -1,11 +1,15 @@
 package com.tfg.proyecto.backend.dto.response.profile;
 
+import lombok.Getter;
+
+@Getter
 public class ProfileResponse {
     private Long id;
     private String username;
     private String email;
     private String phone;
 
+    // -------------------- Constructor --------------------
     public ProfileResponse() {
     }
 
@@ -14,21 +18,5 @@ public class ProfileResponse {
         this.username = username;
         this.email = email;
         this.phone = phone;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 }

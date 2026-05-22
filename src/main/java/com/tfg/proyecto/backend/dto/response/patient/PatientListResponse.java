@@ -1,6 +1,10 @@
 package com.tfg.proyecto.backend.dto.response.patient;
 
+import lombok.Getter;
+
+@Getter
 public class PatientListResponse {
+    // -------------------- Getters --------------------
     private Long id;
     private String username;
     private String phone;
@@ -10,18 +14,5 @@ public class PatientListResponse {
         this.id = id;
         this.username = username;
         this.phone = phone;
-    }
-
-    // -------------------- Getters --------------------
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 }

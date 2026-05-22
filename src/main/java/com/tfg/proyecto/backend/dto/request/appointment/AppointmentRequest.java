@@ -3,9 +3,13 @@ package com.tfg.proyecto.backend.dto.request.appointment;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 public class AppointmentRequest {
     @NotBlank(message = "El título es obligatorio")
     @Size(max = 100, message = "El título no puede superar los 100 caracteres")
@@ -23,26 +27,7 @@ public class AppointmentRequest {
     @NotNull(message = "El paciente es obligatorio")
     private Long patientId;
 
+    // -------------------- Constructor --------------------
     public AppointmentRequest() {
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public Long getPatientId() {
-        return patientId;
     }
 }
