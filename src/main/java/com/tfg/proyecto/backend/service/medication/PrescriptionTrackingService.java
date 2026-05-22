@@ -66,11 +66,25 @@ public class PrescriptionTrackingService {
         if (!trackingList.isEmpty()) return;
         if (p.getStatus() != Prescription.PrescriptionStatus.ACTIVE) return;
 
-        boolean isFirstDay = date.equals(p.getStartDate());
-
-        LocalDateTime doseTime = (isFirstDay && p.getFirstDoseTime() != null) ? LocalDateTime.of(date, p.getFirstDoseTime()) : startOfDay;
-
         int frequency = p.getFrequencyHours() != null ? p.getFrequencyHours() : 24;
+        if (frequency <= 0) return;
+
+        LocalDate startDate = p.getStartDate();
+
+        LocalDateTime baseTime;
+
+        // Si es el primer día se usa firstDoseTime
+        if (date.equals(startDate) && p.getFirstDoseTime() != null) {
+            baseTime = LocalDateTime.of(startDate, p.getFirstDoseTime());
+        } else {
+            baseTime = LocalDateTime.of(startDate, p.getFirstDoseTime() != null ? p.getFirstDoseTime() : java.time.LocalTime.MIDNIGHT);
+        }
+
+        while (baseTime.isBefore(startOfDay)) {
+            baseTime = baseTime.plusHours(frequency);
+        }
+
+        LocalDateTime doseTime = baseTime;
 
         while (doseTime.isBefore(endOfDay)) {
 
@@ -83,8 +97,6 @@ public class PrescriptionTrackingService {
             trackingRepository.save(t);
 
             doseTime = doseTime.plusHours(frequency);
-
-            if (frequency <= 0) break;
         }
     }
 
