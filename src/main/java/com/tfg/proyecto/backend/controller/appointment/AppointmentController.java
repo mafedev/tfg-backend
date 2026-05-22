@@ -3,7 +3,7 @@ package com.tfg.proyecto.backend.controller.appointment;
 import com.tfg.proyecto.backend.dto.request.appointment.AppointmentRequest;
 import com.tfg.proyecto.backend.dto.response.appointment.AppointmentResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
-import com.tfg.proyecto.backend.security.JwtUtil;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import com.tfg.proyecto.backend.service.appointment.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +15,11 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
-    private final JwtUtil jwtUtil;
+    private final SecurityUtils securityUtils;
 
-    public AppointmentController(AppointmentService appointmentService, JwtUtil jwtUtil) {
+    public AppointmentController(AppointmentService appointmentService, SecurityUtils securityUtils) {
         this.appointmentService = appointmentService;
-        this.jwtUtil = jwtUtil;
+        this.securityUtils = securityUtils;
     }
 
     // -------------------- Crear cita --------------------
@@ -65,9 +65,8 @@ public class AppointmentController {
 
     // -------------------- Obtener citas paciente --------------------
     @GetMapping("/my")
-    public ResponseEntity<List<AppointmentResponse>> getMyAppointments(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        Long userId = Long.parseLong(jwtUtil.extractId(token));
+    public ResponseEntity<List<AppointmentResponse>> getMyAppointments() {
+        Long userId = securityUtils.getCurrentUserId();
         List<AppointmentResponse> appointments = appointmentService.getAppointmentsByUser(userId);
         return ResponseEntity.ok(appointments);
     }
