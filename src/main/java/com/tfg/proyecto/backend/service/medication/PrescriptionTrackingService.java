@@ -7,6 +7,7 @@ import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
 import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +23,16 @@ public class PrescriptionTrackingService {
     private final PrescriptionTrackingRepository trackingRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final PatientRepository patientRepository;
+    private final SecurityUtils securityUtils;
 
-    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, PatientRepository patientRepository) {
+    public PrescriptionTrackingService(PrescriptionTrackingRepository trackingRepository, PrescriptionRepository prescriptionRepository, PatientRepository patientRepository, SecurityUtils securityUtils) {
         this.trackingRepository = trackingRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.patientRepository = patientRepository;
+        this.securityUtils = securityUtils;
     }
 
     // -------------------- Obtiene y genera las tomas para cualquier día --------------------
-    // obtiene las tomas de cualquier día para un paciente específico, si las tomas no existen, se generan
     @Transactional
     public List<PrescriptionTrackingResponse> getPrescriptionTracking(Long patientId, LocalDate date) {
 
@@ -38,10 +40,10 @@ public class PrescriptionTrackingService {
             return new ArrayList<>();
         }
 
-        LocalDateTime startOfDay = date.atStartOfDay(); // inicio del día
-        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // fin del día
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
 
-        List<PrescriptionTrackingResponse> result = new ArrayList<>(); // lista que se envía al front
+        List<PrescriptionTrackingResponse> result = new ArrayList<>();
 
         List<Prescription> prescriptions = getValidPrescriptions(patientId, date);
 
@@ -61,13 +63,8 @@ public class PrescriptionTrackingService {
     private void generateTrackingIfNeeded(Prescription p, LocalDate date, LocalDateTime startOfDay, LocalDateTime endOfDay) {
         List<PrescriptionTracking> trackingList = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(p.getId(), startOfDay, endOfDay);
 
-        if (!trackingList.isEmpty()) {
-            return;
-        }
-
-        if (p.getStatus() != Prescription.PrescriptionStatus.ACTIVE) {
-            return;
-        }
+        if (!trackingList.isEmpty()) return;
+        if (p.getStatus() != Prescription.PrescriptionStatus.ACTIVE) return;
 
         boolean isFirstDay = date.equals(p.getStartDate());
 
@@ -76,6 +73,7 @@ public class PrescriptionTrackingService {
         int frequency = p.getFrequencyHours() != null ? p.getFrequencyHours() : 24;
 
         while (doseTime.isBefore(endOfDay)) {
+
             PrescriptionTracking t = new PrescriptionTracking();
             t.setPrescription(p);
             t.setScheduledTime(doseTime);
@@ -86,9 +84,7 @@ public class PrescriptionTrackingService {
 
             doseTime = doseTime.plusHours(frequency);
 
-            if (frequency <= 0) {
-                break;
-            }
+            if (frequency <= 0) break;
         }
     }
 
@@ -109,7 +105,6 @@ public class PrescriptionTrackingService {
             var timeDto = new PrescriptionTrackingResponse.PrescriptionTrackingTimeResponse();
             timeDto.setScheduledTime(t.getScheduledTime().toString());
             timeDto.setStatus(t.getStatus().name());
-
             times.add(timeDto);
         }
 
@@ -119,44 +114,41 @@ public class PrescriptionTrackingService {
     }
 
     // -------------------- Toggle del seguimiento --------------------
-    // Cambia el estado entre true y false, TAKEN o PENDING
     @Transactional
     public PrescriptionTracking toggleTracking(Long prescriptionId, LocalDateTime scheduledTime) {
+
         Optional<PrescriptionTracking> optionalTracking = trackingRepository.findByPrescription_IdAndScheduledTime(prescriptionId, scheduledTime);
 
-        // si no existe devuelve null
         if (optionalTracking.isEmpty()) {
             return null;
         }
 
-        // Extraemos el tracking
         PrescriptionTracking tracking = optionalTracking.get();
 
-        // Si el estado es TAKEN
         if (tracking.getStatus() == PrescriptionTracking.TrackingStatus.TAKEN) {
-            tracking.setStatus(PrescriptionTracking.TrackingStatus.PENDING); // lo pasa a PENDING
-            tracking.setTakenTime(null); // y quita el tiempo de la toma
-        } else { // si el estado es PENDING
-            tracking.setStatus(PrescriptionTracking.TrackingStatus.TAKEN); // lo pasa a TAKEN
-            tracking.setTakenTime(LocalDateTime.now()); // y guarda la hora actual
-
-            // se obtiene la prescripción asociada
-            Prescription p = tracking.getPrescription();
+            tracking.setStatus(PrescriptionTracking.TrackingStatus.PENDING);
+            tracking.setTakenTime(null);
+        } else {
+            tracking.setStatus(PrescriptionTracking.TrackingStatus.TAKEN);
+            tracking.setTakenTime(LocalDateTime.now());
         }
 
-        PrescriptionTracking saved = trackingRepository.save(tracking);
-        return saved;
+        return trackingRepository.save(tracking);
     }
 
     @Transactional
     public void deleteFutureTracking(Long prescriptionId) {
+
         LocalDateTime now = LocalDateTime.now();
+
         List<PrescriptionTracking> list = trackingRepository.findByPrescriptionIdAndScheduledTimeBetween(prescriptionId, now, now.plusYears(10));
+
         trackingRepository.deleteAll(list);
     }
 
     @Transactional
     public void regenerateTodayTracking(Long prescriptionId) {
+
         LocalDate today = LocalDate.now();
 
         LocalDateTime startOfDay = today.atStartOfDay();
@@ -165,15 +157,17 @@ public class PrescriptionTrackingService {
         trackingRepository.deleteByPrescriptionIdAndScheduledTimeBetween(prescriptionId, startOfDay, endOfDay);
 
         Optional<Prescription> optional = prescriptionRepository.findById(prescriptionId);
-        if (optional.isEmpty()) {
-            return;
-        }
+
+        if (optional.isEmpty()) return;
 
         Prescription p = optional.get();
         generateTrackingIfNeeded(p, today, startOfDay, endOfDay);
     }
 
-    public List<PrescriptionTrackingResponse> getPrescriptionTrackingForUser(Long userId, LocalDate date) {
+    // -------------------- USUARIO ACTUAL --------------------
+    public List<PrescriptionTrackingResponse> getPrescriptionTrackingForUser(LocalDate date) {
+        Long userId = securityUtils.getCurrentUserId();
+
         Optional<Patient> patientOpt = patientRepository.findByUserId(userId);
 
         if (patientOpt.isEmpty()) {
@@ -181,6 +175,7 @@ public class PrescriptionTrackingService {
         }
 
         Long patientId = patientOpt.get().getId();
+
         return getPrescriptionTracking(patientId, date);
     }
 }
