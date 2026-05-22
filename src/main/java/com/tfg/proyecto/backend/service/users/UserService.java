@@ -5,10 +5,10 @@ import com.tfg.proyecto.backend.dto.request.patient.PatientUpdateRequest;
 import com.tfg.proyecto.backend.dto.response.patient.PatientListDetailsResponse;
 import com.tfg.proyecto.backend.model.users.Patient;
 import com.tfg.proyecto.backend.model.users.User;
-import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
-import com.tfg.proyecto.backend.security.JwtUtil;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +21,14 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final PatientRepository patientRepository;
     private final RelationRepository relationRepository;
-    private final JwtUtil jwtUtil;
+    private final SecurityUtils securityUtils;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, PatientRepository patientRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, PatientRepository patientRepository, RelationRepository relationRepository, SecurityUtils securityUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.patientRepository = patientRepository;
         this.relationRepository = relationRepository;
-        this.jwtUtil = jwtUtil;
+        this.securityUtils = securityUtils;
     }
 
     // -------------------- Crear usuario --------------------
@@ -65,10 +65,8 @@ public class UserService {
     }
 
     // -------------------- Obtener detalles del paciente --------------------
-    public PatientListDetailsResponse getPatientDetails(Long patientId, String authHeader) {
-        String token = authHeader.substring(7); // extrae el usuario del token
-        Long userId = Long.parseLong(jwtUtil.extractId(token));
-
+    public PatientListDetailsResponse getPatientDetails(Long patientId) {
+        Long userId = securityUtils.getCurrentUserId();
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isEmpty()) {
@@ -115,9 +113,8 @@ public class UserService {
     }
 
     // -------------------- Actualizar paciente --------------------
-    public boolean updatePatient(Long patientId, PatientUpdateRequest request, String authHeader) {
-        String token = authHeader.substring(7);
-        Long userId = Long.parseLong(jwtUtil.extractId(token));  // extrae el id del usuario del token
+    public boolean updatePatient(Long patientId, PatientUpdateRequest request) {
+        Long userId = securityUtils.getCurrentUserId();
 
         Optional<User> userOptional = userRepository.findById(userId); // busca el usuario
 

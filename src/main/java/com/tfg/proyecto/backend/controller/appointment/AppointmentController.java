@@ -1,9 +1,10 @@
 package com.tfg.proyecto.backend.controller.appointment;
 
-import com.tfg.proyecto.backend.dto.request.AppointmentRequest;
-import com.tfg.proyecto.backend.dto.response.AppointmentResponse;
+import com.tfg.proyecto.backend.dto.request.appointment.AppointmentRequest;
+import com.tfg.proyecto.backend.dto.response.appointment.AppointmentResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
-import com.tfg.proyecto.backend.service.AppointmentService;
+import com.tfg.proyecto.backend.security.SecurityUtils;
+import com.tfg.proyecto.backend.service.appointment.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +15,11 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final SecurityUtils securityUtils;
 
-    public AppointmentController(AppointmentService appointmentService) {
+    public AppointmentController(AppointmentService appointmentService, SecurityUtils securityUtils) {
         this.appointmentService = appointmentService;
+        this.securityUtils = securityUtils;
     }
 
     // -------------------- Crear cita --------------------
@@ -58,5 +61,13 @@ public class AppointmentController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    // -------------------- Obtener citas paciente --------------------
+    @GetMapping("/my")
+    public ResponseEntity<List<AppointmentResponse>> getMyAppointments() {
+        Long userId = securityUtils.getCurrentUserId();
+        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByUser(userId);
+        return ResponseEntity.ok(appointments);
     }
 }

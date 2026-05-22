@@ -5,10 +5,10 @@ import com.tfg.proyecto.backend.dto.response.routine.RoutineResponse;
 import com.tfg.proyecto.backend.model.routine.Routine;
 import com.tfg.proyecto.backend.model.routine.RoutineItem;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.RelationRepository;
+import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
-import com.tfg.proyecto.backend.security.JwtUtil;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,18 +19,18 @@ public class RoutineService {
     private final RoutineRepository routineRepository;
     private final PatientRepository patientRepository;
     private final RelationRepository relationRepository;
-    private final JwtUtil jwtUtil;
+    private final SecurityUtils securityUtils;
 
-    public RoutineService(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, JwtUtil jwtUtil) {
+    public RoutineService(RoutineRepository routineRepository, PatientRepository patientRepository, RelationRepository relationRepository, SecurityUtils securityUtils) {
         this.routineRepository = routineRepository;
         this.patientRepository = patientRepository;
         this.relationRepository = relationRepository;
-        this.jwtUtil = jwtUtil;
+        this.securityUtils = securityUtils;
     }
 
     // ------------- Crear una rutina -------------
-    public RoutineResponse createRoutine(Long patientId, String authHeader) {
-        Long caregiverId = extractId(authHeader);
+    public RoutineResponse createRoutine(Long patientId) {
+        Long caregiverId = securityUtils.getCurrentUserId();
         validateRelation(caregiverId, patientId);
 
         Patient patient = patientRepository.findById(patientId).orElse(null);
@@ -52,8 +52,8 @@ public class RoutineService {
     }
 
     // ------------- Obtener rutina de un paciente (cuidador) -------------
-    public RoutineResponse getRoutineAsCaregiver(Long patientId, String authHeader) {
-        Long caregiverId = extractId(authHeader);
+    public RoutineResponse getRoutineAsCaregiver(Long patientId) {
+        Long caregiverId = securityUtils.getCurrentUserId();
         validateRelation(caregiverId, patientId);
 
         Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
@@ -66,8 +66,8 @@ public class RoutineService {
     }
 
     // ---------------- Eliminar rutina ----------------
-    public void deleteRoutine(Long patientId, String authHeader) {
-        Long caregiverId = extractId(authHeader);
+    public void deleteRoutine(Long patientId) {
+        Long caregiverId = securityUtils.getCurrentUserId();
         validateRelation(caregiverId, patientId);
 
         Routine routine = routineRepository.findByPatientId(patientId).orElse(null);
@@ -109,13 +109,8 @@ public class RoutineService {
         }
     }
 
-    private Long extractId(String authHeader) {
-        String token = authHeader.substring(7);
-        return Long.parseLong(jwtUtil.extractId(token));
-    }
-
-    public RoutineResponse getRoutineAsPatient(String authHeader) {
-        Long userId = extractId(authHeader);
+    public RoutineResponse getRoutineAsPatient() {
+        Long userId = securityUtils.getCurrentUserId();
         Patient patient = patientRepository.findByUserId(userId).orElse(null);
 
         if (patient == null) {

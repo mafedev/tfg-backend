@@ -4,7 +4,7 @@ import com.tfg.proyecto.backend.dto.request.auth.LoginRequest;
 import com.tfg.proyecto.backend.dto.response.auth.LoginResponse;
 import com.tfg.proyecto.backend.dto.request.auth.SignupRequest;
 import com.tfg.proyecto.backend.model.users.User;
-import com.tfg.proyecto.backend.service.AuthService;
+import com.tfg.proyecto.backend.service.auth.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

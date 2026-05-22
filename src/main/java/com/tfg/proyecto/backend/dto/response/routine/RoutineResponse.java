@@ -1,33 +1,24 @@
 package com.tfg.proyecto.backend.dto.response.routine;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Setter
+@Getter
 public class RoutineResponse {
     private Long id;
     private Long patientId;
     private List<RoutineItemResponse> items;
 
-    public Long getId() {
-        return id;
+    // -------------------- Constructor --------------------
+    public RoutineResponse() {
     }
 
-    public void setId(Long id) {
+    public RoutineResponse(Long id, Long patientId, List<RoutineItemResponse> items) {
         this.id = id;
-    }
-
-    public Long getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Long patientId) {
         this.patientId = patientId;
-    }
-
-    public List<RoutineItemResponse> getItems() {
-        return items;
-    }
-
-    public void setItems(List<RoutineItemResponse> items) {
         this.items = items;
     }
 }

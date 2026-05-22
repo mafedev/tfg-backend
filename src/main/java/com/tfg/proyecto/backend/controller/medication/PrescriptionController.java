@@ -3,6 +3,7 @@ package com.tfg.proyecto.backend.controller.medication;
 import com.tfg.proyecto.backend.dto.request.medication.PrescriptionRequest;
 import com.tfg.proyecto.backend.model.medication.Prescription;
 import com.tfg.proyecto.backend.service.medication.PrescriptionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +25,10 @@ public class PrescriptionController {
         Prescription result = prescriptionService.createPrescription(request);
 
         if (result == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe una prescripción para este medicamento");
         }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.status(201).body(result);
     }
 
     @GetMapping("/patient/{patientId}")

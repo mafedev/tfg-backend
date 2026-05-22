@@ -1,10 +1,10 @@
-package com.tfg.proyecto.backend.service;
+package com.tfg.proyecto.backend.service.appointment;
 
-import com.tfg.proyecto.backend.dto.request.AppointmentRequest;
-import com.tfg.proyecto.backend.dto.response.AppointmentResponse;
+import com.tfg.proyecto.backend.dto.request.appointment.AppointmentRequest;
+import com.tfg.proyecto.backend.dto.response.appointment.AppointmentResponse;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
 import com.tfg.proyecto.backend.model.users.Patient;
-import com.tfg.proyecto.backend.repository.AppointmentRepository;
+import com.tfg.proyecto.backend.repository.appointment.AppointmentRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -120,5 +120,28 @@ public class AppointmentService {
 
     private AppointmentResponse mapToResponse(Appointment a) {
         return new AppointmentResponse(a.getId(), a.getTitle(), a.getDescription(), a.getLocation(), a.getDateTime(), a.getStatus().name());
+    }
+
+    // -------------------- Obtener citas paciente --------------------
+    public List<AppointmentResponse> getAppointmentsByUser(Long userId) {
+        Optional<Patient> optionalPatient = patientRepository.findByUserId(userId);
+
+        if (optionalPatient.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Patient patient = optionalPatient.get();
+        List<Appointment> appointments = appointmentRepository.findByPatientId(patient.getId());
+        List<AppointmentResponse> responseList = new ArrayList<>();
+
+        for (Appointment a : appointments) {
+            if (a.getStatus() != Appointment.AppointmentStatus.PENDING) {
+                continue;
+            }
+
+            responseList.add(mapToResponse(a));
+        }
+
+        return responseList;
     }
 }

@@ -23,15 +23,15 @@ public class PatientController {
 
     // ------------------- Crear paciente -------------------
     @PostMapping
-    public ResponseEntity<?> createPatient(@RequestBody PatientRequest request, @RequestHeader("Authorization") String authHeader) {
-        Patient savedPatient = patientService.createPatient(request, authHeader);
+    public ResponseEntity<?> createPatient(@RequestBody PatientRequest request) {
+        Patient savedPatient = patientService.createPatient(request);
         return ResponseEntity.status(201).body(savedPatient);
     }
 
     // -------------------- Obtener detalle paciente --------------------
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPatientDetails(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
-        PatientListDetailsResponse response = userService.getPatientDetails(id, authHeader);
+    public ResponseEntity<?> getPatientDetails(@PathVariable Long id) {
+        PatientListDetailsResponse response = userService.getPatientDetails(id);
 
         if (response == null) {
             return ResponseEntity.status(403).build();
@@ -42,8 +42,8 @@ public class PatientController {
 
     // -------------------- Actualizar paciente --------------------
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody PatientUpdateRequest request, @RequestHeader("Authorization") String authHeader) {
-        boolean updated = userService.updatePatient(id, request, authHeader);
+    public ResponseEntity<?> updatePatient(@PathVariable Long id, @RequestBody PatientUpdateRequest request) {
+        boolean updated = userService.updatePatient(id, request);
 
         if (!updated) {
             return ResponseEntity.status(403).build();

@@ -1,4 +1,4 @@
-package com.tfg.proyecto.backend.dto.request.medication;
+package com.tfg.proyecto.backend.dto.response.prescription;
 
 import java.util.ArrayList;
 import java.util.List;

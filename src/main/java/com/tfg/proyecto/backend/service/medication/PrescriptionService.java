@@ -39,6 +39,13 @@ public class PrescriptionService {
             return null;
         }
 
+        // evita prescripciones con medicamentos duplicados (solo ACTIVAS)
+        boolean exists = prescriptionRepository.existsByPatientIdAndMedicationIdAndStatus(request.getPatientId(), request.getMedicationId(), Prescription.PrescriptionStatus.ACTIVE);
+
+        if (exists) {
+            return null;
+        }
+
         Prescription prescription = new Prescription();
         prescription.setPatient(patientOptional.get());
         prescription.setMedication(medicationOptional.get());
@@ -105,6 +112,7 @@ public class PrescriptionService {
         prescription.setEndDate(request.getEndDate());
         prescription.setFirstDoseTime(request.getFirstDoseTime());
         prescription.setNotes(request.getNotes());
+        prescription.setStatus(request.getStatus());
         prescriptionRepository.save(prescription);
 
         prescriptionTrackingService.deleteFutureTracking(id);   // borra futuro
