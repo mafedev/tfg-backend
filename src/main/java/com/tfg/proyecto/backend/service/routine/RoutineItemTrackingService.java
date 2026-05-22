@@ -9,7 +9,7 @@ import com.tfg.proyecto.backend.repository.routine.RoutineItemRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineItemTrackingRepository;
 import com.tfg.proyecto.backend.repository.routine.RoutineRepository;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
-import com.tfg.proyecto.backend.security.JwtUtil;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,14 +23,14 @@ public class RoutineItemTrackingService {
     private final RoutineItemRepository itemRepository;
     private final RoutineRepository routineRepository;
     private final PatientRepository patientRepository;
-    private final JwtUtil jwtUtil;
+    private final SecurityUtils securityUtils;
 
-    public RoutineItemTrackingService(RoutineItemTrackingRepository trackingRepository, RoutineItemRepository itemRepository, RoutineRepository routineRepository, PatientRepository patientRepository, JwtUtil jwtUtil) {
+    public RoutineItemTrackingService(RoutineItemTrackingRepository trackingRepository, RoutineItemRepository itemRepository, RoutineRepository routineRepository, PatientRepository patientRepository, SecurityUtils securityUtils) {
         this.trackingRepository = trackingRepository;
         this.itemRepository = itemRepository;
         this.routineRepository = routineRepository;
         this.patientRepository = patientRepository;
-        this.jwtUtil = jwtUtil;
+        this.securityUtils = securityUtils;
     }
 
     public RoutineItemTracking createTracking(Long itemId, LocalDate date) {
@@ -74,12 +74,11 @@ public class RoutineItemTrackingService {
             tracking.setCompletedTime(LocalDateTime.now());
         }
 
-        RoutineItemTracking saved = trackingRepository.save(tracking);
-        return saved;
+        return trackingRepository.save(tracking);
     }
 
-    public List<RoutineItemTrackingResponse> getTrackingForPatient(String authHeader, String date) {
-        Long userId = extractId(authHeader);
+    public List<RoutineItemTrackingResponse> getTrackingForPatient(String date) {
+        Long userId = securityUtils.getCurrentUserId();
 
         Patient patient = patientRepository.findByUserId(userId).orElse(null);
 
@@ -93,14 +92,6 @@ public class RoutineItemTrackingService {
             generateDailyTracking(patient.getId(), parsedDate);
         }
 
-        return getTrackingByPatientAndDate(patient.getId(), parsedDate)
-                .stream()
-                .map(RoutineItemTrackingResponse::new)
-                .toList();
-    }
-
-    private Long extractId(String authHeader) {
-        String token = authHeader.substring(7); // extrae el id del token
-        return Long.parseLong(jwtUtil.extractId(token));
+        return getTrackingByPatientAndDate(patient.getId(), parsedDate).stream().map(RoutineItemTrackingResponse::new).toList();
     }
 }

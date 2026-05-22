@@ -9,6 +9,7 @@ import com.tfg.proyecto.backend.model.users.User;
 import com.tfg.proyecto.backend.repository.users.PatientRepository;
 import com.tfg.proyecto.backend.repository.relation.RelationRepository;
 import com.tfg.proyecto.backend.repository.users.UserRepository;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,13 @@ public class RelationService {
     private final RelationRepository relationRepository;
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
+    private final SecurityUtils securityUtils;
 
-    public RelationService(RelationRepository relationRepository, UserRepository userRepository, PatientRepository patientRepository) {
+    public RelationService(RelationRepository relationRepository, UserRepository userRepository, PatientRepository patientRepository, SecurityUtils securityUtils) {
         this.relationRepository = relationRepository;
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
+        this.securityUtils = securityUtils;
     }
 
     // Genera el código que introduce el paciente
@@ -41,7 +44,9 @@ public class RelationService {
 
     // Crea la "relación", solo con el id del cuidador y el código
     // para que luego cuando el paciente lo ingrese, se agrega a la fila/relación
-    public RelationResponse createRelation(Long caregiverId) {
+    public RelationResponse createRelation() {
+        Long caregiverId = securityUtils.getCurrentUserId();
+
         Optional<User> caregiverRep = userRepository.findById(caregiverId);
 
         if (caregiverRep.isPresent() && caregiverRep.get().getRole() == User.Role.CAREGIVER) {
@@ -59,58 +64,51 @@ public class RelationService {
     }
 
     // se llama cuando el paciente ingresa el código
-    public boolean linkPatient(String code, Long userId) {
-
-        // 1. Validar que el usuario existe
+    public boolean linkPatient(String code) {
+        Long userId = securityUtils.getCurrentUserId();
+        // se valida que el usuario existe
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            System.out.println("[ERROR] Usuario no encontrado: " + userId);
             return false;
         }
 
         User user = userOpt.get();
 
-        // 2. Validar que es paciente
+        // se valida que es paciente
         if (user.getRole() != User.Role.PATIENT) {
-            System.out.println("[ERROR] El usuario no es PATIENT: " + userId);
             return false;
         }
 
-        // 3. Buscar el Patient asociado a ese User
+        // busca el Patient asociado a ese User
         Optional<Patient> patientOpt = patientRepository.findByUserId(userId);
         if (patientOpt.isEmpty()) {
-            System.out.println("[ERROR] No existe Patient para userId=" + userId);
             return false;
         }
 
         Patient patient = patientOpt.get();
-        System.out.println("[DEBUG] Paciente encontrado: " + patient.getId());
 
-        // 4. Buscar relación por código
+        // busca la relación por código
         Optional<Relation> relationOpt = relationRepository.findByCode(code);
         if (relationOpt.isEmpty()) {
-            System.out.println("[ERROR] Código inválido: " + code);
             return false;
         }
 
         Relation relation = relationOpt.get();
 
-        // 5. Verificar si ya está vinculado
+        // verifica si ya está vinculado
         if (relation.getPatient() != null) {
-            System.out.println("[ERROR] Código ya usado por patientId=" + relation.getPatient().getId());
             return false;
         }
 
-        // 6. Vincular
+        // lo vincula
         relation.setPatient(patient);
         relationRepository.save(relation);
-
-        System.out.println("[DEBUG] Paciente vinculado correctamente");
 
         return true;
     }
 
-    public List<PatientListResponse> getPatientsList(Long caregiverId) {
+    public List<PatientListResponse> getPatientsList() {
+        Long caregiverId = securityUtils.getCurrentUserId();
         List<PatientListResponse> patients = new ArrayList<>();
 
         // busca el usuario por el id
@@ -118,7 +116,7 @@ public class RelationService {
 
         // si el paciente existe, entonces lo agrega a la lista
         if (caregiverResp.isPresent() && caregiverResp.get().getRole() == User.Role.CAREGIVER) {
-            List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId); // lista de ids de los pacientes
+            List<Relation> matchedRelations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
 
             for (Relation relation : matchedRelations) {
                 Patient patient = relation.getPatient();
@@ -144,8 +142,10 @@ public class RelationService {
         return patients;
     }
 
-    public boolean deleteRelation(Long caregiverId, Long patientId) {
-        Relation relation = relationRepository.findByCaregiverIdAndPatientId(caregiverId, patientId); // busca la relación por el id de ambos
+    public boolean deleteRelation(Long patientId) {
+        Long caregiverId = securityUtils.getCurrentUserId();
+        Relation relation = relationRepository.findByCaregiverIdAndPatientId(caregiverId, patientId);
+
         if (relation != null) { // si existe
             relationRepository.delete(relation); // la elimina
             return true;
@@ -153,7 +153,8 @@ public class RelationService {
         return false;
     }
 
-    public List<CaregiverContactResponse> getPatientCaregivers(Long userId) {
+    public List<CaregiverContactResponse> getPatientCaregivers() {
+        Long userId = securityUtils.getCurrentUserId();
         List<CaregiverContactResponse> caregivers = new ArrayList<>();
         Optional<Patient> patientOpt = patientRepository.findByUserId(userId);
 

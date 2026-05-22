@@ -1,17 +1,13 @@
 package com.tfg.proyecto.backend.service.home;
 
-import com.tfg.proyecto.backend.dto.response.home.HomeAppointmentDetailResponse;
-import com.tfg.proyecto.backend.dto.response.home.HomeCalendarResponse;
-import com.tfg.proyecto.backend.dto.response.home.HomePendingTrackingResponse;
-import com.tfg.proyecto.backend.dto.response.home.HomeTrackingResponse;
+import com.tfg.proyecto.backend.dto.response.home.*;
 import com.tfg.proyecto.backend.model.appointment.Appointment;
-import com.tfg.proyecto.backend.model.medication.Prescription;
-import com.tfg.proyecto.backend.model.medication.PrescriptionTracking;
+import com.tfg.proyecto.backend.model.medication.*;
 import com.tfg.proyecto.backend.model.relation.Relation;
 import com.tfg.proyecto.backend.repository.appointment.AppointmentRepository;
-import com.tfg.proyecto.backend.repository.medication.PrescriptionRepository;
-import com.tfg.proyecto.backend.repository.medication.PrescriptionTrackingRepository;
+import com.tfg.proyecto.backend.repository.medication.*;
 import com.tfg.proyecto.backend.repository.relation.RelationRepository;
+import com.tfg.proyecto.backend.security.SecurityUtils;
 import com.tfg.proyecto.backend.service.medication.PrescriptionTrackingService;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +24,19 @@ public class CaregiverHomeService {
     private final PrescriptionTrackingRepository prescriptionTrackingRepository;
     private final PrescriptionTrackingService prescriptionTrackingService;
     private final AppointmentRepository appointmentRepository;
+    private final SecurityUtils securityUtils;
 
-    public CaregiverHomeService(RelationRepository relationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository, PrescriptionTrackingService prescriptionTrackingService, AppointmentRepository appointmentRepository) {
+    public CaregiverHomeService(RelationRepository relationRepository, PrescriptionRepository prescriptionRepository, PrescriptionTrackingRepository prescriptionTrackingRepository, PrescriptionTrackingService prescriptionTrackingService, AppointmentRepository appointmentRepository, SecurityUtils securityUtils) {
         this.relationRepository = relationRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.prescriptionTrackingRepository = prescriptionTrackingRepository;
         this.prescriptionTrackingService = prescriptionTrackingService;
         this.appointmentRepository = appointmentRepository;
+        this.securityUtils = securityUtils;
     }
 
-    public List<HomeTrackingResponse> getTodayTrackingByCaregiver(Long caregiverId) {
+    public List<HomeTrackingResponse> getTodayTrackingByCaregiver() {
+        Long caregiverId = securityUtils.getCurrentUserId();
 
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
@@ -89,7 +88,8 @@ public class CaregiverHomeService {
         return result;
     }
 
-    public List<HomeCalendarResponse> getAppointmentDays(Long caregiverId) {
+    public List<HomeCalendarResponse> getAppointmentDays() {
+        Long caregiverId = securityUtils.getCurrentUserId();
         List<Relation> relations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
         List<Long> patientIds = relations.stream().map(r -> r.getPatient().getId()).toList();
 
@@ -108,7 +108,8 @@ public class CaregiverHomeService {
                 .map(a -> a.getDateTime().toLocalDate()).distinct().sorted().map(HomeCalendarResponse::new).toList();
     }
 
-    public List<HomeAppointmentDetailResponse> getAppointmentsByDate(Long caregiverId, LocalDate date) {
+    public List<HomeAppointmentDetailResponse> getAppointmentsByDate(LocalDate date) {
+        Long caregiverId = securityUtils.getCurrentUserId();
         List<Relation> relations = relationRepository.findByCaregiverIdAndPatientIdIsNotNull(caregiverId);
         List<Long> patientIds = relations.stream().map(r -> r.getPatient().getId()).toList();
 
@@ -121,7 +122,8 @@ public class CaregiverHomeService {
         return appointmentRepository.findByPatientIdIn(patientIds).stream().filter(a -> a.getDateTime().isAfter(start) && a.getDateTime().isBefore(end)).filter(a -> a.getStatus() != Appointment.AppointmentStatus.CANCELLED).map(a -> new HomeAppointmentDetailResponse(a.getTitle(), a.getPatient().getUser() != null ? a.getPatient().getUser().getUsername() : a.getPatient().getName(), a.getLocation(), a.getDateTime().toString())).toList();
     }
 
-    public List<HomePendingTrackingResponse> getPendingToday(Long caregiverId) {
+    public List<HomePendingTrackingResponse> getPendingToday() {
+        Long caregiverId = securityUtils.getCurrentUserId();
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
         LocalDateTime end = today.plusDays(1).atStartOfDay();

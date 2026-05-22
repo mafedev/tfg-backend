@@ -3,7 +3,6 @@ package com.tfg.proyecto.backend.controller.relation;
 import com.tfg.proyecto.backend.dto.response.patient.PatientListResponse;
 import com.tfg.proyecto.backend.dto.response.relation.CaregiverContactResponse;
 import com.tfg.proyecto.backend.dto.response.relation.RelationResponse;
-import com.tfg.proyecto.backend.security.JwtUtil;
 import com.tfg.proyecto.backend.service.relation.RelationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +16,16 @@ import java.util.List;
 public class RelationController {
 
     private final RelationService relationService;
-    private final JwtUtil jwtUtil;
 
-    public RelationController(RelationService relationService, JwtUtil jwtUtil) {
+    public RelationController(RelationService relationService) {
         this.relationService = relationService;
-        this.jwtUtil = jwtUtil;
     }
 
     // Genera una relación desde el cuidador
     @PostMapping
-    public ResponseEntity<?> generateRelation(@RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = extractId(authHeader); //obtiene el id
-        RelationResponse response = relationService.createRelation(caregiverId);
+    public ResponseEntity<?> generateRelation() {
+        RelationResponse response = relationService.createRelation();
+
         if (response != null) {
             return ResponseEntity.ok(response);
         }
@@ -37,9 +34,8 @@ public class RelationController {
 
     // Enlaza al paciente con el cuidador por medio del código creado
     @PostMapping("/link")
-    public ResponseEntity<Void> linkPatient(@RequestParam String code, @RequestHeader("Authorization") String authHeader) {
-        Long patientId = extractId(authHeader); // obtiene el id
-        boolean linked = relationService.linkPatient(code, patientId); // vincula al paciente usando el código y el id del paciente
+    public ResponseEntity<Void> linkPatient(@RequestParam String code) {
+        boolean linked = relationService.linkPatient(code);
         if (!linked) { // si no se puede vincular, porque está repetido, o ya existe o similar
             return ResponseEntity.badRequest().build();
         }
@@ -48,37 +44,23 @@ public class RelationController {
 
     // Endpoint para pedir la lista de los pacientes de un cuidador
     @GetMapping("/patients")
-    public ResponseEntity<List<PatientListResponse>> getPatients(@RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = extractId(authHeader); // extrae el id del cuidador
-
-        List<PatientListResponse> patientsList = relationService.getPatientsList(caregiverId);
-
-        return ResponseEntity.ok(patientsList);
+    public ResponseEntity<List<PatientListResponse>> getPatients() {
+        return ResponseEntity.ok(relationService.getPatientsList());
     }
 
     // Elimina la relación
     @DeleteMapping("/{patientId}")
-    public ResponseEntity<String> deleteRelation(@PathVariable Long patientId, @RequestHeader("Authorization") String authHeader) {
-        Long caregiverId = extractId(authHeader);
-        boolean deleted = relationService.deleteRelation(caregiverId, patientId);
+    public ResponseEntity<String> deleteRelation(@PathVariable Long patientId) {
+        boolean deleted = relationService.deleteRelation(patientId);
 
         if (deleted) {
             return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
         }
-    }
-
-    // Extrae el id del token
-    private Long extractId(String authHeader) {
-        String token = authHeader.substring(7); // extrae el id del token
-        return Long.parseLong(jwtUtil.extractId(token));
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/my-caregivers")
-    public ResponseEntity<List<CaregiverContactResponse>> getMyCaregivers(@RequestHeader("Authorization") String authHeader) {
-        Long patientUserId = extractId(authHeader);
-        List<CaregiverContactResponse> caregivers = relationService.getPatientCaregivers(patientUserId);
-        return ResponseEntity.ok(caregivers);
+    public ResponseEntity<List<CaregiverContactResponse>> getMyCaregivers() {
+        return ResponseEntity.ok(relationService.getPatientCaregivers());
     }
 }
