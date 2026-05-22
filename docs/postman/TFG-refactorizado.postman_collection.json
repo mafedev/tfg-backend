@@ -1,0 +1,576 @@
+{
+  "info": {
+    "_postman_id": "a761b39b-3d2e-4fe7-bc3c-ce13cc5a9cc8",
+    "name": "TFG-refactorizado",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44922644",
+    "_collection_link": "https://go.postman.co/collection/44922644-a761b39b-3d2e-4fe7-bc3c-ce13cc5a9cc8?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "signup",
+          "item": [
+            {
+              "name": "signup-patient",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"carlos\",\r\n  \"email\": \"carlos@example.com\",\r\n  \"password\": \"1234abcd\",\r\n  \"role\": \"PATIENT\",\r\n  \"phone\": \"123456789\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/signup",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "signup-caregiver",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"ana\",\r\n  \"email\": \"ana@example.com\",\r\n  \"password\": \"1234abcd\",\r\n  \"role\": \"CAREGIVER\",\r\n  \"phone\": \"123456789\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/signup",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "login",
+          "item": [
+            {
+              "name": "login-patient",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"carlos@example.com\",\r\n  \"password\": \"1234abcd\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "login-caregiver",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"ana@example.com\",\r\n  \"password\": \"1234abcd\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "relations",
+      "item": [
+        {
+          "name": "generate-code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzcyNjUxMDE1LCJleHAiOjE3NzI3Mzc0MTV9.3ea1LmIbbLsEbOeEDR8on-oer6vS9dNtQ9JNNuZwNFc",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/relations/generate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "relations",
+                "generate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "link-patient",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzcyNjUwNzMzLCJleHAiOjE3NzI3MzcxMzN9.LCf7AwcMw1XCwoLXSkcGUbKu09MugUYyViGiTcHC_DQ",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"MWOKYBL2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/relations/link",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "relations",
+                "link"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "borrar-relacion",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzY4NTcxMTM2LCJleHAiOjE3Njg2NTc1MzZ9.WIpEGuxzRR2hKrEwTQ_2jg3ccx_24PzTdU1oWx9keew",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/relations/5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "relations",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "probar-mostrar-listado-pacientes",
+      "item": [
+        {
+          "name": "devuelve-lista-pacientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzcyNjQyNTcxLCJleHAiOjE3NzI3Mjg5NzF9.QTkwOvvEAmfGBizNqqWPNhaPgRk2ft_fZyWaPiIh4Pc",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/relations/patients",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "relations",
+                "patients"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "devuelve-detalles-paciente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzcyNjQyNTcxLCJleHAiOjE3NzI3Mjg5NzF9.QTkwOvvEAmfGBizNqqWPNhaPgRk2ft_fZyWaPiIh4Pc",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/patients/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "patients",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "rutinas",
+      "item": [
+        {
+          "name": "enviar_rutin",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzcyNjQyNTcxLCJleHAiOjE3NzI3Mjg5NzF9.QTkwOvvEAmfGBizNqqWPNhaPgRk2ft_fZyWaPiIh4Pc",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": \"M4ACSZX4\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/routine",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "routine"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "obtener-rutina",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzY5MjY3NjQxLCJleHAiOjE3NjkzNTQwNDF9.0UQKXstmjuP9OGQc_mynlRTKpgpZRcpvhdb0okbfm3c",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/routine",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "routine"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "medication",
+      "item": [
+        {
+          "name": "crear-medicamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY5OTc1NDkxLCJleHAiOjE3NzAwNjE4OTF9.dCoCqECbdpIAtJnHJNIP8vSyMLVWu2UtmoxKmpfA3Bo",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Paracetamol\",\r\n  \"description\": \"Alivia dolor y fiebre\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/medications",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "medications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "crear-medication-schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzcwMDM5ODM0LCJleHAiOjE3NzAxMjYyMzR9.T6H91y7x09bUZKUyxruPbWEuxsfnVYfMWZpzcMfq--k",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"patientId\": 2,\r\n  \"medicationId\": 1,\r\n  \"hour\": \"08:00\",\r\n  \"dose\": 1,\r\n  \"frecuency\": 1\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/medications/schedule",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "medications",
+                "schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ver-medicacion-asginada",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzcwMjAxNTgyLCJleHAiOjE3NzAyODc5ODJ9.Ldyw1PrZAlhZNTcuobkDqx5xsNH4daYE6fiwOzfzfCU",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/medications/schedule/patient/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "medications",
+                "schedule",
+                "patient",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "guardar-rutina",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"breakfastTime\": \"08:00\",\r\n  \"lunchTime\": \"14:00\",\r\n  \"dinnerTime\": \"20:00\",\r\n  \"bathTime\": \"22:00\",\r\n  \"enableHydration\": true,\r\n  \"hydrationIntervalHours\": 2\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/rutine",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "rutine"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null,
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+package com.tfg.proyecto.backend.repository.relation;
+
+import com.tfg.proyecto.backend.model.relation.Relation;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface RelationRepository extends JpaRepository<Relation, Long> { // indica el tipo de objeto que maneja y el tipo de la clave primaria
+    boolean existsByCode(String code);
+    Optional<Relation> findByCode(String code);
+    boolean existsByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
+    List<Relation> findByCaregiverIdAndPatientIdIsNotNull(Long caregiverId);
+    Relation findByCaregiverIdAndPatientId(Long caregiverId, Long patientId);
+    List<Relation> findByPatientId(Long patientId);
+}

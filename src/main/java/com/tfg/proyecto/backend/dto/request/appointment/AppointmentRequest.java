@@ -1,0 +1,33 @@
+package com.tfg.proyecto.backend.dto.request.appointment;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Setter
+@Getter
+public class AppointmentRequest {
+    @NotBlank(message = "El título es obligatorio")
+    @Size(max = 100, message = "El título no puede superar los 100 caracteres")
+    private String title;
+
+    @Size(max = 255, message = "La descripción no puede superar los 255 caracteres")
+    private String description;
+
+    @Size(max = 200, message = "La ubicación no puede superar los 200 caracteres")
+    private String location;
+
+    @NotNull(message = "La fecha y hora son obligatorias")
+    private LocalDateTime dateTime;
+
+    @NotNull(message = "El paciente es obligatorio")
+    private Long patientId;
+
+    // -------------------- Constructor --------------------
+    public AppointmentRequest() {
+    }
+}
